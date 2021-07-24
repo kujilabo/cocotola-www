@@ -1,0 +1,18 @@
+---
+on:
+  pull_request:
+    branches:
+      - main
+name: Test
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: npm install
+        run: npm install
+      - name: npm run test
+        run: npm test
