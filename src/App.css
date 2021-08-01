@@ -40,3 +40,23 @@
 .ui.menu {
   border-radius: 0 !important;
 }
+
+@media screen and (min-width: 600px) {
+  .container {
+    padding: 0px;
+    background-color: #fff;
+  }
+}
+
+@media screen and (min-width: 1024px) {
+  .container {
+    padding: 10px;
+    background-color: #fff;
+  }
+}
+
+@media print {
+  .menu {
+    display: none !important;
+  }
+}
