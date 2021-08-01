@@ -1,19 +1,18 @@
 import React from 'react';
-import { Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { Menu } from 'semantic-ui-react';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-
 import { logout } from 'features/auth';
-import 'App.css';
 import { selectRedirectPath } from 'features/router';
+import { PrivateWorkbookList } from 'containers/priavte_workbook/PrivateWorkbookList';
+import 'App.css';
 
 export function App(): JSX.Element {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const redirectPath = useAppSelector(selectRedirectPath);
-
   const redirectToWorkbook = () => {
     history.push('/app/private/workbook');
   };
@@ -50,7 +49,11 @@ export function App(): JSX.Element {
           }}
         ></Menu.Item>
       </Menu>
-      <Switch></Switch>
+      <Switch>
+        <Route exact path="/app/private/workbook">
+          <PrivateWorkbookList />
+        </Route>
+      </Switch>
     </div>
   );
 }

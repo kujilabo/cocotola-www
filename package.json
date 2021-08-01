@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@artsy/fresnel": "^1.9.0",
     "@reduxjs/toolkit": "^1.6.1",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^11.2.7",
@@ -16,6 +17,8 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/redux-logger": "^3.0.9",
     "axios": "^0.21.1",
+    "formik": "^2.2.9",
+    "formik-semantic-ui-react": "^2.0.0",
     "jwt-decode": "^3.1.2",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
@@ -27,7 +30,8 @@
     "redux-logger": "^3.0.6",
     "redux-persist": "^6.0.0",
     "semantic-ui-react": "^2.0.3",
-    "web-vitals": "^1.1.2"
+    "web-vitals": "^1.1.2",
+    "yup": "^0.32.9"
   },
   "scripts": {
     "start": "react-scripts start",

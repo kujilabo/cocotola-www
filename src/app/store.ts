@@ -12,8 +12,21 @@ import {
 import storage from 'redux-persist/lib/storage';
 import { createLogger } from 'redux-logger';
 
-import authReducer from '../features/auth';
-import routerReducer from '../features/router';
+import authReducer from 'features/auth';
+import routerReducer from 'features/router';
+import workbookNewReducer from 'features/workbook_new';
+import workbookListReducer from 'features/workbook_list';
+import workbookViewReducer from 'features/workbook_view';
+import problemListReducer from 'features/problem_list';
+import problemNewReducer from 'features/problem_new';
+import problemEditReducer from 'features/problem_edit';
+import problemViewReducer from 'features/problem_view';
+import problemRemoveReducer from 'features/problem_remove';
+import studyProblemIdsReducer from 'features/study_problem_ids';
+import audioReducer from 'features/audio';
+import { ProblemFactory } from 'containers/workbook/problem/ProblemFactory';
+
+export const problemFactory = new ProblemFactory({});
 
 const reducers = {};
 
@@ -21,6 +34,17 @@ export const rootReducer = combineReducers({
   ...reducers,
   auth: authReducer,
   router: routerReducer,
+
+  workbookList: workbookListReducer,
+  workbookNew: workbookNewReducer,
+  workbookView: workbookViewReducer,
+  problemList: problemListReducer,
+  problemNew: problemNewReducer,
+  problemEdit: problemEditReducer,
+  problemView: problemViewReducer,
+  problemRemove: problemRemoveReducer,
+  studyProblemIds: studyProblemIdsReducer,
+  audio: audioReducer,
 });
 
 const persistConfig = {
