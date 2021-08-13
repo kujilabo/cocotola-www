@@ -14,7 +14,11 @@ type RefreshTokenResponse = {
   accessToken: string;
 };
 export const tokenExpired = (token: string): boolean => {
-  return jwtDecode<any>(token).exp < new Date().getTime() / 1000;
+  try {
+    return jwtDecode<any>(token).exp < new Date().getTime() / 1000;
+  } catch (e) {
+    return true;
+  }
 };
 
 export const refreshAccessToken = createAsyncThunk<
@@ -25,10 +29,12 @@ export const refreshAccessToken = createAsyncThunk<
     state: RootState;
   }
 >('auth/refresh_token', async (arg: RefreshTokenParameter, thunkAPI) => {
-  console.log('refreshAccessToken1');
+  console.log('refreshAccessToken1 aaa');
   const { accessToken } = thunkAPI.getState().auth;
   const accessTokenExpired = tokenExpired(accessToken);
+  console.log('refreshAccessToken1 bbb');
   if (!accessTokenExpired) {
+    console.log('not expired');
     return new Promise(function (resolve) {
       const response: RefreshTokenResponse = { accessToken: accessToken };
       resolve(response);
@@ -46,6 +52,7 @@ export const refreshAccessToken = createAsyncThunk<
       const errorMessage = extractErrorMessage(err);
       return thunkAPI.rejectWithValue(errorMessage);
     });
+  console.log('refreshAccessToken1 ccc');
   return x;
 });
 

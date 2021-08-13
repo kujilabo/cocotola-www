@@ -47,7 +47,7 @@ export class ProblemFactory {
     const problemCreator = this.problemMap[problemType];
     if (!problemCreator) {
       console.log('problemCreator not found', problemType, this.problemMap);
-      return <div></div>;
+      return <div>problemCreator not found</div>;
     }
     return problemCreator.createMenu(init, workbook);
   }

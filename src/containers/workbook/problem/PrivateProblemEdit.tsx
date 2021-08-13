@@ -11,7 +11,7 @@ type ParamTypes = {
   _workbookId: string;
   _problemId: string;
 };
-export function PrivateProblemEdit(): JSX.Element {
+export function PrivateProblemEdit(): React.ReactElement {
   const { _workbookId, _problemId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const problemId = +_problemId;
