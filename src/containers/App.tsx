@@ -7,9 +7,15 @@ import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { logout } from 'features/auth';
 import { selectRedirectPath } from 'features/router';
 import { PrivateWorkbookList } from 'containers/priavte_workbook/PrivateWorkbookList';
+import { PrivateWorkbookView } from 'containers/priavte_workbook/PrivateWorkbookView';
+import { PrivateProblemNew } from 'containers/workbook/problem/PrivateProblemNew';
+import { PrivateProblemEdit } from 'containers/workbook/problem/PrivateProblemEdit';
+import { PrivateProblemImport } from 'containers/workbook/problem/PrivateProblemImport';
+import { WorkbookStudy } from 'containers/workbook/study/WorkbookStudy';
+import { NotFound } from 'containers/NotFound';
 import 'App.css';
 
-export function App(): JSX.Element {
+export function App(): React.ReactElement {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const redirectPath = useAppSelector(selectRedirectPath);
@@ -52,6 +58,24 @@ export function App(): JSX.Element {
       <Switch>
         <Route exact path="/app/private/workbook">
           <PrivateWorkbookList />
+        </Route>
+        <Route exact path="/app/private/workbook/:_workbookId">
+          <PrivateWorkbookView />
+        </Route>
+        <Route exact path="/app/private/workbook/:_workbookId/problem/new">
+          <PrivateProblemNew />
+        </Route>
+        <Route exact path="/app/private/workbook/:_workbookId/problem/:_problemId/edit">
+          <PrivateProblemEdit />
+        </Route>
+        <Route exact path="/app/private/workbook/:_workbookId/import">
+          <PrivateProblemImport />
+        </Route>
+        <Route exact path="/app/workbook/:_workbookId/study/:_studyType">
+          <WorkbookStudy />
+        </Route>
+        <Route>
+          <NotFound />
         </Route>
       </Switch>
     </div>

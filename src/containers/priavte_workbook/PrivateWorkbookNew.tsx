@@ -109,7 +109,7 @@ export function PrivateWorkbookNew() {
       dispatch(
         addWorkbook({
           param: { ...values, spaceKey: 'personal' },
-          postSuccessProcess: (id: number) => history.push('/app/my_workbook'),
+          postSuccessProcess: (id: number) => history.push('/app/private/workbook'),
           postFailureProcess: setErrorMessage,
         })
       );
@@ -120,7 +120,7 @@ export function PrivateWorkbookNew() {
   return (
     <Container fluid>
       <AppBreadcrumb
-        links={[{ text: 'workbook', url: '/app/my_workbook' }]}
+        links={[{ text: 'workbook', url: '/app/private/workbook' }]}
         text={'New workbook'}
       />
       <Divider hidden />
