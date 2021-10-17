@@ -4,7 +4,9 @@ import {
   PayloadAction,
   createSlice,
 } from '@reduxjs/toolkit';
-import { EnglishWordProblemTypeId, ProblemModel } from 'models/problem';
+import { ProblemModel } from 'models/problem';
+// import { EnglishWordProblemTypeId } from 'plugins/english-word/models/english_word_problem'
+// import { EnglishSentenceProblemTypeId } from 'plugins/english-sentence/models/english_sentence_problem'
 import { WorkbookModel } from 'models/workbook';
 
 import { CustomProblem } from './CustomProblem';
@@ -32,11 +34,6 @@ export class ProblemFactory {
 
   constructor(problemMap: { [problemType: string]: CustomProblem }) {
     this.problemMap = problemMap;
-
-    const problem = this.problemMap[EnglishWordProblemTypeId];
-    if (!problem) {
-      console.log('problem not found', this.problemMap);
-    }
   }
 
   createMenu(

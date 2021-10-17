@@ -1,16 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { RootState } from '../../../app/store';
+import { RootState } from 'app/store';
+// import { ProblemWithLevelModel } from 'models/study';
 
 export interface EnglishWordState {
   status: number;
   ts: string;
-  problemIds: number[];
+  // problemWithLevelList: ProblemWithLevelModel[];
 }
 const initialState: EnglishWordState = {
   status: 0,
   ts: '',
-  problemIds: [],
+  // problemWithLevelList: [],
 };
 export const englishWordSlice = createSlice({
   name: 'english_word',
@@ -21,24 +22,28 @@ export const englishWordSlice = createSlice({
       state.status = 1;
       state.ts = action.payload;
     },
-    setProblemIds: (state, action: PayloadAction<number[]>) => {
-      console.log('setProblemIds', action.payload);
-      state.problemIds = [...action.payload];
-    },
+    // setProblemIds: (state, action: PayloadAction<ProblemWithLevelModel[]>) => {
+    //   console.log('setProblemIds', action.payload);
+    //   state.problemWithLevelList = [...action.payload];
+    // },
     setEnglishWordStatus: (state, action: PayloadAction<number>) => {
       state.status = action.payload;
     },
   },
 });
 
-export const { initEnglishWordStatus, setProblemIds, setEnglishWordStatus } =
-  englishWordSlice.actions;
+export const {
+  initEnglishWordStatus,
+  // setProblemIds,
+  setEnglishWordStatus,
+} = englishWordSlice.actions;
 
 export const selectEnglishWordStatus = (state: RootState): number =>
   state.englishWord.status;
 
-export const selectEnglishWordProblemIds = (state: RootState): number[] =>
-  state.englishWord.problemIds;
+// export const selectEnglishWordProblemWithLevelList = (
+//   state: RootState
+// ): ProblemWithLevelModel[] => state.englishWord.problemIds;
 
 export const selectTs = (state: RootState): string => state.englishWord.ts;
 

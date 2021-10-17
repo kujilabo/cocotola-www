@@ -27,11 +27,9 @@ import {
 } from 'features/problem_view';
 
 import { WorkbookModel } from 'models/workbook';
-import {
-  ProblemModel,
+import { ProblemModel } from 'models/problem';
+import { EnglishWordProblemTypeId } from '../../../models/english_word_problem';
 
-  EnglishWordProblemTypeId,
-} from 'models/problem';
 
 import 'App.css';
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Button, Card, Container, Divider, Header } from 'semantic-ui-react';
 import {
@@ -12,57 +12,58 @@ import { Form, Input, Select } from 'formik-semantic-ui-react';
 import * as Yup from 'yup';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { selectWorkbook } from 'features/workbook_view';
-import { addProblem } from 'features/problem_new';
+import {
+  AppDimmer,
 
-import { AppDimmer, ErrorMessage } from 'components';
-import { useDidMount } from 'components/util';
-import { PrivateProblemBreadcrumb } from 'components/PrivateProblemBreadcrumb';
-import { EnglishWordProblemTypeId } from '../../../models/english_word_problem';
+  ErrorMessage,
+
+  PrivateProblemBreadcrumb,
+} from 'components';
+
+import { updateProblem } from 'features/problem_edit';
+import {
+
+  selectProblem,
+} from 'features/problem_view';
+
 import { WorkbookModel } from 'models/workbook';
+import { ProblemModel } from 'models/problem'
+import { EnglishSentenceProblemTypeId } from '../../../models/english_sentence_problem';
 
 import 'App.css';
 
-const posOptions1 = [
-  { key: 'ADJ', text: 'ADJ', value: '1' },
-  { key: 'ADV', text: 'ADV', value: '2' },
-  { key: 'CONJ', text: 'CONJ', value: '3' },
-  { key: 'DET', text: 'DET', value: '4' },
-  { key: 'NOUN', text: 'NOUN', value: '6' },
-  { key: 'PREP', text: 'PREP', value: '7' },
-  { key: 'PRON', text: 'PRON', value: '8' },
-  { key: 'VERB', text: 'VERB', value: '9' },
-  { key: '', text: '', value: '99' },
-];
 const langOptions = [{ key: 'ja', text: 'ja', value: 'ja' }];
 
 type ParamTypes = {
   _workbookId: string;
+  _problemId: string;
 };
-export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
-  props: EnglishWordProblemNewProps
+export const EnglishSentenceProblemEdit: React.FC<EnglishSentenceProblemEditProps> = (
+  props: EnglishSentenceProblemEditProps
 ) => {
-  const { _workbookId } = useParams<ParamTypes>();
+  const { _workbookId, _problemId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
+  const problemId = +_problemId;
+  const problem = useAppSelector(selectProblem);
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const workbook = useAppSelector(selectWorkbook);
+
   const [values, setValues] = useState({
-    text: 'pen',
-    pos: '99',
-    lang: 'ja',
-    // continue: false,
+    number: problem.number,
+    text: '' + problem.properties['text'],
+    lang: '' + problem.properties['lang'],
+    translated: '' + problem.properties['translated'],
   });
   const [errorMessage, setErrorMessage] = useState('');
-  useDidMount(() => console.log('usedidmount'));
 
   interface OtherProps {
     loading: boolean;
   }
   interface FormValues {
+    number: number;
     text: string;
-    pos: string;
     lang: string;
+    translated: string;
   }
   const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
     const { values, isSubmitting } = props;
@@ -70,21 +71,14 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
       <Form>
         <Card className="full-width">
           <Card.Content>
-            <Header component="h2">New problem</Header>
+            <Header component="h2">Edit problem</Header>
           </Card.Content>
           <Card.Content>
             <Input
               name="text"
-              label="Word"
+              label="Sentence"
               placeholder="english word"
               className="full-width"
-              errorPrompt
-            />
-            <Select
-              name="pos"
-              label="Pos"
-              options={posOptions1}
-              value={values.pos}
               errorPrompt
             />
             <Select
@@ -103,7 +97,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
               color="teal"
               disabled={isSubmitting}
             >
-              Create
+              Update
             </Button>
           </Card.Content>
         </Card>
@@ -116,14 +110,15 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
   const InnerFormikForm = withFormik<FormProps, FormValues>({
     mapPropsToValues: (props: FormProps) => {
       return {
+        number: values.number,
         text: values.text,
-        pos: values.pos,
         lang: values.lang,
+        translated: values.translated,
       };
     },
 
     validationSchema: Yup.object().shape({
-      text: Yup.string().required('Word is required'),
+      text: Yup.string().required('Sentence is required'),
     }),
 
     handleSubmit: (
@@ -132,20 +127,20 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
     ) => {
       console.log('handleSubmit');
       dispatch(
-        addProblem({
+        updateProblem({
           workbookId: workbookId,
+          problemId: problemId,
           param: {
             number: 1,
-            problemType: EnglishWordProblemTypeId,
+            problemType: EnglishSentenceProblemTypeId,
             properties: {
               text: values.text,
-              pos: values.pos,
               lang: values.lang,
             },
           },
           postSuccessProcess: () =>
-            history.push(`/app/private/workbook/${workbookId}`),
-          postFailureProcess: setErrorMessage,
+            history.push(`'/app/my_workbook/'${workbookId}`),
+          postFailureProcess: (error: string) => setErrorMessage(error),
         })
       );
       setValues(values);
@@ -155,9 +150,9 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
   return (
     <Container fluid>
       <PrivateProblemBreadcrumb
-        name={workbook.name}
-        id={workbookId}
-        text={'New problem'}
+        name={props.workbook.name}
+        id={+_workbookId}
+        text={'' + props.problem.number}
       />
       <Divider hidden />
       <InnerFormikForm loading={false} />
@@ -166,6 +161,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
   );
 };
 
-type EnglishWordProblemNewProps = {
+type EnglishSentenceProblemEditProps = {
   workbook: WorkbookModel;
+  problem: ProblemModel;
 };

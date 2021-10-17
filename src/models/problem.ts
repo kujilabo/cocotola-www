@@ -21,25 +21,3 @@ export class ProblemModel {
     this.properties = properties;
   }
 }
-
-export const EnglishWordProblemTypeId = 'english_word';
-export const EnglishPhraseProblemTypeId = 'english_phrase';
-export const TemplateProblemTypeId = 'template';
-
-export class EnglishSentenceModel {
-  number: string;
-  text: string;
-  translation: string;
-  properties: { [key: string]: string };
-  constructor(
-    number: string,
-    text: string,
-    translation: string,
-    properties: { [key: string]: string }
-  ) {
-    this.number = number;
-    this.text = text;
-    this.translation = translation;
-    this.properties = properties;
-  }
-}

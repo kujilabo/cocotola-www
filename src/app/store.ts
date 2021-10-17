@@ -24,16 +24,32 @@ import problemViewReducer from 'features/problem_view';
 import problemRemoveReducer from 'features/problem_remove';
 import problemImportReducer from 'features/problem_import';
 import studyProblemIdsReducer from 'features/study_problem_ids';
-import audioReducer from 'features/audio';
+// import studyResultReducer from 'features/study_result';
+import audioFindReducer from 'features/audio_find';
 import { ProblemFactory } from 'containers/workbook/problem/ProblemFactory';
 import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/problem/EnglishWordProblem';
+import { EnglishSentenceProblem } from 'plugins/english-sentence/containers/workbook/problem/EnglishSentenceProblem';
+
+import ewJaJson from 'plugins/english-word/locales/ja.json';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+i18n.use(initReactI18next).init({
+  resources: {
+    ja: { translation: ewJaJson },
+  },
+  lng: 'ja',
+});
 
 const englishWordProblem = new EnglishWordProblem();
+const englishSentenceProblem = new EnglishSentenceProblem();
 export const problemFactory = new ProblemFactory({
   english_word: englishWordProblem,
+  english_sentence: englishSentenceProblem,
 });
 const reducers = {
   englishWord: englishWordProblem.getReducer(),
+  englishSentence: englishSentenceProblem.getReducer(),
 };
 
 export const rootReducer = combineReducers({
@@ -51,13 +67,13 @@ export const rootReducer = combineReducers({
   problemRemove: problemRemoveReducer,
   problemImport: problemImportReducer,
   studyProblemIds: studyProblemIdsReducer,
-  audio: audioReducer,
+  audioFind: audioFindReducer,
 });
 
 const persistConfig = {
   key: 'root',
   storage,
-  whitelist: ['result'],
+  whitelist: ['result', 'audio/find'],
 };
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 const logger = createLogger({

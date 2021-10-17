@@ -7,6 +7,7 @@ import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { logout } from 'features/auth';
 import { selectRedirectPath } from 'features/router';
 import { PrivateWorkbookList } from 'containers/priavte_workbook/PrivateWorkbookList';
+import { PrivateWorkbookNew } from 'containers/priavte_workbook/PrivateWorkbookNew';
 import { PrivateWorkbookView } from 'containers/priavte_workbook/PrivateWorkbookView';
 import { PrivateProblemNew } from 'containers/workbook/problem/PrivateProblemNew';
 import { PrivateProblemEdit } from 'containers/workbook/problem/PrivateProblemEdit';
@@ -58,6 +59,9 @@ export function App(): React.ReactElement {
       <Switch>
         <Route exact path="/app/private/workbook">
           <PrivateWorkbookList />
+        </Route>
+        <Route exact path="/app/private/workbook/new">
+          <PrivateWorkbookNew />
         </Route>
         <Route exact path="/app/private/workbook/:_workbookId">
           <PrivateWorkbookView />

@@ -45,6 +45,7 @@ export function WorkbookStudy() {
     dispatch(
       findStudyProblemIds({
         workbookId: +_workbookId,
+        studyType: _studyType,
         postSuccessProcess: () => {
           console.log('success');
           const now = new Date();

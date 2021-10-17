@@ -4,48 +4,12 @@ import { Button, Card, Grid, Header } from 'semantic-ui-react';
 import { useAppDispatch } from 'app/hooks';
 import { findAudio } from 'features/audio_find';
 import { ProblemModel } from 'models/problem';
-import {
-  POS_ADJ,
-  POS_ADV,
-  POS_CONJ,
-  POS_DET,
-  POS_MODAL,
-  POS_NOUN,
-  POS_PREP,
-  POS_PRON,
-  POS_VERB,
-} from '../../../models/english_word_problem';
 import { ErrorMessage } from 'components';
 
 import 'App.css';
 
-const toDsiplayText = (pos: number): string => {
-  switch (pos) {
-    case POS_ADJ:
-      return '形容詞';
-    case POS_ADV:
-      return '副詞';
-    case POS_CONJ:
-      return '接続詞';
-    case POS_DET:
-      return '限定詞';
-    case POS_MODAL:
-      return '動詞';
-    case POS_NOUN:
-      return '名詞';
-    case POS_PREP:
-      return '前置詞';
-    case POS_PRON:
-      return '代名詞';
-    case POS_VERB:
-      return '動詞';
-    default:
-      return '';
-  }
-};
-
-export const EnglishWordProblemReadOnly: React.FC<EnglishWordProblemReadOnlyProps> = (
-  props: EnglishWordProblemReadOnlyProps
+export const EnglishSentenceProblemReadOnly: React.FC<EnglishSentenceProblemReadOnlyProps> = (
+  props: EnglishSentenceProblemReadOnlyProps
 ) => {
   const dispatch = useAppDispatch();
   const problem = props.problem;
@@ -77,9 +41,6 @@ export const EnglishWordProblemReadOnly: React.FC<EnglishWordProblemReadOnlyProp
         <Grid columns={2}>
           <Grid.Row>
             <Grid.Column>
-              <Header component="h2" className="border-bottom g-mb-15">
-                {toDsiplayText(problem.properties['pos'])}
-              </Header>
             </Grid.Column>
             <Grid.Column>
               <Header component="h2" className="border-bottom g-mb-15">
@@ -115,7 +76,7 @@ export const EnglishWordProblemReadOnly: React.FC<EnglishWordProblemReadOnlyProp
   );
 };
 
-type EnglishWordProblemReadOnlyProps = {
+type EnglishSentenceProblemReadOnlyProps = {
   workbookId: number;
   problem: ProblemModel;
   // getAudio: (

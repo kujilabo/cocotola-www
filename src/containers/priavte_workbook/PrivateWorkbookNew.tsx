@@ -19,7 +19,7 @@ import 'App.css';
 
 const problemTypeOptions = [
   { key: 'word', text: '単語', value: 'english_word' },
-  { key: 'phrase', text: '文章', value: 'english_phrase' },
+  { key: 'phrase', text: '文章', value: 'english_sentence' },
   { key: 'template', text: 'テンプレート', value: 'template' },
 ];
 

@@ -52,3 +52,7 @@ export class EnglishWordProblemModel extends ProblemModel {
     this.sentence = sentence;
   }
 }
+
+export const EnglishWordProblemTypeId = 'english_word';
+export const EnglishPhraseProblemTypeId = 'english_phrase';
+export const TemplateProblemTypeId = 'template';
