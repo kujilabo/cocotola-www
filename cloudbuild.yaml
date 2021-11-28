@@ -16,7 +16,7 @@ steps:
       - |
         echo "$$SSH_KEY" >> /root/.ssh/id_rsa
         chmod 400 /root/.ssh/id_rsa
-        cp known_hosts.github /root/.ssh/known_hosts
+        ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
     volumes:
       - name: "ssh"
         path: /root/.ssh
@@ -68,9 +68,9 @@ steps:
       - "gcr.io/cocotola/cocotola-www=gcr.io/$PROJECT_ID/cocotola-www:$SHORT_SHA"
     env:
       - "APPLY=false"
-      - "CLOUDSDK_COMPUTE_ZONE=asia-northeast1-a"
-      - "CLOUDSDK_CONTAINER_CLUSTER=k8s-cluster"
-      - "GCLOUD_PROJECT=cocotola"
+      - 'CLOUDSDK_COMPUTE_ZONE=asia-northeast1-c'
+      - 'CLOUDSDK_CONTAINER_CLUSTER=cocotola-001'
+      - 'GCLOUD_PROJECT=cocotola-001'
 
   - name: "gcr.io/cloud-builders/git"
     dir: "kujilabo-manifests"
@@ -97,8 +97,7 @@ steps:
 
 availableSecrets:
   secretManager:
-    - versionName: projects/$PROJECT_ID/secrets/cocotola-github/versions/latest
-      env: "SSH_KEY"
-
+    - versionName: projects/$PROJECT_ID/secrets/github_deploy_key/versions/latest
+      env: 'SSH_KEY'
 images:
   - "gcr.io/$PROJECT_ID/cocotola-www"
