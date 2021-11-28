@@ -33,8 +33,8 @@
     "yup": "^0.32.9"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "jest",
     "eject": "react-scripts eject",
     "eslint": "eslint src/**/*.{ts,tsx}",
