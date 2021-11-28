@@ -28,6 +28,9 @@ jobs:
           reporter: github-pr-review
           locale: 'US'
           fail_on_error: true
+          path: |
+            public
+            src
 
   yamllint:
     name: runner / yamllint
