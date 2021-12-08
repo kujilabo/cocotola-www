@@ -23,7 +23,7 @@ import problemEditReducer from 'features/problem_edit';
 import problemViewReducer from 'features/problem_view';
 import problemRemoveReducer from 'features/problem_remove';
 import problemImportReducer from 'features/problem_import';
-import studyProblemIdsReducer from 'features/study_problem_ids';
+import recordbookReducer from 'features/recordbook';
 import audioReducer from 'features/audio';
 import { ProblemFactory } from 'containers/workbook/problem/ProblemFactory';
 import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/problem/EnglishWordProblem';
@@ -50,7 +50,7 @@ export const rootReducer = combineReducers({
   problemView: problemViewReducer,
   problemRemove: problemRemoveReducer,
   problemImport: problemImportReducer,
-  studyProblemIds: studyProblemIdsReducer,
+  recordbook: recordbookReducer,
   audio: audioReducer,
 });
 

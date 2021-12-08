@@ -3,9 +3,9 @@ import { useParams } from 'react-router-dom';
 
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { getWorkbook, selectWorkbook } from 'features/workbook_view';
+import { findWorkbook, selectWorkbook } from 'features/workbook_view';
 import { findProblems } from 'features/problem_list';
-import { findStudyProblemIds } from 'features/study_problem_ids';
+import { findRecordbook } from 'features/recordbook';
 import 'App.css';
 
 type ParamTypes = {
@@ -17,11 +17,13 @@ export function WorkbookStudy() {
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => { return; };
+  const emptyFunction = () => {
+    return;
+  };
 
   useEffect(() => {
     dispatch(
-      getWorkbook({
+      findWorkbook({
         param: { id: +_workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
@@ -43,10 +45,12 @@ export function WorkbookStudy() {
 
   useEffect(() => {
     dispatch(
-      findStudyProblemIds({
-        workbookId: +_workbookId,
+      findRecordbook({
+        param: {
+          workbookId: +_workbookId,
+          studyType: _studyType,
+        },
         postSuccessProcess: () => {
-          console.log('success');
           const now = new Date();
           const ts = now.toISOString();
           dispatch(problemFactory.initProblemStudy(workbook.problemType)(ts));
@@ -59,7 +63,7 @@ export function WorkbookStudy() {
   if (+_workbookId !== workbook.id) {
     return <div>loading</div>;
   } else if (errorMessage !== '') {
-    return <div>{errorMessage}</div>;
+    return <div>{errorMessage}xx</div>;
   }
   return problemFactory.createProblemStudy(workbook.problemType, _studyType);
 }

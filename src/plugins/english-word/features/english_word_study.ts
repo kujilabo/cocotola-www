@@ -1,16 +1,21 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
-import { RootState } from '../../../app/store';
+import { RootState } from 'app/store';
+import { RecordbookModel } from 'models/recordbook';
 
 export interface EnglishWordState {
   status: number;
   ts: string;
-  problemIds: number[];
+  recordbook: RecordbookModel;
 }
+const defaultRecordbook = {
+  id: 0,
+  results: [],
+};
 const initialState: EnglishWordState = {
   status: 0,
   ts: '',
-  problemIds: [],
+  recordbook: defaultRecordbook,
 };
 export const englishWordSlice = createSlice({
   name: 'english_word',
@@ -21,9 +26,12 @@ export const englishWordSlice = createSlice({
       state.status = 1;
       state.ts = action.payload;
     },
-    setProblemIds: (state, action: PayloadAction<number[]>) => {
-      console.log('setProblemIds', action.payload);
-      state.problemIds = [...action.payload];
+    setEnglishWordRecordbook: (
+      state,
+      action: PayloadAction<RecordbookModel>
+    ) => {
+      console.log('setEnglishWordRecordbook', action.payload);
+      state.recordbook = action.payload;
     },
     setEnglishWordStatus: (state, action: PayloadAction<number>) => {
       state.status = action.payload;
@@ -31,14 +39,18 @@ export const englishWordSlice = createSlice({
   },
 });
 
-export const { initEnglishWordStatus, setProblemIds, setEnglishWordStatus } =
-  englishWordSlice.actions;
+export const {
+  initEnglishWordStatus,
+  setEnglishWordRecordbook,
+  setEnglishWordStatus,
+} = englishWordSlice.actions;
 
 export const selectEnglishWordStatus = (state: RootState): number =>
   state.englishWord.status;
 
-export const selectEnglishWordProblemIds = (state: RootState): number[] =>
-  state.englishWord.problemIds;
+export const selectEnglishWordRecordbook = (
+  state: RootState
+): RecordbookModel => state.englishWord.recordbook;
 
 export const selectTs = (state: RootState): string => state.englishWord.ts;
 

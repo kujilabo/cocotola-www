@@ -3,68 +3,76 @@ import { useParams } from 'react-router-dom';
 import { Card, Container, Divider, Header } from 'semantic-ui-react';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import {
-  AudioButton,
-  ErrorMessage,
-} from 'components';
+import { AudioButton, ErrorMessage } from 'components';
 
 import { selectWorkbook } from 'features/workbook_view';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
 import {
-  setProblemIds,
+  setEnglishWordRecordbook,
   selectTs,
-  selectEnglishWordProblemIds,
+  selectEnglishWordRecordbook,
 } from '../../../../features/english_word_study';
-import { selectProblemIds } from 'features/study_problem_ids';
+import { selectRecordbook } from 'features/recordbook';
 import { selectProblemMap } from 'features/problem_list';
-import { getAudio } from 'features/audio';
+import { getAudio, selectAudioViewLoading } from 'features/audio';
 import { AppBreadcrumbLink } from 'components/AppBreadcrumb';
 import 'App.css';
 
 type ParamTypes = {
   _workbookId: string;
 };
-export const EnglishWordMemorizationQuestion: React.FC<EnglishWordMemorizationQuestionProps> = (
-  props: EnglishWordMemorizationQuestionProps
-) => {
+export const EnglishWordMemorizationQuestion: React.FC<
+  EnglishWordMemorizationQuestionProps
+> = (props: EnglishWordMemorizationQuestionProps) => {
   const { _workbookId } = useParams<ParamTypes>();
   const workbook = useAppSelector(selectWorkbook);
-  const problemIds = useAppSelector(selectProblemIds);
+  const recordbook = useAppSelector(selectRecordbook);
   const problemMap = useAppSelector(selectProblemMap);
-  const englishWordProblemIds = useAppSelector(selectEnglishWordProblemIds);
+  const audioViewLoading = useAppSelector(selectAudioViewLoading);
+  const englishWordRecordbook = useAppSelector(selectEnglishWordRecordbook);
   const ts = useAppSelector(selectTs);
+  // const ts = '';
   const dispatch = useAppDispatch();
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => { return; };
-  useEffect(() => {
-    console.log('english word init', problemIds);
-    dispatch(setProblemIds(problemIds));
+  const emptyFunction = () => {
     return;
-  }, [dispatch, ts, problemIds]);
+  };
+  useEffect(() => {
+    console.log('english word init', recordbook);
+    dispatch(setEnglishWordRecordbook(recordbook));
+    return;
+  }, [dispatch, ts, recordbook]);
 
-  if (englishWordProblemIds.length === 0) {
-    return (<div></div>);
+  if (englishWordRecordbook.results.length === 0) {
+    return <div></div>;
   }
-  const problemId = englishWordProblemIds[0];
+  const problemId = englishWordRecordbook.results[0].problemId;
   const problem = problemMap[problemId];
+
+  // const playAudio = (value: string) => {
+  //   const audio = new Audio('data:audio/wav;base64,' + value);
+  //   audio.play();
+  // };
   const loadAndPlay = (postFunc: (value: string) => void) => {
-    dispatch(getAudio({
-      param: {
-        id: problem.properties['audioId'],
-        updatedAt: problem.updatedAt,
-        postFunc: postFunc
-      },
-      postSuccessProcess: emptyFunction,
-      postFailureProcess: setErrorMessage
-    }));
+    dispatch(
+      getAudio({
+        param: {
+          id: problem.properties['audioId'],
+          updatedAt: problem.updatedAt,
+        },
+        postFunc: postFunc,
+        postSuccessProcess: emptyFunction,
+        postFailureProcess: setErrorMessage,
+      })
+    );
   };
 
-  console.log('englishWordProblemIds', englishWordProblemIds);
+  console.log('englishWordRecordbook', englishWordRecordbook);
   console.log('problemId', problemId);
   console.log('problem', problem);
   console.log('problemMap', problemMap);
   if (!problem) {
-    return (<div>undefined</div>);
+    return <div>undefined</div>;
   }
   return (
     <Container fluid>
@@ -77,14 +85,13 @@ export const EnglishWordMemorizationQuestion: React.FC<EnglishWordMemorizationQu
       <Divider hidden />
       <Card className="full-width">
         <Card.Content>
-          <Header component="h2">
-          </Header>
+          <Header component="h2"></Header>
         </Card.Content>
         <Card.Content>
           <Header component="h2">{problem.properties['text']}</Header>
         </Card.Content>
         <Card.Content>
-          <AudioButton loadAndPlay={loadAndPlay} />
+          <AudioButton loadAndPlay={loadAndPlay} disabled={audioViewLoading} />
           {/* <StandardButton onClick={() => props.selfCheck('a')} value="Check" /> */}
         </Card.Content>
       </Card>

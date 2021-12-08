@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  ActionCreatorWithPayload,
-  Reducer,
-} from '@reduxjs/toolkit';
+import { ActionCreatorWithPayload, Reducer } from '@reduxjs/toolkit';
 
 import { CustomProblem } from 'containers/workbook/problem/CustomProblem';
 import { ProblemModel } from 'models/problem';
@@ -78,11 +75,15 @@ export class EnglishWordProblem extends CustomProblem {
 
   createProblemStudy(studyType: string): React.ReactElement {
     if (studyType === 'memorization') {
-      return <EnglishWordMemorization breadcrumbLinks={
-        [
-          { url: '/app/private/workbook', text: 'My Workbooks' },
-        ]
-      } workbookUrl={'/app/private/workbook/'} />;
+      console.log('createProblemStudy.memorization');
+      return (
+        <EnglishWordMemorization
+          breadcrumbLinks={[
+            { url: '/app/private/workbook', text: 'My Workbooks' },
+          ]}
+          workbookUrl={'/app/private/workbook/'}
+        />
+      );
     } else {
       // return <EnglishWordDictation />;
       return <div>xxx</div>;

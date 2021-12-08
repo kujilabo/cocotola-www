@@ -45,9 +45,9 @@ const toDsiplayText = (pos: number): string => {
   }
 };
 
-export const EnglishWordProblemReadWrite: React.FC<EnglishWordProblemReadWriteProps> = (
-  props: EnglishWordProblemReadWriteProps
-) => {
+export const EnglishWordProblemReadWrite: React.FC<
+  EnglishWordProblemReadWriteProps
+> = (props: EnglishWordProblemReadWriteProps) => {
   const workbookId = props.workbookId;
   const problemId = props.problem.id;
   const problemVersion = props.problem.version;
@@ -60,19 +60,21 @@ export const EnglishWordProblemReadWrite: React.FC<EnglishWordProblemReadWritePr
   //   audio.play();
   // };
   const onRemoveButtonClick = () => {
-    dispatch(removeProblem({
-      param: {
-        workbookId: workbookId,
-        problemId: problemId,
-        version: problemVersion,
-      },
-      postSuccessProcess: () => history.push(props.baseWorkbookPath),
-      postFailureProcess: (error: string) => setErrorMessage(error),
-    }));
+    dispatch(
+      removeProblem({
+        param: {
+          workbookId: workbookId,
+          problemId: problemId,
+          version: problemVersion,
+        },
+        postSuccessProcess: () => history.push(props.baseWorkbookPath),
+        postFailureProcess: (error: string) => setErrorMessage(error),
+      })
+    );
   };
 
   return (
-    <Card className="full-width">
+    <Card>
       <Card.Content>
         <Card.Header>{props.problem.properties['text']}</Card.Header>
       </Card.Content>
@@ -108,14 +110,14 @@ export const EnglishWordProblemReadWrite: React.FC<EnglishWordProblemReadWritePr
             basic
             color="teal"
             onClick={() =>
-            // props.getAudio(
-            //   props.problem.properties['audioId'],
-            //   props.problem.updatedAt,
-            //   playAudio
-            // )
-            {
-              return;
-            }
+              // props.getAudio(
+              //   props.problem.properties['audioId'],
+              //   props.problem.updatedAt,
+              //   playAudio
+              // )
+              {
+                return;
+              }
             }
           >
             Play

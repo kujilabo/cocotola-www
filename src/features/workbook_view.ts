@@ -18,13 +18,13 @@ export type WorkbookViewArg = {
   postFailureProcess: (error: string) => void;
 };
 
-type WorkbookViewReult = {
+type WorkbookViewResult = {
   param: WorkbookViewParameter;
   response: WorkbookModel;
 };
 
-export const getWorkbook = createAsyncThunk<
-  WorkbookViewReult,
+export const findWorkbook = createAsyncThunk<
+  WorkbookViewResult,
   WorkbookViewArg,
   {
     dispatch: AppDispatch;
@@ -32,14 +32,11 @@ export const getWorkbook = createAsyncThunk<
   }
 >('workbook/view', async (arg: WorkbookViewArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.id}`;
-  console.log('accessToken1');
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
     .then((resp) => {
-      console.log('accessToken1');
       const { accessToken } = thunkAPI.getState().auth;
-      console.log('accessToken', accessToken);
       return axios
         .get(url, {
           headers: {
@@ -54,7 +51,7 @@ export const getWorkbook = createAsyncThunk<
           const result = {
             param: arg.param,
             response: response,
-          } as WorkbookViewReult;
+          } as WorkbookViewResult;
           return result;
         })
         .catch((err: Error) => {
@@ -93,16 +90,16 @@ export const workbookViewSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getWorkbook.pending, (state) => {
+      .addCase(findWorkbook.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getWorkbook.fulfilled, (state, action) => {
+      .addCase(findWorkbook.fulfilled, (state, action) => {
         console.log('workbook', action.payload.response);
         state.loading = false;
         state.failed = false;
         state.workbook = action.payload.response;
       })
-      .addCase(getWorkbook.rejected, (state, action) => {
+      .addCase(findWorkbook.rejected, (state, action) => {
         console.log('rejected', action);
         state.loading = false;
         state.failed = true;

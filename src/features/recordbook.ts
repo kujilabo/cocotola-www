@@ -4,31 +4,35 @@ import axios from 'axios';
 import { refreshAccessToken } from './auth';
 import { RootState, AppDispatch } from '../app/store';
 import { extractErrorMessage } from './base';
+import { RecordbookModel } from 'models/recordbook';
 
-const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
+const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/study/workbook`;
 
-// Find problem id list
-export type StudyProblemIdsSearchArg = {
+// Find recordbook
+export type RecordbookViewParameter = {
   workbookId: number;
+  studyType: string;
+};
+export type RecordbookViewArg = {
+  param: RecordbookViewParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
-type StudyProblemIdsSearchResponse = {
-  results: number[];
-};
-type StudyProblemIdsSearchResult = {
-  response: StudyProblemIdsSearchResponse;
+
+type RecordbookViewResult = {
+  param: RecordbookViewParameter;
+  response: RecordbookModel;
 };
 
-export const findStudyProblemIds = createAsyncThunk<
-  StudyProblemIdsSearchResult,
-  StudyProblemIdsSearchArg,
+export const findRecordbook = createAsyncThunk<
+  RecordbookViewResult,
+  RecordbookViewArg,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->('problem_id/list', async (arg: StudyProblemIdsSearchArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.workbookId}/problem_ids`;
+>('recordbook/view', async (arg: RecordbookViewArg, thunkAPI) => {
+  const url = `${baseUrl}/${arg.param.workbookId}/study_type/${arg.param.studyType}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -43,11 +47,11 @@ export const findStudyProblemIds = createAsyncThunk<
           data: {},
         })
         .then((resp) => {
-          const response = resp.data as StudyProblemIdsSearchResponse;
+          const response = resp.data as RecordbookModel;
           arg.postSuccessProcess();
           const result = {
             response: response,
-          } as StudyProblemIdsSearchResult;
+          } as RecordbookViewResult;
           return result;
         })
         .catch((err: Error) => {
@@ -58,36 +62,40 @@ export const findStudyProblemIds = createAsyncThunk<
     });
 });
 
-export interface studyProblemIdsState {
+export interface recordbookState {
   value: number;
   loading: boolean;
   failed: boolean;
-  problemIds: number[];
+  recordbook: RecordbookModel;
 }
 
-const initialState: studyProblemIdsState = {
+const defaultRecordbook = {
+  id: 0,
+  results: [],
+};
+const initialState: recordbookState = {
   value: 0,
   loading: false,
   failed: false,
-  problemIds: [],
+  // recordbook: [new RecordbookModel(0, [])],
+  recordbook: defaultRecordbook,
 };
 
-export const studyProblemIdsSlice = createSlice({
+export const recordbookSlice = createSlice({
   name: 'problem_ids',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(findStudyProblemIds.pending, (state) => {
+      .addCase(findRecordbook.pending, (state) => {
         state.loading = true;
       })
-      .addCase(findStudyProblemIds.fulfilled, (state, action) => {
+      .addCase(findRecordbook.fulfilled, (state, action) => {
         state.loading = false;
         state.failed = false;
-        state.problemIds = action.payload.response.results;
-        console.log('problemIds', state.problemIds);
+        state.recordbook = action.payload.response;
       })
-      .addCase(findStudyProblemIds.rejected, (state, action) => {
+      .addCase(findRecordbook.rejected, (state, action) => {
         state.loading = false;
         state.failed = true;
       });
@@ -95,12 +103,12 @@ export const studyProblemIdsSlice = createSlice({
 });
 
 export const selectProblemListLoading = (state: RootState) =>
-  state.studyProblemIds.loading;
+  state.recordbook.loading;
 
 export const selectProblemListFailed = (state: RootState) =>
-  state.studyProblemIds.failed;
+  state.recordbook.failed;
 
-export const selectProblemIds = (state: RootState) =>
-  state.studyProblemIds.problemIds;
+export const selectRecordbook = (state: RootState) =>
+  state.recordbook.recordbook;
 
-export default studyProblemIdsSlice.reducer;
+export default recordbookSlice.reducer;
