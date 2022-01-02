@@ -8,35 +8,35 @@ import { RootState, AppDispatch } from '../app/store';
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
 // Update problem
-export type EditProblemParameter = {
+export type ProblemUpdateParameter = {
+  workbookId: number;
+  problemId: number;
   number: number;
   problemType: string;
   properties: { [key: string]: string };
 };
-export type EditProblemArg = {
-  workbookId: number;
-  problemId: number;
-  param: EditProblemParameter;
+export type ProblemUpdateArg = {
+  param: ProblemUpdateParameter;
   postSuccessProcess: (id: number) => void;
   postFailureProcess: (error: string) => void;
 };
-type EditProblemResponse = {
+type ProblemUpdateResponse = {
   id: number;
 };
-type EditProblemResult = {
-  param: EditProblemParameter;
-  response: EditProblemResponse;
+type ProblemUpdateResult = {
+  param: ProblemUpdateParameter;
+  response: ProblemUpdateResponse;
 };
 
 export const updateProblem = createAsyncThunk<
-  EditProblemResult,
-  EditProblemArg,
+  ProblemUpdateResult,
+  ProblemUpdateArg,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->('problem/edit', async (arg: EditProblemArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.workbookId}/problem/${arg.problemId}`;
+>('problem/update', async (arg: ProblemUpdateArg, thunkAPI) => {
+  const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -50,12 +50,12 @@ export const updateProblem = createAsyncThunk<
           },
         })
         .then((resp) => {
-          const response = resp.data as EditProblemResponse;
+          const response = resp.data as ProblemUpdateResponse;
           arg.postSuccessProcess(response.id);
           const result = {
             param: arg.param,
             response: response,
-          } as EditProblemResult;
+          } as ProblemUpdateResult;
           return result;
         })
         .catch((err: Error) => {
@@ -66,18 +66,18 @@ export const updateProblem = createAsyncThunk<
     });
 });
 
-export interface ProblemEditState {
+export interface ProblemUpdateState {
   value: number;
   loading: boolean;
 }
 
-const initialState: ProblemEditState = {
+const initialState: ProblemUpdateState = {
   value: 0,
   loading: false,
 };
 
-export const problemEditSlice = createSlice({
-  name: 'problem_edit',
+export const problemUpdateSlice = createSlice({
+  name: 'problem_update',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -95,6 +95,6 @@ export const problemEditSlice = createSlice({
 });
 
 export const selectProblemEditLoading = (state: RootState) =>
-  state.problemEdit.loading;
+  state.problemUpdate.loading;
 
-export default problemEditSlice.reducer;
+export default problemUpdateSlice.reducer;

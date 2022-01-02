@@ -2,7 +2,7 @@ import React from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { Breadcrumb, Segment } from 'semantic-ui-react';
-import { createMedia } from "@artsy/fresnel";
+import { createMedia } from '@artsy/fresnel';
 
 import 'App.css';
 
@@ -21,16 +21,18 @@ const AppMedia = createMedia({
     tablet: 768,
     computer: 992,
     largeScreen: 1200,
-    widescreen: 1920
-  }
+    widescreen: 1920,
+  },
 });
 const { Media } = AppMedia;
 
-
-export const AppBreadcrumb = (props: { links: AppBreadcrumbLink[], text: string }): React.ReactElement => {
+export const AppBreadcrumb = (props: {
+  links: AppBreadcrumbLink[];
+  text: string;
+}): React.ReactElement => {
   const history = useHistory();
 
-  console.log('links', props.links);
+  // onsole.log('links', props.links);
 
   const breadcrumb = (
     <Breadcrumb size="large">

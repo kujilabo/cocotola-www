@@ -19,7 +19,7 @@ import workbookListReducer from 'features/workbook_list';
 import workbookViewReducer from 'features/workbook_view';
 import problemListReducer from 'features/problem_list';
 import problemNewReducer from 'features/problem_new';
-import problemEditReducer from 'features/problem_edit';
+import problemUpdateReducer from 'features/problem_edit';
 import problemViewReducer from 'features/problem_view';
 import problemRemoveReducer from 'features/problem_remove';
 import problemImportReducer from 'features/problem_import';
@@ -46,7 +46,7 @@ export const rootReducer = combineReducers({
   workbookView: workbookViewReducer,
   problemList: problemListReducer,
   problemNew: problemNewReducer,
-  problemEdit: problemEditReducer,
+  problemUpdate: problemUpdateReducer,
   problemView: problemViewReducer,
   problemRemove: problemRemoveReducer,
   problemImport: problemImportReducer,

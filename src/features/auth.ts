@@ -29,12 +29,12 @@ export const refreshAccessToken = createAsyncThunk<
     state: RootState;
   }
 >('auth/refresh_token', async (arg: RefreshTokenParameter, thunkAPI) => {
-  console.log('refreshAccessToken1 aaa');
+  // console.log('refreshAccessToken1 aaa');
   const { accessToken } = thunkAPI.getState().auth;
   const accessTokenExpired = tokenExpired(accessToken);
-  console.log('refreshAccessToken1 bbb');
+  // console.log('refreshAccessToken1 bbb');
   if (!accessTokenExpired) {
-    console.log('not expired');
+    // console.log('not expired');
     return new Promise(function (resolve) {
       const response: RefreshTokenResponse = { accessToken: accessToken };
       resolve(response);
@@ -43,16 +43,16 @@ export const refreshAccessToken = createAsyncThunk<
   const x = await axios
     .post(process.env.REACT_APP_BACKEND + '/v1/auth/refresh_token', arg)
     .then((resp: any) => {
-      console.log('refreshAccessToken1 a');
+      // console.log('refreshAccessToken1 a');
       const response = resp.data as RefreshTokenResponse;
       return response;
     })
     .catch((err: Error) => {
-      console.log('refreshAccessToken1 b');
+      // console.log('refreshAccessToken1 b');
       const errorMessage = extractErrorMessage(err);
       return thunkAPI.rejectWithValue(errorMessage);
     });
-  console.log('refreshAccessToken1 ccc');
+  // console.log('refreshAccessToken1 ccc');
   return x;
 });
 

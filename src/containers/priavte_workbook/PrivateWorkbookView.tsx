@@ -57,11 +57,11 @@ const WorkbookProblems: React.FC<WorkbookProblemsProps> = (
       props.workbook.id,
       p
     );
-    console.log(card);
+    // onsole.log(card);
 
-    return <Grid.Column>{card}</Grid.Column>;
+    return <Grid.Column key={p.id}>{card}</Grid.Column>;
   });
-  console.log(problems);
+  // onsole.log(problems);
   return <>{problems}</>;
 };
 
@@ -87,6 +87,7 @@ export function PrivateWorkbookView(): React.ReactElement {
   const problemsTotalCount = useAppSelector(selectProblemsTotalCount);
   const workbook = useAppSelector(selectWorkbook);
   const [errorMessage, setErrorMessage] = useState('');
+  const [pageNo, setPageNo] = useState(1);
   const emptyFunction = () => {
     return;
   };
@@ -95,10 +96,15 @@ export function PrivateWorkbookView(): React.ReactElement {
     data: PaginationProps
   ) => {
     const pageNo = +(data.activePage || 0);
-    console.log(pageNo);
+    setPageNo(pageNo);
   };
 
+  // when workbookId is changed
   useEffect(() => {
+    // reset pageNo
+    setPageNo(1);
+
+    // findWorkbook
     dispatch(
       findWorkbook({
         param: { id: workbookId },
@@ -106,11 +112,16 @@ export function PrivateWorkbookView(): React.ReactElement {
         postFailureProcess: setErrorMessage,
       })
     );
+  }, [dispatch, workbookId]);
+
+  // when workbookId or pageNo is changed
+  useEffect(() => {
+    //
     dispatch(
       findProblems({
-        workbookId: workbookId,
         param: {
-          pageNo: 1,
+          workbookId: workbookId,
+          pageNo: pageNo,
           pageSize: 10,
           keyword: '',
         },
@@ -118,7 +129,7 @@ export function PrivateWorkbookView(): React.ReactElement {
         postFailureProcess: setErrorMessage,
       })
     );
-  }, [dispatch, workbookId]);
+  }, [dispatch, workbookId, pageNo]);
 
   if (workbookViewFailed || problemListFailed) {
     return <div></div>;
@@ -131,6 +142,8 @@ export function PrivateWorkbookView(): React.ReactElement {
   if (mod !== 0) {
     totalPages++;
   }
+  // onsole.log('problemsTotalCount', problemsTotalCount);
+  // onsole.log('totalPages', totalPages);
 
   return (
     <Container fluid>

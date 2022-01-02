@@ -8,6 +8,57 @@ import { RecordbookModel } from 'models/recordbook';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/study/workbook`;
 
+// Set record
+export type RecordAddParameter = {
+  workbookId: number;
+  studyType: string;
+  problemId: number;
+  result: boolean;
+};
+export type RecordAddArg = {
+  param: RecordAddParameter;
+  postSuccessProcess: () => void;
+  postFailureProcess: (error: string) => void;
+};
+type RecordAddResult = {
+  param: RecordAddParameter;
+};
+export const addRecord = createAsyncThunk<
+  RecordAddResult,
+  RecordAddArg,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>('record/add', async (arg: RecordAddArg, thunkAPI) => {
+  const url = `${baseUrl}/${arg.param.workbookId}/study_type/${arg.param.studyType}/prbolem/${arg.param.problemId}`;
+  const { refreshToken } = thunkAPI.getState().auth;
+  return await thunkAPI
+    .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
+    .then((resp) => {
+      const { accessToken } = thunkAPI.getState().auth;
+      return axios
+        .post(url, arg.param, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((resp) => {
+          arg.postSuccessProcess();
+          const result = {
+            param: arg.param,
+          } as RecordAddResult;
+          return result;
+        })
+        .catch((err: Error) => {
+          const errorMessage = extractErrorMessage(err);
+          arg.postFailureProcess(errorMessage);
+          return thunkAPI.rejectWithValue(errorMessage);
+        });
+    });
+});
+
 // Find recordbook
 export type RecordbookViewParameter = {
   workbookId: number;
@@ -69,9 +120,9 @@ export interface recordbookState {
   recordbook: RecordbookModel;
 }
 
-const defaultRecordbook = {
+const defaultRecordbook: RecordbookModel = {
   id: 0,
-  results: [],
+  records: [],
 };
 const initialState: recordbookState = {
   value: 0,
@@ -102,10 +153,10 @@ export const recordbookSlice = createSlice({
   },
 });
 
-export const selectProblemListLoading = (state: RootState) =>
+export const selectRecordbookViewLoading = (state: RootState) =>
   state.recordbook.loading;
 
-export const selectProblemListFailed = (state: RootState) =>
+export const selectRecordbookViewFailed = (state: RootState) =>
   state.recordbook.failed;
 
 export const selectRecordbook = (state: RootState) =>

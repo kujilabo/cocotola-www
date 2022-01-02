@@ -105,24 +105,28 @@ export const EnglishWordProblemReadWrite: React.FC<
         </Grid>
       </Card.Content>
       <Card.Content extra>
-        <Button.Group floated="left">
-          <Button
-            basic
-            color="teal"
-            onClick={() =>
-              // props.getAudio(
-              //   props.problem.properties['audioId'],
-              //   props.problem.updatedAt,
-              //   playAudio
-              // )
-              {
-                return;
+        {props.problem.properties['audioId'] === '0' ? (
+          <Button.Group floated="left">
+            <Button
+              basic
+              color="teal"
+              onClick={() =>
+                // props.getAudio(
+                //   props.problem.properties['audioId'],
+                //   props.problem.updatedAt,
+                //   playAudio
+                // )
+                {
+                  return;
+                }
               }
-            }
-          >
-            Play
-          </Button>
-        </Button.Group>
+            >
+              Play
+            </Button>
+          </Button.Group>
+        ) : (
+          <div />
+        )}
         <Button.Group floated="right">
           <Button
             basic
