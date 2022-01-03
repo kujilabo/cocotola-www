@@ -3,9 +3,19 @@ import { useParams } from 'react-router-dom';
 
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { getWorkbook, selectWorkbook } from 'features/workbook_view';
-import { findProblems } from 'features/problem_list';
-import { findStudyProblemIds } from 'features/study_problem_ids';
+import {
+  findWorkbook,
+  selectWorkbook,
+  selectWorkbookViewLoading,
+} from 'features/workbook_view';
+import {
+  findAllProblems,
+  selectProblemListLoading,
+} from 'features/problem_list';
+import {
+  findRecordbook,
+  selectRecordbookViewLoading,
+} from 'features/recordbook';
 import 'App.css';
 
 type ParamTypes = {
@@ -16,24 +26,27 @@ export function WorkbookStudy() {
   const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
+  const workbookViewLoading = useAppSelector(selectWorkbookViewLoading);
+  const problemListLoading = useAppSelector(selectProblemListLoading);
+  const recordbookViewLoading = useAppSelector(selectRecordbookViewLoading);
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => { return; };
+  const emptyFunction = () => {
+    return;
+  };
 
+  // find workbook and all problems
   useEffect(() => {
     dispatch(
-      getWorkbook({
+      findWorkbook({
         param: { id: +_workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
       })
     );
     dispatch(
-      findProblems({
-        workbookId: +_workbookId,
+      findAllProblems({
         param: {
-          pageNo: 1,
-          pageSize: 10,
-          keyword: '',
+          workbookId: +_workbookId,
         },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
@@ -41,12 +54,15 @@ export function WorkbookStudy() {
     );
   }, [dispatch, _workbookId]);
 
+  // find recordbook
   useEffect(() => {
     dispatch(
-      findStudyProblemIds({
-        workbookId: +_workbookId,
+      findRecordbook({
+        param: {
+          workbookId: +_workbookId,
+          studyType: _studyType,
+        },
         postSuccessProcess: () => {
-          console.log('success');
           const now = new Date();
           const ts = now.toISOString();
           dispatch(problemFactory.initProblemStudy(workbook.problemType)(ts));
@@ -56,10 +72,11 @@ export function WorkbookStudy() {
     );
   }, [dispatch, _workbookId, workbook.problemType]);
 
-  if (+_workbookId !== workbook.id) {
+  if (workbookViewLoading || problemListLoading || recordbookViewLoading) {
     return <div>loading</div>;
   } else if (errorMessage !== '') {
     return <div>{errorMessage}</div>;
   }
+  console.log('WorkbookStudy');
   return problemFactory.createProblemStudy(workbook.problemType, _studyType);
 }

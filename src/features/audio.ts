@@ -12,21 +12,21 @@ const baseUrl = process.env.REACT_APP_BACKEND + '/v1/audio';
 export type AudioViewParameter = {
   id: number;
   updatedAt: string;
-  postFunc: (value: string) => void;
 };
 export type AudioViewArg = {
   param: AudioViewParameter;
+  postFunc: (value: string) => void;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
 
-type AudioViewReult = {
+type AudioViewResult = {
   param: AudioViewParameter;
   response: AudioModel;
 };
 
 export const getAudio = createAsyncThunk<
-  AudioViewReult,
+  AudioViewResult,
   AudioViewArg,
   {
     dispatch: AppDispatch;
@@ -34,14 +34,11 @@ export const getAudio = createAsyncThunk<
   }
 >('audio/view', async (arg: AudioViewArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.id}`;
-  console.log('accessToken1');
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
     .then((resp) => {
-      console.log('accessToken1');
       const { accessToken } = thunkAPI.getState().auth;
-      console.log('accessToken', accessToken);
       return axios
         .get(url, {
           headers: {
@@ -53,10 +50,11 @@ export const getAudio = createAsyncThunk<
         .then((resp) => {
           const response = resp.data as AudioModel;
           arg.postSuccessProcess();
+          arg.postFunc(response.audioContent);
           const result = {
             param: arg.param,
             response: response,
-          } as AudioViewReult;
+          } as AudioViewResult;
           return result;
         })
         .catch((err: Error) => {
@@ -76,7 +74,9 @@ export interface AudioViewState {
 
 const defaultAudio = {
   id: 0,
-  content: '',
+  lang: '',
+  text: '',
+  audioContent: '',
 };
 const initialState: AudioViewState = {
   value: 0,
@@ -95,7 +95,6 @@ export const audioSlice = createSlice({
         state.loading = true;
       })
       .addCase(getAudio.fulfilled, (state, action) => {
-        console.log('audio', action.payload.response);
         state.loading = false;
         state.failed = false;
         state.audio = action.payload.response;

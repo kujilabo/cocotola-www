@@ -36,9 +36,9 @@ export function PrivateRoute(props: RouteProps): JSX.Element {
   }
 
   useEffect(() => {
-    console.log('failed', failed)
+    // onsole.log('failed', failed)
     if (!failed && !loading && isAccessTokenExpired && !isRefreshTokenExpired) {
-      console.log('xxx refreshAccessToken');
+      // onsole.log('xxx refreshAccessToken');
       dispatch(
         refreshAccessToken({
           refreshToken: refreshToken,

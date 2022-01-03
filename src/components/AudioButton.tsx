@@ -1,7 +1,8 @@
 import React from 'react';
-import { Button } from 'semantic-ui-react';
+import { Button, Icon } from 'semantic-ui-react';
 
 type AudioButtonProps = {
+  disabled?: boolean;
   loadAndPlay: (postFunc: (value: string) => void) => void;
 };
 
@@ -13,8 +14,15 @@ export const AudioButton: React.FC<AudioButtonProps> = (
     audio.play();
   };
   return (
-    <Button basic color="teal" onClick={() => props.loadAndPlay(playAudio)}>
-      Play
-    </Button>
+    <Button.Group floated="right" icon>
+      <Button
+        basic
+        color="teal"
+        disabled={props.disabled}
+        onClick={() => props.loadAndPlay(playAudio)}
+      >
+        <Icon name="play" />
+      </Button>
+    </Button.Group>
   );
 };

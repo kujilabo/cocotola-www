@@ -11,7 +11,7 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
-  getWorkbook,
+  findWorkbook,
   selectWorkbookViewLoading,
   selectWorkbookListFailed,
   selectWorkbook,
@@ -46,19 +46,23 @@ type WorkbookMenuProps = {
   initStudy: (s: string) => void;
 };
 
+//  <Grid.Column mobile={16} tablet={8} computer={8} widescreen={4}>
 const WorkbookProblems: React.FC<WorkbookProblemsProps> = (
   props: WorkbookProblemsProps
 ) => {
-  const problems = props.problems.map((p) =>
-    props.problemFactory.createReadWriteProblem(
+  const problems = props.problems.map((p) => {
+    const card = props.problemFactory.createReadWriteProblem(
       p.problemType,
       p.id,
       props.workbook.id,
       p
-    )
-  );
-  console.log(problems);
-  return <div>{problems}</div>;
+    );
+    // onsole.log(card);
+
+    return <Grid.Column key={p.id}>{card}</Grid.Column>;
+  });
+  // onsole.log(problems);
+  return <>{problems}</>;
 };
 
 type WorkbookProblemsProps = {
@@ -83,28 +87,41 @@ export function PrivateWorkbookView(): React.ReactElement {
   const problemsTotalCount = useAppSelector(selectProblemsTotalCount);
   const workbook = useAppSelector(selectWorkbook);
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => { return; };
+  const [pageNo, setPageNo] = useState(1);
+  const emptyFunction = () => {
+    return;
+  };
   const onPageChange = (
     e: React.MouseEvent<HTMLAnchorElement>,
     data: PaginationProps
   ) => {
     const pageNo = +(data.activePage || 0);
-    console.log(pageNo);
+    setPageNo(pageNo);
   };
 
+  // when workbookId is changed
   useEffect(() => {
+    // reset pageNo
+    setPageNo(1);
+
+    // findWorkbook
     dispatch(
-      getWorkbook({
+      findWorkbook({
         param: { id: workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
       })
     );
+  }, [dispatch, workbookId]);
+
+  // when workbookId or pageNo is changed
+  useEffect(() => {
+    //
     dispatch(
       findProblems({
-        workbookId: workbookId,
         param: {
-          pageNo: 1,
+          workbookId: workbookId,
+          pageNo: pageNo,
           pageSize: 10,
           keyword: '',
         },
@@ -112,7 +129,7 @@ export function PrivateWorkbookView(): React.ReactElement {
         postFailureProcess: setErrorMessage,
       })
     );
-  }, [dispatch, workbookId]);
+  }, [dispatch, workbookId, pageNo]);
 
   if (workbookViewFailed || problemListFailed) {
     return <div></div>;
@@ -125,6 +142,8 @@ export function PrivateWorkbookView(): React.ReactElement {
   if (mod !== 0) {
     totalPages++;
   }
+  // onsole.log('problemsTotalCount', problemsTotalCount);
+  // onsole.log('totalPages', totalPages);
 
   return (
     <Container fluid>
@@ -148,29 +167,28 @@ export function PrivateWorkbookView(): React.ReactElement {
           </Grid.Column>
           {problems.length > 0 ? (
             <Grid.Column mobile={16} tablet={16} computer={13}>
-              <Grid.Row>
-                <Grid.Column>
-                  <WorkbookProblems
-                    problemFactory={problemFactory}
-                    workbook={workbook}
-                    problems={problems || []}
+              <Grid doubling columns={3}>
+                {/* <Grid.Row> */}
+                <WorkbookProblems
+                  problemFactory={problemFactory}
+                  workbook={workbook}
+                  problems={problems || []}
                   // getAudio={getAudio}
                   // removeProblem={removeProblem}
-                  />
-                  <Divider hidden />
-                </Grid.Column>
-              </Grid.Row>
-              <Grid.Row>
-                <Grid.Column>
-                  <Container textAlign="center">
-                    <Pagination
-                      onPageChange={onPageChange}
-                      defaultActivePage={1}
-                      totalPages={totalPages}
-                    />
-                  </Container>
-                </Grid.Column>
-              </Grid.Row>
+                />
+                {/* </Grid.Row> */}
+                <Grid.Row>
+                  <Grid.Column>
+                    <Container textAlign="center">
+                      <Pagination
+                        onPageChange={onPageChange}
+                        defaultActivePage={1}
+                        totalPages={totalPages}
+                      />
+                    </Container>
+                  </Grid.Column>
+                </Grid.Row>
+              </Grid>
             </Grid.Column>
           ) : (
             <Grid.Column mobile={16} tablet={16} computer={13}>

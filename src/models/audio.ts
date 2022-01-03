@@ -1,8 +1,12 @@
 export class AudioModel {
   id: number;
-  content: string;
-  constructor(id: number, content: string) {
+  lang: string;
+  text: string;
+  audioContent: string;
+  constructor(id: number, lang: string, text: string, audioContent: string) {
     this.id = id;
-    this.content = content;
+    this.lang = lang;
+    this.text = text;
+    this.audioContent = audioContent;
   }
 }

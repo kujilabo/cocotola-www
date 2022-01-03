@@ -11,12 +11,12 @@ const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
 // Find problems
 export type ProblemSearchParameter = {
+  workbookId: number;
   pageNo: number;
   pageSize: number;
   keyword: string;
 };
 export type ProblemSearchArg = {
-  workbookId: number;
   param: ProblemSearchParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
@@ -38,7 +38,7 @@ export const findProblems = createAsyncThunk<
     state: RootState;
   }
 >('problem/list', async (arg: ProblemSearchArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.workbookId}/problem/search`;
+  const url = `${baseUrl}/${arg.param.workbookId}/problem/search`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -58,6 +58,61 @@ export const findProblems = createAsyncThunk<
             param: arg.param,
             response: response,
           } as ProblemSearchResult;
+          return result;
+        })
+        .catch((err: Error) => {
+          const errorMessage = extractErrorMessage(err);
+          arg.postFailureProcess(errorMessage);
+          return thunkAPI.rejectWithValue(errorMessage);
+        });
+    });
+});
+
+// Find all problems
+export type ProblemFindAllParameter = {
+  workbookId: number;
+};
+export type ProblemFindAllArg = {
+  param: ProblemFindAllParameter;
+  postSuccessProcess: () => void;
+  postFailureProcess: (error: string) => void;
+};
+type ProblemFindAllResponse = {
+  results: ProblemModel[];
+  totalCount: number;
+};
+type ProblemFindAllResult = {
+  param: ProblemFindAllParameter;
+  response: ProblemFindAllResponse;
+};
+export const findAllProblems = createAsyncThunk<
+  ProblemFindAllResult,
+  ProblemFindAllArg,
+  {
+    dispatch: AppDispatch;
+    state: RootState;
+  }
+>('problem/find_all', async (arg: ProblemFindAllArg, thunkAPI) => {
+  const url = `${baseUrl}/${arg.param.workbookId}/problem/find_all`;
+  const { refreshToken } = thunkAPI.getState().auth;
+  return await thunkAPI
+    .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
+    .then(() => {
+      const { accessToken } = thunkAPI.getState().auth;
+      return axios
+        .post(url, arg.param, {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((resp) => {
+          const response = resp.data as ProblemSearchResponse;
+          arg.postSuccessProcess();
+          const result = {
+            param: arg.param,
+            response: response,
+          } as ProblemFindAllResult;
           return result;
         })
         .catch((err: Error) => {
@@ -92,6 +147,7 @@ export const problemListSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // findProblems
       .addCase(findProblems.pending, (state) => {
         state.loading = true;
       })
@@ -107,6 +163,25 @@ export const problemListSlice = createSlice({
         state.problemsTotalCount = action.payload.response.totalCount;
       })
       .addCase(findProblems.rejected, (state) => {
+        state.loading = false;
+        state.failed = true;
+      })
+      // findAllProblems
+      .addCase(findAllProblems.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(findAllProblems.fulfilled, (state, action) => {
+        state.loading = false;
+        state.failed = false;
+        state.problems = action.payload.response.results;
+        state.problemMap = {};
+        for (let i = 0; i < state.problems.length; i++) {
+          const problem = state.problems[i];
+          state.problemMap[problem.id] = problem;
+        }
+        state.problemsTotalCount = action.payload.response.totalCount;
+      })
+      .addCase(findAllProblems.rejected, (state) => {
         state.loading = false;
         state.failed = true;
       })

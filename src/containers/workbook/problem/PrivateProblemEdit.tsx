@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { getWorkbook, selectWorkbook } from 'features/workbook_view';
+import { findWorkbook, selectWorkbook } from 'features/workbook_view';
 import { getProblem, selectProblem } from 'features/problem_view';
 import 'App.css';
 
@@ -19,11 +19,13 @@ export function PrivateProblemEdit(): React.ReactElement {
   const workbook = useAppSelector(selectWorkbook);
   const problem = useAppSelector(selectProblem);
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => { return; };
+  const emptyFunction = () => {
+    return;
+  };
 
   useEffect(() => {
     dispatch(
-      getWorkbook({
+      findWorkbook({
         param: { id: workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
@@ -42,7 +44,7 @@ export function PrivateProblemEdit(): React.ReactElement {
   }, [dispatch, workbookId, problemId]);
 
   if (errorMessage !== '') {
-    return <div>{errorMessage}</div>
+    return <div>{errorMessage}</div>;
   }
   if (+_workbookId !== workbook.id) {
     return <div>loading</div>;

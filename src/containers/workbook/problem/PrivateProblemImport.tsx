@@ -10,7 +10,7 @@ import {
   StandardButton,
 } from 'components';
 import {
-  getWorkbook,
+  findWorkbook,
   selectWorkbookViewLoading,
   selectWorkbookListFailed,
   selectWorkbook,
@@ -20,7 +20,7 @@ import 'App.css';
 
 type ParamTypes = {
   _workbookId: string;
-}
+};
 export function PrivateProblemImport(): React.ReactElement {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
@@ -31,7 +31,9 @@ export function PrivateProblemImport(): React.ReactElement {
   const [file, setFile] = useState({});
   // const [fileName, setFileName] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => { return; };
+  const emptyFunction = () => {
+    return;
+  };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e == null || e.target == null || e.target.files == null) {
       return;
@@ -61,10 +63,9 @@ export function PrivateProblemImport(): React.ReactElement {
     );
   };
 
-
   useEffect(() => {
     dispatch(
-      getWorkbook({
+      findWorkbook({
         param: { id: workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
@@ -103,4 +104,4 @@ export function PrivateProblemImport(): React.ReactElement {
       <ErrorMessage message={errorMessage} />
     </Container>
   );
-};
+}

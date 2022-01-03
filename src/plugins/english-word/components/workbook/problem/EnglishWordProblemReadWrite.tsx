@@ -45,9 +45,9 @@ const toDsiplayText = (pos: number): string => {
   }
 };
 
-export const EnglishWordProblemReadWrite: React.FC<EnglishWordProblemReadWriteProps> = (
-  props: EnglishWordProblemReadWriteProps
-) => {
+export const EnglishWordProblemReadWrite: React.FC<
+  EnglishWordProblemReadWriteProps
+> = (props: EnglishWordProblemReadWriteProps) => {
   const workbookId = props.workbookId;
   const problemId = props.problem.id;
   const problemVersion = props.problem.version;
@@ -60,19 +60,21 @@ export const EnglishWordProblemReadWrite: React.FC<EnglishWordProblemReadWritePr
   //   audio.play();
   // };
   const onRemoveButtonClick = () => {
-    dispatch(removeProblem({
-      param: {
-        workbookId: workbookId,
-        problemId: problemId,
-        version: problemVersion,
-      },
-      postSuccessProcess: () => history.push(props.baseWorkbookPath),
-      postFailureProcess: (error: string) => setErrorMessage(error),
-    }));
+    dispatch(
+      removeProblem({
+        param: {
+          workbookId: workbookId,
+          problemId: problemId,
+          version: problemVersion,
+        },
+        postSuccessProcess: () => history.push(props.baseWorkbookPath),
+        postFailureProcess: (error: string) => setErrorMessage(error),
+      })
+    );
   };
 
   return (
-    <Card className="full-width">
+    <Card>
       <Card.Content>
         <Card.Header>{props.problem.properties['text']}</Card.Header>
       </Card.Content>
@@ -103,24 +105,28 @@ export const EnglishWordProblemReadWrite: React.FC<EnglishWordProblemReadWritePr
         </Grid>
       </Card.Content>
       <Card.Content extra>
-        <Button.Group floated="left">
-          <Button
-            basic
-            color="teal"
-            onClick={() =>
-            // props.getAudio(
-            //   props.problem.properties['audioId'],
-            //   props.problem.updatedAt,
-            //   playAudio
-            // )
-            {
-              return;
-            }
-            }
-          >
-            Play
-          </Button>
-        </Button.Group>
+        {props.problem.properties['audioId'] === '0' ? (
+          <Button.Group floated="left">
+            <Button
+              basic
+              color="teal"
+              onClick={() =>
+                // props.getAudio(
+                //   props.problem.properties['audioId'],
+                //   props.problem.updatedAt,
+                //   playAudio
+                // )
+                {
+                  return;
+                }
+              }
+            >
+              Play
+            </Button>
+          </Button.Group>
+        ) : (
+          <div />
+        )}
         <Button.Group floated="right">
           <Button
             basic

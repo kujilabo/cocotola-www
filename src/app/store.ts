@@ -19,11 +19,11 @@ import workbookListReducer from 'features/workbook_list';
 import workbookViewReducer from 'features/workbook_view';
 import problemListReducer from 'features/problem_list';
 import problemNewReducer from 'features/problem_new';
-import problemEditReducer from 'features/problem_edit';
+import problemUpdateReducer from 'features/problem_edit';
 import problemViewReducer from 'features/problem_view';
 import problemRemoveReducer from 'features/problem_remove';
 import problemImportReducer from 'features/problem_import';
-import studyProblemIdsReducer from 'features/study_problem_ids';
+import recordbookReducer from 'features/recordbook';
 import audioReducer from 'features/audio';
 import { ProblemFactory } from 'containers/workbook/problem/ProblemFactory';
 import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/problem/EnglishWordProblem';
@@ -46,11 +46,11 @@ export const rootReducer = combineReducers({
   workbookView: workbookViewReducer,
   problemList: problemListReducer,
   problemNew: problemNewReducer,
-  problemEdit: problemEditReducer,
+  problemUpdate: problemUpdateReducer,
   problemView: problemViewReducer,
   problemRemove: problemRemoveReducer,
   problemImport: problemImportReducer,
-  studyProblemIds: studyProblemIdsReducer,
+  recordbook: recordbookReducer,
   audio: audioReducer,
 });
 
