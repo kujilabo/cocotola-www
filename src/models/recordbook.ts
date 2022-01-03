@@ -1,11 +1,13 @@
 export class RecordModel {
   problemId: number;
   level: number;
+  memorized: boolean;
   isReview: boolean;
   reviewLevel: number;
-  constructor(problemId: number, level: number) {
+  constructor(problemId: number, level: number, memorized: boolean) {
     this.problemId = problemId;
     this.level = level;
+    this.memorized = memorized;
     this.isReview = false;
     this.reviewLevel = 0;
   }

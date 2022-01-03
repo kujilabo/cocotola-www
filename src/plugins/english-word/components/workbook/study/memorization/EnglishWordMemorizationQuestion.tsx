@@ -13,9 +13,11 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { AppBreadcrumbLink, AudioButton, ErrorMessage } from 'components';
-
 import { selectWorkbook } from 'features/workbook_view';
 import { addRecord } from 'features/recordbook';
+import { selectRecordbook } from 'features/recordbook';
+import { selectProblemMap } from 'features/problem_list';
+import { getAudio, selectAudioViewLoading } from 'features/audio';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
 import {
   setEnglishWordRecordbook,
@@ -27,9 +29,6 @@ import {
   ENGLISH_WORD_STATUS_ANSWER,
   ENGLISH_WORD_STATUS_INIT,
 } from '../../../../features/english_word_study';
-import { selectRecordbook } from 'features/recordbook';
-import { selectProblemMap } from 'features/problem_list';
-import { getAudio, selectAudioViewLoading } from 'features/audio';
 import 'App.css';
 
 type ParamTypes = {
@@ -97,13 +96,15 @@ export const EnglishWordMemorizationQuestion: React.FC<
           studyType: _studyType,
           problemId: problemId,
           result: result,
+          memorized: false,
         },
-        postSuccessProcess: emptyFunction,
+        postSuccessProcess: () => {
+          dispatch(setEnglishWordRecord(result));
+          dispatch(setEnglishWordStatus(ENGLISH_WORD_STATUS_ANSWER));
+        },
         postFailureProcess: setErrorMessage,
       })
     );
-    dispatch(setEnglishWordRecord(result));
-    dispatch(setEnglishWordStatus(ENGLISH_WORD_STATUS_ANSWER));
   };
   const onYesButtonClick = () => setRecord(true);
   const onNoButtonClick = () => setRecord(false);
@@ -173,7 +174,7 @@ export const EnglishWordMemorizationQuestion: React.FC<
       {englishWordRecordbook.records.map((record) => {
         return (
           <div key={record.problemId}>
-            {record.problemId} : {record.level}
+            {record.problemId} : {record.level} : {record.reviewLevel}
           </div>
         );
       })}
