@@ -11,31 +11,30 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { AppBreadcrumbLink, AudioButton, ErrorMessage } from 'components';
-
+import { selectWorkbook } from 'features/workbook_view';
+import { selectProblemMap } from 'features/problem_list';
+import { addRecord } from 'features/recordbook';
+import { getAudio, selectAudioViewLoading } from 'features/audio';
+import { emptyFunction } from 'utils/util';
 import {
-  // setEnglishWordRecordbook,
-  // selectTs,
   selectEnglishWordRecordbook,
   nextEnglishWordProblem,
 } from '../../../../features/english_word_study';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
-import { selectWorkbook } from 'features/workbook_view';
-import { selectProblemMap } from 'features/problem_list';
-import { getAudio, selectAudioViewLoading } from 'features/audio';
 import { toDsiplayText } from '../../../../utils/util';
 
 import 'App.css';
 
 type ParamTypes = {
   _workbookId: string;
+  _studyType: string;
 };
 export const EnglishWordMemorizationAnswer: React.FC<
   EnglishWordMemorizationAnswerProps
 > = (props: EnglishWordMemorizationAnswerProps) => {
-  const { _workbookId } = useParams<ParamTypes>();
+  const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
-  // const recordbook = useAppSelector(selectRecordbook);
   const problemMap = useAppSelector(selectProblemMap);
   const audioViewLoading = useAppSelector(selectAudioViewLoading);
   const englishWordRecordbook = useAppSelector(selectEnglishWordRecordbook);
@@ -44,9 +43,6 @@ export const EnglishWordMemorizationAnswer: React.FC<
   if (englishWordRecordbook.records.length === 0) {
     return <div></div>;
   }
-  const emptyFunction = () => {
-    return;
-  };
   const problemId = englishWordRecordbook.records[0].problemId;
   const problem = problemMap[problemId];
 
@@ -65,7 +61,19 @@ export const EnglishWordMemorizationAnswer: React.FC<
   };
   const onNextButtonClick = () => {
     if (memorized) {
-      // dispatch()
+      dispatch(
+        addRecord({
+          param: {
+            workbookId: +_workbookId,
+            studyType: _studyType,
+            problemId: problemId,
+            result: true,
+            memorized: false,
+          },
+          postSuccessProcess: emptyFunction,
+          postFailureProcess: setErrorMessage,
+        })
+      );
     }
     dispatch(nextEnglishWordProblem());
   };
@@ -115,7 +123,7 @@ export const EnglishWordMemorizationAnswer: React.FC<
       {englishWordRecordbook.records.map((record) => {
         return (
           <div key={record.problemId}>
-            {record.problemId} : {record.level}
+            {record.problemId} : {record.level} : {record.reviewLevel}
           </div>
         );
       })}

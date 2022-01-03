@@ -8,12 +8,13 @@ import { RecordbookModel } from 'models/recordbook';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/study/workbook`;
 
-// Set record
+// Add record
 export type RecordAddParameter = {
   workbookId: number;
   studyType: string;
   problemId: number;
   result: boolean;
+  memorized: boolean;
 };
 export type RecordAddArg = {
   param: RecordAddParameter;
@@ -23,6 +24,7 @@ export type RecordAddArg = {
 type RecordAddResult = {
   param: RecordAddParameter;
 };
+
 export const addRecord = createAsyncThunk<
   RecordAddResult,
   RecordAddArg,
@@ -31,7 +33,7 @@ export const addRecord = createAsyncThunk<
     state: RootState;
   }
 >('record/add', async (arg: RecordAddArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.param.workbookId}/study_type/${arg.param.studyType}/prbolem/${arg.param.problemId}`;
+  const url = `${baseUrl}/${arg.param.workbookId}/study_type/${arg.param.studyType}/problem/${arg.param.problemId}/record`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -60,29 +62,29 @@ export const addRecord = createAsyncThunk<
 });
 
 // Find recordbook
-export type RecordbookViewParameter = {
+export type RecordbookFindParameter = {
   workbookId: number;
   studyType: string;
 };
-export type RecordbookViewArg = {
-  param: RecordbookViewParameter;
+export type RecordbookFindArg = {
+  param: RecordbookFindParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
 
-type RecordbookViewResult = {
-  param: RecordbookViewParameter;
+type RecordbookFindResult = {
+  param: RecordbookFindParameter;
   response: RecordbookModel;
 };
 
 export const findRecordbook = createAsyncThunk<
-  RecordbookViewResult,
-  RecordbookViewArg,
+  RecordbookFindResult,
+  RecordbookFindArg,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->('recordbook/view', async (arg: RecordbookViewArg, thunkAPI) => {
+>('recordbook/view', async (arg: RecordbookFindArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/study_type/${arg.param.studyType}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -102,7 +104,7 @@ export const findRecordbook = createAsyncThunk<
           arg.postSuccessProcess();
           const result = {
             response: response,
-          } as RecordbookViewResult;
+          } as RecordbookFindResult;
           return result;
         })
         .catch((err: Error) => {

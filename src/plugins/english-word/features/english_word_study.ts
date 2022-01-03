@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { RootState } from 'app/store';
-// import { recordbookSlice } from 'features/recordbook';
 import { RecordbookModel } from 'models/recordbook';
 
 export const ENGLISH_WORD_STATUS_INIT = 1;
@@ -26,13 +25,13 @@ const removeProblemFromRecordbook = (
       level: result.level,
       isReview: false,
       reviewLevel: 0,
+      memorized: false,
     });
     console.log('loop result', newRecordbook.records);
   }
   return newRecordbook;
 };
 // Set result
-
 export interface EnglishWordState {
   status: number;
   ts: string;
@@ -63,22 +62,44 @@ export const englishWordSlice = createSlice({
       action: PayloadAction<RecordbookModel>
     ) => {
       console.log('setEnglishWordRecordbook', action.payload);
-      state.recordbook = action.payload;
+      const recordbook = action.payload;
+      const records = [];
+      for (const record of recordbook.records) {
+        if (record.memorized) {
+          continue;
+        }
+
+        records.push({
+          problemId: record.problemId,
+          level: record.level,
+          isReview: false,
+          reviewLevel: 0,
+          memorized: false,
+        });
+      }
+      state.recordbook.records = records;
+      state.status = ENGLISH_WORD_STATUS_QUESTION;
+      console.log('setEnglishWordRecordbook', state.recordbook);
     },
     setEnglishWordStatus: (state, action: PayloadAction<number>) => {
       console.log('setEnglishWordStatus', state.status);
       state.status = action.payload;
     },
     nextEnglishWordProblem: (state) => {
-      console.log('oldRecordbook', state);
-      console.log('oldRecordbook', state.recordbook);
-      console.log('state.recordbook.id', state.recordbook.id);
+      // onsole.log('oldRecordbook', state);
+      // onsole.log('oldRecordbook', state.recordbook);
+      // onsole.log('state.recordbook.id', state.recordbook.id);
       const record = state.recordbook.records[0];
-      console.log('result', record);
-      console.log('length', state.recordbook.records.length);
+      // onsole.log('result', record);
+      // onsole.log('length', state.recordbook.records.length);
       const problemId = record.problemId;
-      console.log('problemId', problemId);
+      // onsole.log('problemId', problemId);
       let level = record.level;
+
+      const newRecordbook: RecordbookModel = removeProblemFromRecordbook(
+        state.recordbook,
+        problemId
+      );
 
       if (record.isReview) {
         const newIndexList = [3, 10, 15, 20, 0];
@@ -89,11 +110,6 @@ export const englishWordSlice = createSlice({
         }
         record.reviewLevel = Math.min(record.reviewLevel, 4);
         record.reviewLevel = Math.max(record.reviewLevel, 0);
-
-        const newRecordbook: RecordbookModel = removeProblemFromRecordbook(
-          state.recordbook,
-          problemId
-        );
 
         if (record.reviewLevel !== 4) {
           const newIndex = Math.min(
@@ -106,35 +122,30 @@ export const englishWordSlice = createSlice({
             level,
             isReview: false,
             reviewLevel: 0,
+            memorized: false,
           });
         }
-        state.recordbook = newRecordbook;
-        state.status = ENGLISH_WORD_STATUS_QUESTION;
-        console.log('newRecordbook', newRecordbook);
       } else {
-        const newRecordbook: RecordbookModel = removeProblemFromRecordbook(
-          state.recordbook,
-          problemId
-        );
-
         if (!state.lastResult) {
           record.isReview = true;
           if (state.recordbook.records[0].isReview !== true) {
             alert('error');
           }
           const newIndex = Math.min(3, state.recordbook.records.length - 1);
+          // Add problem to records
           newRecordbook.records.splice(newIndex, 0, {
             problemId,
             level,
             isReview: false,
             reviewLevel: 0,
+            memorized: false,
           });
         }
-
-        state.recordbook = newRecordbook;
-        state.status = ENGLISH_WORD_STATUS_QUESTION;
-        console.log('newRecordbook', newRecordbook);
       }
+
+      state.recordbook = newRecordbook;
+      state.status = ENGLISH_WORD_STATUS_QUESTION;
+      console.log('newRecordbook', newRecordbook);
     },
     setEnglishWordRecord: (state, action: PayloadAction<boolean>) => {
       state.lastResult = action.payload;

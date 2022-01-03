@@ -10,35 +10,35 @@ import { removeProblem } from './problem_remove';
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
 // Find problems
-export type ProblemSearchParameter = {
+export type ProblemFindParameter = {
   workbookId: number;
   pageNo: number;
   pageSize: number;
   keyword: string;
 };
-export type ProblemSearchArg = {
-  param: ProblemSearchParameter;
+export type ProblemFindArg = {
+  param: ProblemFindParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
-type ProblemSearchResponse = {
+type ProblemFindResponse = {
   results: ProblemModel[];
   totalCount: number;
 };
-type ProblemSearchResult = {
-  param: ProblemSearchParameter;
-  response: ProblemSearchResponse;
+type ProblemFindResult = {
+  param: ProblemFindParameter;
+  response: ProblemFindResponse;
 };
 
 export const findProblems = createAsyncThunk<
-  ProblemSearchResult,
-  ProblemSearchArg,
+  ProblemFindResult,
+  ProblemFindArg,
   {
     dispatch: AppDispatch;
     state: RootState;
   }
->('problem/list', async (arg: ProblemSearchArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.param.workbookId}/problem/search`;
+>('problem/list', async (arg: ProblemFindArg, thunkAPI) => {
+  const url = `${baseUrl}/${arg.param.workbookId}/problem/find`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -52,12 +52,12 @@ export const findProblems = createAsyncThunk<
           },
         })
         .then((resp) => {
-          const response = resp.data as ProblemSearchResponse;
+          const response = resp.data as ProblemFindResponse;
           arg.postSuccessProcess();
           const result = {
             param: arg.param,
             response: response,
-          } as ProblemSearchResult;
+          } as ProblemFindResult;
           return result;
         })
         .catch((err: Error) => {
@@ -107,7 +107,7 @@ export const findAllProblems = createAsyncThunk<
           },
         })
         .then((resp) => {
-          const response = resp.data as ProblemSearchResponse;
+          const response = resp.data as ProblemFindAllResponse;
           arg.postSuccessProcess();
           const result = {
             param: arg.param,
