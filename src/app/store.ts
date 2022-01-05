@@ -17,6 +17,8 @@ import routerReducer from 'features/router';
 import workbookNewReducer from 'features/workbook_new';
 import workbookListReducer from 'features/workbook_list';
 import workbookViewReducer from 'features/workbook_view';
+import workbookUpdateReducer from 'features/workbook_update';
+import workbookRemoveReducer from 'features/workbook_remove';
 import problemListReducer from 'features/problem_list';
 import problemNewReducer from 'features/problem_new';
 import problemUpdateReducer from 'features/problem_edit';
@@ -43,7 +45,9 @@ export const rootReducer = combineReducers({
 
   workbookList: workbookListReducer,
   workbookNew: workbookNewReducer,
+  workbookUpdate: workbookUpdateReducer,
   workbookView: workbookViewReducer,
+  workbookRemove: workbookRemoveReducer,
   problemList: problemListReducer,
   problemNew: problemNewReducer,
   problemUpdate: problemUpdateReducer,
@@ -83,3 +87,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
+export type BaseThunkApiConfig = {
+  dispatch: AppDispatch;
+  state: RootState;
+};

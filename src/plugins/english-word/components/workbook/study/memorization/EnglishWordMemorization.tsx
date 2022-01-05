@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { useAppSelector } from 'app/hooks';
-import { AppBreadcrumbLink } from 'components';
+import { AppBreadcrumbLink, AppDimmer } from 'components';
 import { EnglishWordMemorizationInit } from './EnglishWordMemorizationInit';
 import { EnglishWordMemorizationQuestion } from './EnglishWordMemorizationQuestion';
 import { EnglishWordMemorizationAnswer } from './EnglishWordMemorizationAnswer';
@@ -31,7 +31,7 @@ export const EnglishWordMemorization: React.FC<EnglishWordMemorizationProps> = (
         workbookUrl={props.workbookUrl}
       />
     );
-  } else if (status == ENGLISH_WORD_STATUS_ANSWER) {
+  } else if (status === ENGLISH_WORD_STATUS_ANSWER) {
     return (
       <EnglishWordMemorizationAnswer
         breadcrumbLinks={props.breadcrumbLinks}
@@ -40,7 +40,7 @@ export const EnglishWordMemorization: React.FC<EnglishWordMemorizationProps> = (
     );
   } else {
     console.log('status', status);
-    return <div>else</div>;
+    return <AppDimmer />;
   }
 };
 

@@ -1,10 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { RootState, AppDispatch } from '../app/store';
-import { extractErrorMessage } from './base';
-import { ProblemModel } from '../models/problem';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
+import { ProblemModel } from 'models/problem';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/workbook';
 
@@ -27,10 +27,7 @@ type ProblemViewReult = {
 export const getProblem = createAsyncThunk<
   ProblemViewReult,
   ProblemViewArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('problem/view', async (arg: ProblemViewArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -49,11 +46,7 @@ export const getProblem = createAsyncThunk<
         .then((resp) => {
           const response = resp.data as ProblemModel;
           arg.postSuccessProcess();
-          const result = {
-            param: arg.param,
-            response: response,
-          } as ProblemViewReult;
-          return result;
+          return { param: arg.param, response: response } as ProblemViewReult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

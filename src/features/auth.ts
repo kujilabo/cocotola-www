@@ -2,8 +2,8 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 import jwtDecode from 'jwt-decode';
 
-import { RootState, AppDispatch } from 'app/store';
-import { extractErrorMessage } from './base';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { extractErrorMessage } from 'features/base';
 
 // RefreshToken
 type RefreshTokenParameter = {
@@ -24,70 +24,102 @@ export const tokenExpired = (token: string): boolean => {
 export const refreshAccessToken = createAsyncThunk<
   RefreshTokenResponse,
   RefreshTokenParameter,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('auth/refresh_token', async (arg: RefreshTokenParameter, thunkAPI) => {
   // console.log('refreshAccessToken1 aaa');
   const { accessToken } = thunkAPI.getState().auth;
   const accessTokenExpired = tokenExpired(accessToken);
-  // console.log('refreshAccessToken1 bbb');
+  // onsole.log('refreshAccessToken1 bbb');
   if (!accessTokenExpired) {
-    // console.log('not expired');
+    // onsole.log('not expired');
     return new Promise(function (resolve) {
       const response: RefreshTokenResponse = { accessToken: accessToken };
       resolve(response);
     });
   }
-  const x = await axios
+  return await axios
     .post(process.env.REACT_APP_BACKEND + '/v1/auth/refresh_token', arg)
     .then((resp: any) => {
-      // console.log('refreshAccessToken1 a');
+      // onsole.log('refreshAccessToken1 a');
       const response = resp.data as RefreshTokenResponse;
       return response;
     })
     .catch((err: Error) => {
-      // console.log('refreshAccessToken1 b');
+      // onsole.log('refreshAccessToken1 b');
       const errorMessage = extractErrorMessage(err);
       return thunkAPI.rejectWithValue(errorMessage);
     });
-  // console.log('refreshAccessToken1 ccc');
-  return x;
 });
 
-// Callback
-export type CallbackParameter = {
+// Google authorize
+export type GoogleAuthorizeParameter = {
   organizationName: string;
   code: string;
 };
 
-export type CallbackArg = {
-  param: CallbackParameter;
+export type GoogleAuthorizeArg = {
+  param: GoogleAuthorizeParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
 
-type CallbackResponse = {
+type GoogleAuthorizeResponse = {
   accessToken: string;
   refreshToken: string;
 };
 
-export const callback = createAsyncThunk(
-  'auth/callback',
-  async (arg: CallbackArg, thunkAPI) => {
+export const googleAuthorize = createAsyncThunk(
+  'auth/google',
+  async (arg: GoogleAuthorizeArg, thunkAPI) => {
     return await axios
       .post(
         `${process.env.REACT_APP_BACKEND}/v1/auth/google/authorize`,
         arg.param
       )
       .then((resp) => {
-        console.log('callback then');
-        const response = resp.data as CallbackResponse;
-        return response;
+        // onsole.log('callback then');
+        return resp.data as GoogleAuthorizeResponse;
       })
       .catch((err: Error) => {
-        console.log('callback err');
+        // onsole.log('callback err');
+        const errorMessage = extractErrorMessage(err);
+        arg.postFailureProcess(errorMessage);
+        return thunkAPI.rejectWithValue(errorMessage);
+      });
+  }
+);
+
+// Guest authorize
+export type GuestAuthorizeParameter = {
+  organizationName: string;
+  code: string;
+};
+
+export type GuestAuthorizeArg = {
+  param: GuestAuthorizeParameter;
+  postSuccessProcess: () => void;
+  postFailureProcess: (error: string) => void;
+};
+
+type GuestAuthorizeResponse = {
+  accessToken: string;
+  refreshToken: string;
+};
+
+export const guestAuthorize = createAsyncThunk(
+  'auth/guest',
+  async (arg: GuestAuthorizeArg, thunkAPI) => {
+    return await axios
+      .post(
+        `${process.env.REACT_APP_BACKEND}/v1/auth/google/authorize`,
+        arg.param
+      )
+      .then((resp) => {
+        // onsole.log('callback then');
+        return resp.data as GuestAuthorizeResponse;
+      })
+      .catch((err: Error) => {
+        // onsole.log('callback err');
         const errorMessage = extractErrorMessage(err);
         arg.postFailureProcess(errorMessage);
         return thunkAPI.rejectWithValue(errorMessage);
@@ -141,20 +173,37 @@ export const authSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(callback.pending, (state) => {
+      .addCase(googleAuthorize.pending, (state) => {
         state.loading = true;
       })
-      .addCase(callback.fulfilled, (state, action) => {
+      .addCase(googleAuthorize.fulfilled, (state, action) => {
         authSlice.caseReducers.setAccessToken(state, action);
         authSlice.caseReducers.setRefreshToken(state, action);
-        console.log('callback fulfilled');
+        // onsole.log('callback fulfilled');
         state.loading = false;
         state.failed = false;
       })
-      .addCase(callback.rejected, (state, action) => {
+      .addCase(googleAuthorize.rejected, (state, action) => {
         authSlice.caseReducers.resetAccessToken(state);
         authSlice.caseReducers.resetRefreshToken(state);
-        console.log('callback rejected');
+        // onsole.log('callback rejected');
+        state.loading = false;
+        state.failed = true;
+      })
+      .addCase(guestAuthorize.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(guestAuthorize.fulfilled, (state, action) => {
+        authSlice.caseReducers.setAccessToken(state, action);
+        authSlice.caseReducers.setRefreshToken(state, action);
+        // onsole.log('callback fulfilled');
+        state.loading = false;
+        state.failed = false;
+      })
+      .addCase(guestAuthorize.rejected, (state, action) => {
+        authSlice.caseReducers.resetAccessToken(state);
+        authSlice.caseReducers.resetRefreshToken(state);
+        // onsole.log('callback rejected');
         state.loading = false;
         state.failed = true;
       })
@@ -162,13 +211,13 @@ export const authSlice = createSlice({
         state.loading = true;
       })
       .addCase(refreshAccessToken.fulfilled, (state, action) => {
-        console.log('refreshAccessToken1', action);
+        // onsole.log('refreshAccessToken1', action);
         authSlice.caseReducers.setAccessToken(state, action);
         state.loading = false;
         state.failed = false;
       })
       .addCase(refreshAccessToken.rejected, (state, action) => {
-        console.log('rejected', action);
+        // onsole.log('rejected', action);
         authSlice.caseReducers.resetAccessToken(state);
         state.loading = false;
         state.failed = true;

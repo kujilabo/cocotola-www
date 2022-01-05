@@ -16,6 +16,7 @@ export function Login(): React.ReactElement {
     url += 'offline';
     window.location.href = url;
   };
+  const guestAuth = () => {};
 
   return (
     <div>
@@ -23,6 +24,9 @@ export function Login(): React.ReactElement {
       <Container fluid>
         <Button basic color="teal" onClick={googleAuth}>
           Sign in with Google
+        </Button>
+        <Button basic color="teal" onClick={guestAuth}>
+          Sign in as Guest
         </Button>
       </Container>
     </div>

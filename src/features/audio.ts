@@ -2,9 +2,10 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import { refreshAccessToken } from './auth';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, BaseThunkApiConfig } from 'app/store';
 import { extractErrorMessage } from './base';
-import { AudioModel } from '../models/audio';
+import { AudioModel } from 'models/audio';
+import { jsonHeaders } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/audio';
 
@@ -28,10 +29,7 @@ type AudioViewResult = {
 export const getAudio = createAsyncThunk<
   AudioViewResult,
   AudioViewArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('audio/view', async (arg: AudioViewArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.id}`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -40,22 +38,12 @@ export const getAudio = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .get(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          data: {},
-        })
+        .get(url, { headers: jsonHeaders(accessToken), data: {} })
         .then((resp) => {
           const response = resp.data as AudioModel;
           arg.postSuccessProcess();
           arg.postFunc(response.audioContent);
-          const result = {
-            param: arg.param,
-            response: response,
-          } as AudioViewResult;
-          return result;
+          return { param: arg.param, response: response } as AudioViewResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

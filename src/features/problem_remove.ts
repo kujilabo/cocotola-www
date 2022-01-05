@@ -1,9 +1,9 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { extractErrorMessage } from './base';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
@@ -29,10 +29,7 @@ type ProblemRemoveResult = {
 export const removeProblem = createAsyncThunk<
   ProblemRemoveResult,
   ProblemRemoveArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('problem/remove', async (arg: ProblemRemoveArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}?version=${arg.param.version}`;
   const { refreshToken } = thunkAPI.getState().auth;

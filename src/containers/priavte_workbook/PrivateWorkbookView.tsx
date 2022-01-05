@@ -11,8 +11,8 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
-  findWorkbook,
-  selectWorkbookViewLoading,
+  getWorkbook,
+  selectWorkbookGetLoading,
   selectWorkbookListFailed,
   selectWorkbook,
 } from 'features/workbook_view';
@@ -27,6 +27,7 @@ import { AppBreadcrumb, AppDimmer, ErrorMessage } from 'components';
 import { WorkbookModel } from 'models/workbook';
 import { ProblemModel } from 'models/problem';
 import { problemFactory } from 'app/store';
+import { emptyFunction } from 'utils/util';
 import { ProblemFactory } from '../workbook/problem/ProblemFactory';
 import 'App.css';
 
@@ -79,7 +80,7 @@ export function PrivateWorkbookView(): React.ReactElement {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const dispatch = useAppDispatch();
-  const workbookViewLoading = useAppSelector(selectWorkbookViewLoading);
+  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
   const workbookViewFailed = useAppSelector(selectWorkbookListFailed);
   const problemListLoading = useAppSelector(selectProblemListLoading);
   const problemListFailed = useAppSelector(selectProblemListFailed);
@@ -88,9 +89,6 @@ export function PrivateWorkbookView(): React.ReactElement {
   const workbook = useAppSelector(selectWorkbook);
   const [errorMessage, setErrorMessage] = useState('');
   const [pageNo, setPageNo] = useState(1);
-  const emptyFunction = () => {
-    return;
-  };
   const onPageChange = (
     e: React.MouseEvent<HTMLAnchorElement>,
     data: PaginationProps
@@ -106,7 +104,7 @@ export function PrivateWorkbookView(): React.ReactElement {
 
     // findWorkbook
     dispatch(
-      findWorkbook({
+      getWorkbook({
         param: { id: workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
@@ -135,7 +133,7 @@ export function PrivateWorkbookView(): React.ReactElement {
     return <div></div>;
   }
 
-  const loading = workbookViewLoading || problemListLoading;
+  const loading = workbookGetLoading || problemListLoading;
 
   let totalPages = Math.floor(problemsTotalCount / 10);
   const mod = problemsTotalCount % 10;

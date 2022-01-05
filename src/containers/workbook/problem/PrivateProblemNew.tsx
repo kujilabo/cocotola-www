@@ -3,7 +3,8 @@ import { useParams } from 'react-router-dom';
 
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { findWorkbook, selectWorkbook } from 'features/workbook_view';
+import { getWorkbook, selectWorkbook } from 'features/workbook_view';
+import { emptyFunction } from 'utils/util';
 
 import 'App.css';
 
@@ -16,11 +17,10 @@ export function PrivateProblemNew(): JSX.Element {
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = (): void => {};
 
   useEffect(() => {
     dispatch(
-      findWorkbook({
+      getWorkbook({
         param: { id: workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,

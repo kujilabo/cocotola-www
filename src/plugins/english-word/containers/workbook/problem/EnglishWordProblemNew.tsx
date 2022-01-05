@@ -13,7 +13,7 @@ import * as Yup from 'yup';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { selectWorkbook } from 'features/workbook_view';
-import { addProblem } from 'features/problem_new';
+import { addProblem, selectProblemNewLoading } from 'features/problem_new';
 
 import { AppDimmer, ErrorMessage } from 'components';
 import { useDidMount } from 'components/util';
@@ -47,6 +47,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
   const dispatch = useAppDispatch();
   const history = useHistory();
   const workbook = useAppSelector(selectWorkbook);
+  const problemAddLoading = useAppSelector(selectProblemNewLoading);
   const [values, setValues] = useState({
     text: 'pen',
     pos: '99',
@@ -68,7 +69,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
     const { values, isSubmitting } = props;
     return (
       <Form>
-        <Card className="full-width">
+        <Card>
           <Card.Content>
             <Header component="h2">New problem</Header>
           </Card.Content>
@@ -77,7 +78,6 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
               name="text"
               label="Word"
               placeholder="english word"
-              className="full-width"
               errorPrompt
             />
             <Select
@@ -160,7 +160,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
         text={'New problem'}
       />
       <Divider hidden />
-      <InnerFormikForm loading={false} />
+      <InnerFormikForm loading={problemAddLoading} />
       <ErrorMessage message={errorMessage} />
     </Container>
   );

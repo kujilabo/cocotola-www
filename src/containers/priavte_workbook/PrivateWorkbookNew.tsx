@@ -1,19 +1,12 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Button, Card, Container, Divider, Header } from 'semantic-ui-react';
-import {
-  withFormik,
-  FormikBag,
-  FormikProps,
-} from 'formik';
+import { withFormik, FormikBag, FormikProps } from 'formik';
 import { Form, Input, Select } from 'formik-semantic-ui-react';
 import * as Yup from 'yup';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import {
-  addWorkbook,
-  selectWorkbookNewLoading,
-} from 'features/workbook_new';
+import { addWorkbook, selectWorkbookNewLoading } from 'features/workbook_new';
 import { AppDimmer, AppBreadcrumb, ErrorMessage } from 'components';
 import 'App.css';
 
@@ -109,7 +102,8 @@ export function PrivateWorkbookNew() {
       dispatch(
         addWorkbook({
           param: { ...values, spaceKey: 'personal' },
-          postSuccessProcess: (id: number) => history.push('/app/private/workbook'),
+          postSuccessProcess: (id: number) =>
+            history.push('/app/private/workbook'),
           postFailureProcess: setErrorMessage,
         })
       );
