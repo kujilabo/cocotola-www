@@ -11,7 +11,7 @@ import {
 } from 'components';
 import {
   getWorkbook,
-  selectWorkbookViewLoading,
+  selectWorkbookGetLoading,
   selectWorkbookListFailed,
   selectWorkbook,
 } from 'features/workbook_view';
@@ -29,7 +29,7 @@ export function PrivateProblemImport(): React.ReactElement {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const workbook = useAppSelector(selectWorkbook);
-  const workbookViewLoading = useAppSelector(selectWorkbookViewLoading);
+  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
   const workbookViewFailed = useAppSelector(selectWorkbookListFailed);
   const problemImportLoading = useAppSelector(selectProblemImportLoading);
   const dispatch = useAppDispatch();
@@ -79,7 +79,7 @@ export function PrivateProblemImport(): React.ReactElement {
     return <div>failed</div>;
   }
 
-  const loading = workbookViewLoading || problemImportLoading;
+  const loading = workbookGetLoading || problemImportLoading;
 
   return (
     <Container fluid>

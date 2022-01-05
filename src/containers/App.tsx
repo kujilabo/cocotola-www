@@ -9,6 +9,7 @@ import { logout, selectAccessToken } from 'features/auth';
 import { selectRedirectPath } from 'features/router';
 import { PrivateWorkbookList } from 'containers/priavte_workbook/PrivateWorkbookList';
 import { PrivateWorkbookNew } from 'containers/priavte_workbook/PrivateWorkbookNew';
+import { PrivateWorkbookEdit } from 'containers/priavte_workbook/PrivateWorkbookEdit';
 import { PrivateWorkbookView } from 'containers/priavte_workbook/PrivateWorkbookView';
 import { PrivateProblemNew } from 'containers/workbook/problem/PrivateProblemNew';
 import { PrivateProblemEdit } from 'containers/workbook/problem/PrivateProblemEdit';
@@ -75,6 +76,9 @@ export function App(): React.ReactElement {
         </Route>
         <Route exact path="/app/private/workbook/:_workbookId">
           <PrivateWorkbookView />
+        </Route>
+        <Route exact path="/app/private/workbook/:_workbookId/edit">
+          <PrivateWorkbookEdit />
         </Route>
         <Route exact path="/app/private/workbook/:_workbookId/problem/new">
           <PrivateProblemNew />

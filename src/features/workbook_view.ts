@@ -14,7 +14,7 @@ export type WorkbookGetParameter = {
 };
 export type WorkbookGetArg = {
   param: WorkbookGetParameter;
-  postSuccessProcess: () => void;
+  postSuccessProcess: (workbook: WorkbookModel) => void;
   postFailureProcess: (error: string) => void;
 };
 
@@ -44,7 +44,7 @@ export const getWorkbook = createAsyncThunk<
         })
         .then((resp) => {
           const response = resp.data as WorkbookModel;
-          arg.postSuccessProcess();
+          arg.postSuccessProcess(response);
           return { param: arg.param, response: response } as WorkbookGetResult;
         })
         .catch((err: Error) => {
@@ -100,7 +100,7 @@ export const workbookViewSlice = createSlice({
   },
 });
 
-export const selectWorkbookViewLoading = (state: RootState): boolean =>
+export const selectWorkbookGetLoading = (state: RootState): boolean =>
   state.workbookView.loading;
 
 export const selectWorkbookListFailed = (state: RootState): boolean =>

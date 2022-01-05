@@ -18,7 +18,11 @@ export const DangerModal: React.FC<DangerModalProps> = (
     <div>
       <Modal
         size="mini"
-        trigger={<Button negative>{props.triggerValue}</Button>}
+        trigger={
+          <Button type="button" negative>
+            {props.triggerValue}
+          </Button>
+        }
         open={open}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}

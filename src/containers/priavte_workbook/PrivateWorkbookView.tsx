@@ -12,7 +12,7 @@ import {
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
   getWorkbook,
-  selectWorkbookViewLoading,
+  selectWorkbookGetLoading,
   selectWorkbookListFailed,
   selectWorkbook,
 } from 'features/workbook_view';
@@ -80,7 +80,7 @@ export function PrivateWorkbookView(): React.ReactElement {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const dispatch = useAppDispatch();
-  const workbookViewLoading = useAppSelector(selectWorkbookViewLoading);
+  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
   const workbookViewFailed = useAppSelector(selectWorkbookListFailed);
   const problemListLoading = useAppSelector(selectProblemListLoading);
   const problemListFailed = useAppSelector(selectProblemListFailed);
@@ -133,7 +133,7 @@ export function PrivateWorkbookView(): React.ReactElement {
     return <div></div>;
   }
 
-  const loading = workbookViewLoading || problemListLoading;
+  const loading = workbookGetLoading || problemListLoading;
 
   let totalPages = Math.floor(problemsTotalCount / 10);
   const mod = problemsTotalCount % 10;

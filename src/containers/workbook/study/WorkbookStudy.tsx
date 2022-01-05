@@ -6,7 +6,7 @@ import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
   getWorkbook,
   selectWorkbook,
-  selectWorkbookViewLoading,
+  selectWorkbookGetLoading,
 } from 'features/workbook_view';
 import {
   findAllProblems,
@@ -28,7 +28,7 @@ export function WorkbookStudy() {
   const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
-  const workbookViewLoading = useAppSelector(selectWorkbookViewLoading);
+  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
   const problemListLoading = useAppSelector(selectProblemListLoading);
   const recordbookViewLoading = useAppSelector(selectRecordbookViewLoading);
   const [errorMessage, setErrorMessage] = useState('');
@@ -71,7 +71,7 @@ export function WorkbookStudy() {
     );
   }, [dispatch, _workbookId, workbook.problemType]);
 
-  if (workbookViewLoading || problemListLoading || recordbookViewLoading) {
+  if (workbookGetLoading || problemListLoading || recordbookViewLoading) {
     return <AppDimmer />;
   } else if (errorMessage !== '') {
     return <div>{errorMessage}</div>;
