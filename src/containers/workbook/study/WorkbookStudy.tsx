@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
-  findWorkbook,
+  getWorkbook,
   selectWorkbook,
   selectWorkbookViewLoading,
 } from 'features/workbook_view';
@@ -16,7 +16,9 @@ import {
   findRecordbook,
   selectRecordbookViewLoading,
 } from 'features/recordbook';
+import { emptyFunction } from 'utils/util';
 import 'App.css';
+import { AppDimmer } from 'components';
 
 type ParamTypes = {
   _workbookId: string;
@@ -30,14 +32,11 @@ export function WorkbookStudy() {
   const problemListLoading = useAppSelector(selectProblemListLoading);
   const recordbookViewLoading = useAppSelector(selectRecordbookViewLoading);
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => {
-    return;
-  };
 
   // find workbook and all problems
   useEffect(() => {
     dispatch(
-      findWorkbook({
+      getWorkbook({
         param: { id: +_workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
@@ -73,10 +72,10 @@ export function WorkbookStudy() {
   }, [dispatch, _workbookId, workbook.problemType]);
 
   if (workbookViewLoading || problemListLoading || recordbookViewLoading) {
-    return <div>loading</div>;
+    return <AppDimmer />;
   } else if (errorMessage !== '') {
     return <div>{errorMessage}</div>;
   }
-  console.log('WorkbookStudy');
+
   return problemFactory.createProblemStudy(workbook.problemType, _studyType);
 }

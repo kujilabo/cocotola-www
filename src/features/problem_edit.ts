@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { extractErrorMessage } from './base';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
+import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
@@ -31,10 +32,7 @@ type ProblemUpdateResult = {
 export const updateProblem = createAsyncThunk<
   ProblemUpdateResult,
   ProblemUpdateArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('problem/update', async (arg: ProblemUpdateArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -43,20 +41,14 @@ export const updateProblem = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .put(url, arg.param, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .put(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           const response = resp.data as ProblemUpdateResponse;
           arg.postSuccessProcess(response.id);
-          const result = {
+          return {
             param: arg.param,
             response: response,
           } as ProblemUpdateResult;
-          return result;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

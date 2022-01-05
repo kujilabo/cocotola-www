@@ -9,7 +9,7 @@ import { store } from 'app/store';
 import { HealthCheck } from 'containers/HealthCheck';
 import { App } from 'containers/App';
 import { Login } from 'containers/Login';
-import { Callback } from 'containers/Callback';
+import { LoginCallback } from 'containers/LoginCallback';
 import { PrivateRoute } from 'PrivateRoute';
 
 const persistor = persistStore(store);
@@ -21,7 +21,7 @@ const Index = () => (
         <Switch>
           <Route path="/healthcheck" component={HealthCheck} />
           <Route exact path="/app/login" component={Login} />
-          <Route path="/app/callback" component={Callback} />{' '}
+          <Route path="/app/callback" component={LoginCallback} />{' '}
           <PrivateRoute path="/">
             <App />
           </PrivateRoute>

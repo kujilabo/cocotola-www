@@ -1,9 +1,10 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { extractErrorMessage } from './base';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
+import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
@@ -18,17 +19,13 @@ type ProblemImportResponse = {
   id: number;
 };
 type ProblemImportResult = {
-  param: FormData;
   response: ProblemImportResponse;
 };
 
 export const importProblem = createAsyncThunk<
   ProblemImportResult,
   ProblemImportArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('problem/import', async (arg: ProblemImportArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.workbookId}/problem/import`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -37,20 +34,11 @@ export const importProblem = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .post(url, arg.param, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           const response = resp.data as ProblemImportResponse;
           arg.postSuccessProcess(response.id);
-          const result = {
-            param: arg.param,
-            response: response,
-          } as ProblemImportResult;
-          return result;
+          return { response: response } as ProblemImportResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

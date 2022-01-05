@@ -83,3 +83,7 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >;
+export type BaseThunkApiConfig = {
+  dispatch: AppDispatch;
+  state: RootState;
+};

@@ -14,6 +14,7 @@ import { AppBreadcrumb, AppDimmer, ErrorMessage } from 'components';
 import { WorkbookCard } from 'components/workbook/WorkbookCard';
 import { useDidMount } from 'components/util';
 import { WorkbookModel } from 'models/workbook';
+import { emptyFunction } from 'utils/util';
 import 'App.css';
 
 export function PrivateWorkbookList(): React.ReactElement {
@@ -27,9 +28,8 @@ export function PrivateWorkbookList(): React.ReactElement {
   const workbooksMap = useAppSelector(selectWorkbooksMap);
   const [errorMessage, setErrorMessage] = useState('');
   const workbooksLoaded = workbooksLoadedMap[spaceKey] || false;
-  const emptyFunction = () => { return; };
-  console.log('workbooksLoaded', workbooksLoaded);
-  console.log('workbooksLoaded', workbooksLoadedMap);
+  // onsole.log('workbooksLoaded', workbooksLoaded);
+  // onsole.log('workbooksLoaded', workbooksLoadedMap);
 
   useDidMount(() => {
     dispatch(
@@ -46,12 +46,10 @@ export function PrivateWorkbookList(): React.ReactElement {
   });
 
   if (!workbookListFailed && !workbookListLoading && !workbooksLoaded) {
-    console.log('loading');
-    return <div>loading</div>;
+    return <AppDimmer />;
   }
 
   const workbooks = workbooksMap[spaceKey] || [];
-  console.log('props.loading', workbookListLoading);
   return (
     <Container fluid>
       <AppBreadcrumb links={[]} text={'My Workbooks'} />

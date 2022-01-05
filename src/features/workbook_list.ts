@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { RootState, AppDispatch } from '../app/store';
-import { extractErrorMessage } from './base';
-import { WorkbookModel } from '../models/workbook';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
+import { WorkbookModel } from 'models/workbook';
+import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/private/workbook';
 
@@ -31,40 +32,30 @@ type MyWorkbookSearchResult = {
 export const findMyWorkbooks = createAsyncThunk<
   MyWorkbookSearchResult,
   MyWorkbookSearchArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('private/workbook/list', async (arg: MyWorkbookSearchArg, thunkAPI) => {
   const url = `${baseUrl}/search`;
-  console.log('accessToken1');
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
     .then(() => {
-      console.log('accessToken1');
+      // onsole.log('accessToken1');
       const { accessToken } = thunkAPI.getState().auth;
-      console.log('accessToken', accessToken);
+      // onsole.log('accessToken', accessToken);
       return axios
-        .post(url, arg.param, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
-          console.log('the1', resp);
+          // onsole.log('the1', resp);
           const response = resp.data as MyWorkbookSearchResponse;
-          console.log('the2', response);
+          // onsole.log('the2', response);
           arg.postSuccessProcess();
-          const result = {
+          return {
             param: arg.param,
             response: response,
           } as MyWorkbookSearchResult;
-          return result;
         })
         .catch((err: Error) => {
-          console.log('catch', err);
+          // console.log('catch', err);
           const errorMessage = extractErrorMessage(err);
           arg.postFailureProcess(errorMessage);
           return thunkAPI.rejectWithValue(errorMessage);
@@ -114,10 +105,10 @@ export const workbookListSlice = createSlice({
           ...state.workbooksLoadedMap,
           [action.payload.param.spaceKey]: true,
         };
-        console.log('workbooksLoadedMap', state.workbooksLoadedMap);
+        // onsole.log('workbooksLoadedMap', state.workbooksLoadedMap);
       })
       .addCase(findMyWorkbooks.rejected, (state, action) => {
-        console.log('rejected', action);
+        // onsole.log('rejected', action);
         state.loading = false;
         state.failed = true;
       });

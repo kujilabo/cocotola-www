@@ -1,40 +1,38 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { extractErrorMessage } from './base';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
+import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
 // Add problem
-export type NewProblemParameter = {
+export type ProblemAddParameter = {
   number: number;
   problemType: string;
   properties: { [key: string]: string };
 };
-export type NewProblemArg = {
+export type ProblemAddArg = {
   workbookId: number;
-  param: NewProblemParameter;
+  param: ProblemAddParameter;
   postSuccessProcess: (id: number) => void;
   postFailureProcess: (error: string) => void;
 };
-type NewProblemResponse = {
+type ProblemAddResponse = {
   id: number;
 };
-type NewProblemResult = {
-  param: NewProblemParameter;
-  response: NewProblemResponse;
+type ProblemAddResult = {
+  param: ProblemAddParameter;
+  response: ProblemAddResponse;
 };
 
 export const addProblem = createAsyncThunk<
-  NewProblemResult,
-  NewProblemArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->('problem/new', async (arg: NewProblemArg, thunkAPI) => {
+  ProblemAddResult,
+  ProblemAddArg,
+  BaseThunkApiConfig
+>('problem/new', async (arg: ProblemAddArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.workbookId}/problem`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -42,20 +40,11 @@ export const addProblem = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .post(url, arg.param, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
-          const response = resp.data as NewProblemResponse;
+          const response = resp.data as ProblemAddResponse;
           arg.postSuccessProcess(response.id);
-          const result = {
-            param: arg.param,
-            response: response,
-          } as NewProblemResult;
-          return result;
+          return { param: arg.param, response: response } as ProblemAddResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

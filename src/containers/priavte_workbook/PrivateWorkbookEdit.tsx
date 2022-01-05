@@ -1,17 +1,16 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { problemFactory } from 'app/store';
+import { AppDimmer } from 'components';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { getWorkbook, selectWorkbook } from 'features/workbook_view';
 import { emptyFunction } from 'utils/util';
-
 import 'App.css';
 
 type ParamTypes = {
   _workbookId: string;
 };
-export function PrivateProblemNew(): JSX.Element {
+export const PrivateWorkbookEdit = (): React.ReactElement => {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const dispatch = useAppDispatch();
@@ -31,5 +30,9 @@ export function PrivateProblemNew(): JSX.Element {
   if (errorMessage !== '') {
     return <div>{errorMessage}</div>;
   }
-  return problemFactory.createProblemNew(workbook.problemType, workbook);
-}
+  if (+_workbookId !== workbook.id) {
+    return <AppDimmer />;
+  }
+
+  return <div></div>;
+};

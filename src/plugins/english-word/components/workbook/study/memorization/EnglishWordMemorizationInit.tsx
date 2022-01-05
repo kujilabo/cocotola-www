@@ -39,10 +39,10 @@ export const EnglishWordMemorizationInit: React.FC<
   }
   const problemId = englishWordRecordbook.records[0].problemId;
   const problem = problemMap[problemId];
-  console.log('englishWordRecordbook.records', englishWordRecordbook.records);
-  console.log('problemMap', problemMap);
-  console.log('problemId', problemId);
-  console.log('problem', problem);
+  // onsole.log('englishWordRecordbook.records', englishWordRecordbook.records);
+  // onsole.log('problemMap', problemMap);
+  // onsole.log('problemId', problemId);
+  // onsole.log('problem', problem);
 
   if (!problem) {
     return <div>undefined</div>;

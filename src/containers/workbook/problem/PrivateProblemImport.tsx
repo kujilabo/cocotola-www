@@ -10,12 +10,16 @@ import {
   StandardButton,
 } from 'components';
 import {
-  findWorkbook,
+  getWorkbook,
   selectWorkbookViewLoading,
   selectWorkbookListFailed,
   selectWorkbook,
 } from 'features/workbook_view';
-import { importProblem } from 'features/problem_import';
+import {
+  importProblem,
+  selectProblemImportLoading,
+} from 'features/problem_import';
+import { emptyFunction } from 'utils/util';
 import 'App.css';
 
 type ParamTypes = {
@@ -27,13 +31,11 @@ export function PrivateProblemImport(): React.ReactElement {
   const workbook = useAppSelector(selectWorkbook);
   const workbookViewLoading = useAppSelector(selectWorkbookViewLoading);
   const workbookViewFailed = useAppSelector(selectWorkbookListFailed);
+  const problemImportLoading = useAppSelector(selectProblemImportLoading);
   const dispatch = useAppDispatch();
   const [file, setFile] = useState({});
   // const [fileName, setFileName] = useState({});
   const [errorMessage, setErrorMessage] = useState('');
-  const emptyFunction = () => {
-    return;
-  };
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e == null || e.target == null || e.target.files == null) {
       return;
@@ -57,7 +59,7 @@ export function PrivateProblemImport(): React.ReactElement {
       importProblem({
         workbookId: workbookId,
         param: formData,
-        postSuccessProcess: emptyFunction,
+        postSuccessProcess: () => setErrorMessage(''),
         postFailureProcess: setErrorMessage,
       })
     );
@@ -65,7 +67,7 @@ export function PrivateProblemImport(): React.ReactElement {
 
   useEffect(() => {
     dispatch(
-      findWorkbook({
+      getWorkbook({
         param: { id: workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
@@ -77,6 +79,8 @@ export function PrivateProblemImport(): React.ReactElement {
     return <div>failed</div>;
   }
 
+  const loading = workbookViewLoading || problemImportLoading;
+
   return (
     <Container fluid>
       <AppBreadcrumb
@@ -87,17 +91,22 @@ export function PrivateProblemImport(): React.ReactElement {
         text={'Import'}
       />
       <Divider hidden />
-      <Card className="full-width">
+      <Card fluid>
         <Card.Content>
           <Header component="h2">Import problems</Header>
         </Card.Content>
         <Card.Content>
+          <p>
+            TEXT,POS,TRANSLATED
+            <br />
+            POS: adj,adv,conj,det,modal,noun,prep,pron,verb
+          </p>
           <Form>
             <input type="file" name="text" onChange={handleFileChange} />
           </Form>
         </Card.Content>
         <Card.Content extra>
-          {workbookViewLoading ? <AppDimmer /> : <div />}
+          {loading ? <AppDimmer /> : <div />}
           <StandardButton onClick={uploadButtonClicked} value="Upload" />
         </Card.Content>
       </Card>

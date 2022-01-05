@@ -1,36 +1,33 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { RootState, AppDispatch } from 'app/store';
+import { RootState, BaseThunkApiConfig } from 'app/store';
 import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
 import { WorkbookModel } from 'models/workbook';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/private/workbook';
 
-// Find workbook
-export type WorkbookViewParameter = {
+// Get workbook
+export type WorkbookGetParameter = {
   id: number;
 };
-export type WorkbookViewArg = {
-  param: WorkbookViewParameter;
+export type WorkbookGetArg = {
+  param: WorkbookGetParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
 
-type WorkbookViewResult = {
-  param: WorkbookViewParameter;
+type WorkbookGetResult = {
+  param: WorkbookGetParameter;
   response: WorkbookModel;
 };
 
-export const findWorkbook = createAsyncThunk<
-  WorkbookViewResult,
-  WorkbookViewArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->('workbook/view', async (arg: WorkbookViewArg, thunkAPI) => {
+export const getWorkbook = createAsyncThunk<
+  WorkbookGetResult,
+  WorkbookGetArg,
+  BaseThunkApiConfig
+>('workbook/view', async (arg: WorkbookGetArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.id}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -48,11 +45,7 @@ export const findWorkbook = createAsyncThunk<
         .then((resp) => {
           const response = resp.data as WorkbookModel;
           arg.postSuccessProcess();
-          const result = {
-            param: arg.param,
-            response: response,
-          } as WorkbookViewResult;
-          return result;
+          return { param: arg.param, response: response } as WorkbookGetResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -90,17 +83,17 @@ export const workbookViewSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(findWorkbook.pending, (state) => {
+      .addCase(getWorkbook.pending, (state) => {
         state.loading = true;
       })
-      .addCase(findWorkbook.fulfilled, (state, action) => {
-        console.log('workbook', action.payload.response);
+      .addCase(getWorkbook.fulfilled, (state, action) => {
+        // onsole.log('workbook', action.payload.response);
         state.loading = false;
         state.failed = false;
         state.workbook = action.payload.response;
       })
-      .addCase(findWorkbook.rejected, (state, action) => {
-        console.log('rejected', action);
+      .addCase(getWorkbook.rejected, (state, action) => {
+        // onsole.log('rejected', action);
         state.loading = false;
         state.failed = true;
       });

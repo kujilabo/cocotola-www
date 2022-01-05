@@ -1,11 +1,12 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { RootState, AppDispatch } from '../app/store';
-import { extractErrorMessage } from './base';
-import { ProblemModel } from '../models/problem';
-import { removeProblem } from './problem_remove';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
+import { removeProblem } from 'features/problem_remove';
+import { ProblemModel } from 'models/problem';
+import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
@@ -33,10 +34,7 @@ type ProblemFindResult = {
 export const findProblems = createAsyncThunk<
   ProblemFindResult,
   ProblemFindArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('problem/list', async (arg: ProblemFindArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/problem/find`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -45,20 +43,11 @@ export const findProblems = createAsyncThunk<
     .then(() => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .post(url, arg.param, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           const response = resp.data as ProblemFindResponse;
           arg.postSuccessProcess();
-          const result = {
-            param: arg.param,
-            response: response,
-          } as ProblemFindResult;
-          return result;
+          return { param: arg.param, response: response } as ProblemFindResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -88,10 +77,7 @@ type ProblemFindAllResult = {
 export const findAllProblems = createAsyncThunk<
   ProblemFindAllResult,
   ProblemFindAllArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('problem/find_all', async (arg: ProblemFindAllArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/problem/find_all`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -100,20 +86,14 @@ export const findAllProblems = createAsyncThunk<
     .then(() => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .post(url, arg.param, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           const response = resp.data as ProblemFindAllResponse;
           arg.postSuccessProcess();
-          const result = {
+          return {
             param: arg.param,
             response: response,
           } as ProblemFindAllResult;
-          return result;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

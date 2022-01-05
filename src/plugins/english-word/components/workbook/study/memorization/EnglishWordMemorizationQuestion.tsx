@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Accordion,
@@ -6,7 +6,6 @@ import {
   Card,
   Container,
   Divider,
-  // Form,
   Header,
   Icon,
 } from 'semantic-ui-react';
@@ -15,19 +14,15 @@ import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { AppBreadcrumbLink, AudioButton, ErrorMessage } from 'components';
 import { selectWorkbook } from 'features/workbook_view';
 import { addRecord } from 'features/recordbook';
-import { selectRecordbook } from 'features/recordbook';
 import { selectProblemMap } from 'features/problem_list';
 import { getAudio, selectAudioViewLoading } from 'features/audio';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
+import { emptyFunction } from 'utils/util';
 import {
-  setEnglishWordRecordbook,
-  selectTs,
-  selectEnglishWordStatus,
   selectEnglishWordRecordbook,
   setEnglishWordStatus,
   setEnglishWordRecord,
   ENGLISH_WORD_STATUS_ANSWER,
-  ENGLISH_WORD_STATUS_INIT,
 } from '../../../../features/english_word_study';
 import 'App.css';
 
@@ -41,39 +36,22 @@ export const EnglishWordMemorizationQuestion: React.FC<
   const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
-  const status = useAppSelector(selectEnglishWordStatus);
-  const recordbook = useAppSelector(selectRecordbook);
   const problemMap = useAppSelector(selectProblemMap);
   const audioViewLoading = useAppSelector(selectAudioViewLoading);
   const englishWordRecordbook = useAppSelector(selectEnglishWordRecordbook);
-  const ts = useAppSelector(selectTs);
   const [answerOpen, setAnswerOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  // const [memorized, setMemorized] = useState(false);
-  const emptyFunction = () => {
-    return;
-  };
-  useEffect(() => {
-    if (status === ENGLISH_WORD_STATUS_INIT) {
-      console.log('english word init', recordbook);
-      dispatch(setEnglishWordRecordbook(recordbook));
-    }
-  }, [dispatch, ts, recordbook]);
 
   if (englishWordRecordbook.records.length === 0) {
     return <div></div>;
   }
   const problemId = englishWordRecordbook.records[0].problemId;
   const problem = problemMap[problemId];
-  console.log('englishWordRecordbook.records', englishWordRecordbook.records);
-  console.log('problemMap', problemMap);
-  console.log('problemId', problemId);
-  console.log('problem', problem);
+  // console.log('englishWordRecordbook.records', englishWordRecordbook.records);
+  // console.log('problemMap', problemMap);
+  // console.log('problemId', problemId);
+  // console.log('problem', problem);
 
-  // const playAudio = (value: string) => {
-  //   const audio = new Audio('data:audio/wav;base64,' + value);
-  //   audio.play();
-  // };
   const loadAndPlay = (postFunc: (value: string) => void) => {
     dispatch(
       getAudio({
@@ -117,6 +95,7 @@ export const EnglishWordMemorizationQuestion: React.FC<
   if (!problem) {
     return <div>undefined</div>;
   }
+
   return (
     <Container fluid>
       <EnglishWordMemorizationBreadcrumb
@@ -131,6 +110,7 @@ export const EnglishWordMemorizationQuestion: React.FC<
           <Header component="h2">
             {problem.properties['text']}
             <AudioButton
+              id={problem.properties['audioId']}
               loadAndPlay={loadAndPlay}
               disabled={audioViewLoading}
             />
@@ -145,10 +125,10 @@ export const EnglishWordMemorizationQuestion: React.FC<
         </Card.Content> */}
         <Card.Content>
           <Button.Group fluid>
-            <Button onClick={onNoButtonClick}>No</Button>
+            <Button onClick={onNoButtonClick}>わからない</Button>
             <Button.Or />
             <Button positive onClick={onYesButtonClick}>
-              Yes
+              わかる
             </Button>
           </Button.Group>
         </Card.Content>
@@ -170,11 +150,13 @@ export const EnglishWordMemorizationQuestion: React.FC<
         </Card.Content>
       </Card>
       <ErrorMessage message={errorMessage} />
-
+      {englishWordRecordbook.records.length}
       {englishWordRecordbook.records.map((record) => {
+        const isReview = record.isReview ? 'true' : 'false';
         return (
           <div key={record.problemId}>
-            {record.problemId} : {record.level} : {record.reviewLevel}
+            {record.problemId} : {record.level} : {isReview} :{' '}
+            {record.reviewLevel}
           </div>
         );
       })}

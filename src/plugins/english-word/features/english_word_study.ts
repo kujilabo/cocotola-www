@@ -23,14 +23,14 @@ const removeProblemFromRecordbook = (
     newRecordbook.records.push({
       problemId: result.problemId,
       level: result.level,
-      isReview: false,
-      reviewLevel: 0,
-      memorized: false,
+      isReview: result.isReview,
+      reviewLevel: result.reviewLevel,
+      memorized: result.memorized,
     });
-    console.log('loop result', newRecordbook.records);
   }
   return newRecordbook;
 };
+
 // Set result
 export interface EnglishWordState {
   status: number;
@@ -101,6 +101,7 @@ export const englishWordSlice = createSlice({
         problemId
       );
 
+      // onsole.log('record.isReview', record.isReview);
       if (record.isReview) {
         const newIndexList = [3, 10, 15, 20, 0];
         if (state.lastResult) {
@@ -114,29 +115,26 @@ export const englishWordSlice = createSlice({
         if (record.reviewLevel !== 4) {
           const newIndex = Math.min(
             newIndexList[record.reviewLevel],
-            state.recordbook.records.length - 1
+            newRecordbook.records.length - 1
           );
+          // onsole.log('newIndex', newIndex);
           // Add problem to records
           newRecordbook.records.splice(newIndex, 0, {
             problemId,
             level,
-            isReview: false,
-            reviewLevel: 0,
+            isReview: true,
+            reviewLevel: record.reviewLevel,
             memorized: false,
           });
         }
       } else {
         if (!state.lastResult) {
-          record.isReview = true;
-          if (state.recordbook.records[0].isReview !== true) {
-            alert('error');
-          }
-          const newIndex = Math.min(3, state.recordbook.records.length - 1);
+          const newIndex = Math.min(3, newRecordbook.records.length - 1);
           // Add problem to records
           newRecordbook.records.splice(newIndex, 0, {
             problemId,
             level,
-            isReview: false,
+            isReview: true,
             reviewLevel: 0,
             memorized: false,
           });
@@ -145,7 +143,6 @@ export const englishWordSlice = createSlice({
 
       state.recordbook = newRecordbook;
       state.status = ENGLISH_WORD_STATUS_QUESTION;
-      console.log('newRecordbook', newRecordbook);
     },
     setEnglishWordRecord: (state, action: PayloadAction<boolean>) => {
       state.lastResult = action.payload;

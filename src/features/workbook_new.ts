@@ -1,39 +1,37 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { extractErrorMessage } from './base';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
+import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/private/workbook';
 
 // Add workbook
-export type NewWorkbookParameter = {
+export type WorkbookAddParameter = {
   name: string;
   questionText: string;
   spaceKey: string;
 };
-export type NewWorkbookArg = {
-  param: NewWorkbookParameter;
+export type WorkbookAddArg = {
+  param: WorkbookAddParameter;
   postSuccessProcess: (id: number) => void;
   postFailureProcess: (error: string) => void;
 };
-type NewWorkbookResponse = {
+type WorkbookAddResponse = {
   id: number;
 };
-type NewWorkbookResult = {
-  param: NewWorkbookParameter;
-  response: NewWorkbookResponse;
+type WorkbookAddResult = {
+  param: WorkbookAddParameter;
+  response: WorkbookAddResponse;
 };
 
 export const addWorkbook = createAsyncThunk<
-  NewWorkbookResult,
-  NewWorkbookArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
->('private/workbook/new', async (arg: NewWorkbookArg, thunkAPI) => {
+  WorkbookAddResult,
+  WorkbookAddArg,
+  BaseThunkApiConfig
+>('private/workbook/new', async (arg: WorkbookAddArg, thunkAPI) => {
   const url = baseUrl;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -41,20 +39,11 @@ export const addWorkbook = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .post(url, arg.param, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
-          const response = resp.data as NewWorkbookResponse;
+          const response = resp.data as WorkbookAddResponse;
           arg.postSuccessProcess(response.id);
-          const result = {
-            param: arg.param,
-            response: response,
-          } as NewWorkbookResult;
-          return result;
+          return { param: arg.param, response: response } as WorkbookAddResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

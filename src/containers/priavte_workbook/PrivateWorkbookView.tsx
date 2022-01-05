@@ -11,7 +11,7 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
-  findWorkbook,
+  getWorkbook,
   selectWorkbookViewLoading,
   selectWorkbookListFailed,
   selectWorkbook,
@@ -27,6 +27,7 @@ import { AppBreadcrumb, AppDimmer, ErrorMessage } from 'components';
 import { WorkbookModel } from 'models/workbook';
 import { ProblemModel } from 'models/problem';
 import { problemFactory } from 'app/store';
+import { emptyFunction } from 'utils/util';
 import { ProblemFactory } from '../workbook/problem/ProblemFactory';
 import 'App.css';
 
@@ -88,9 +89,6 @@ export function PrivateWorkbookView(): React.ReactElement {
   const workbook = useAppSelector(selectWorkbook);
   const [errorMessage, setErrorMessage] = useState('');
   const [pageNo, setPageNo] = useState(1);
-  const emptyFunction = () => {
-    return;
-  };
   const onPageChange = (
     e: React.MouseEvent<HTMLAnchorElement>,
     data: PaginationProps
@@ -106,7 +104,7 @@ export function PrivateWorkbookView(): React.ReactElement {
 
     // findWorkbook
     dispatch(
-      findWorkbook({
+      getWorkbook({
         param: { id: workbookId },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,

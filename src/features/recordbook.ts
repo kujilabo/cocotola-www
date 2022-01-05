@@ -1,10 +1,11 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-import { refreshAccessToken } from './auth';
-import { RootState, AppDispatch } from '../app/store';
-import { extractErrorMessage } from './base';
+import { RootState, BaseThunkApiConfig } from 'app/store';
+import { refreshAccessToken } from 'features/auth';
+import { extractErrorMessage } from 'features/base';
 import { RecordbookModel } from 'models/recordbook';
+import { jsonHeaders, jsonRequestConfig } from 'utils/util';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/study/workbook`;
 
@@ -24,14 +25,10 @@ export type RecordAddArg = {
 type RecordAddResult = {
   param: RecordAddParameter;
 };
-
 export const addRecord = createAsyncThunk<
   RecordAddResult,
   RecordAddArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('record/add', async (arg: RecordAddArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/study_type/${arg.param.studyType}/problem/${arg.param.problemId}/record`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -40,18 +37,10 @@ export const addRecord = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .post(url, arg.param, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           arg.postSuccessProcess();
-          const result = {
-            param: arg.param,
-          } as RecordAddResult;
-          return result;
+          return { param: arg.param } as RecordAddResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -71,19 +60,14 @@ export type RecordbookFindArg = {
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
-
 type RecordbookFindResult = {
   param: RecordbookFindParameter;
   response: RecordbookModel;
 };
-
 export const findRecordbook = createAsyncThunk<
   RecordbookFindResult,
   RecordbookFindArg,
-  {
-    dispatch: AppDispatch;
-    state: RootState;
-  }
+  BaseThunkApiConfig
 >('recordbook/view', async (arg: RecordbookFindArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/study_type/${arg.param.studyType}`;
   const { refreshToken } = thunkAPI.getState().auth;
@@ -92,20 +76,11 @@ export const findRecordbook = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .get(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          data: {},
-        })
+        .get(url, { headers: jsonHeaders(accessToken), data: {} })
         .then((resp) => {
           const response = resp.data as RecordbookModel;
           arg.postSuccessProcess();
-          const result = {
-            response: response,
-          } as RecordbookFindResult;
-          return result;
+          return { response: response } as RecordbookFindResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

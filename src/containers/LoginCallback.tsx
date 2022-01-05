@@ -3,20 +3,22 @@ import queryString from 'query-string';
 import { Redirect } from 'react-router';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
-import { useAppSelector, useAppDispatch } from '../app/hooks';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
-  callback,
   selectAccessToken,
   selectAuthLoading,
   selectAuthFailed,
-} from '../features/auth';
+  googleAuthorize,
+} from 'features/auth';
+import { emptyFunction } from 'utils/util';
+import { AppDimmer } from 'components';
 
-export function Callback(): JSX.Element {
+export const LoginCallback = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const accessToken = useAppSelector(selectAccessToken);
   let isAccessTokenExpired = true;
   if (accessToken && accessToken != null && accessToken !== '') {
-    console.log('decode acc', accessToken);
+    // onsole.log('decode acc', accessToken);
     const decoded = jwt_decode<JwtPayload>(accessToken) || null;
     if (decoded.exp) {
       isAccessTokenExpired = decoded.exp < new Date().getTime() / 1000;
@@ -26,7 +28,7 @@ export function Callback(): JSX.Element {
   const authLoading = useAppSelector(selectAuthLoading);
   const authFailed = useAppSelector(selectAuthFailed);
   const location = window.location.search;
-  console.log('Callback', authLoading, isAccessTokenExpired);
+  // onsole.log('Callback', authLoading, isAccessTokenExpired);
   if (authFailed) {
     return <div>Failed</div>;
   } else if (authLoading === false && isAccessTokenExpired) {
@@ -34,24 +36,22 @@ export function Callback(): JSX.Element {
     const code = '' + parsed.code || '';
 
     dispatch(
-      callback({
+      googleAuthorize({
         param: {
           organizationName: 'cocotola',
           code: code,
         },
-        postSuccessProcess: () => {
-          return;
-        },
+        postSuccessProcess: emptyFunction,
         postFailureProcess: (error: string) => {
           console.log('callback error', error);
           return;
         },
       })
     );
-    return <div>CALLBACK</div>;
+    return <AppDimmer />;
   } else if (!isAccessTokenExpired) {
     return <Redirect to="/" />;
   } else {
-    return <div>Loading</div>;
+    return <AppDimmer />;
   }
-}
+};

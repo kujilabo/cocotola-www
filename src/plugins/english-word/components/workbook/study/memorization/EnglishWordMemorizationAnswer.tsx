@@ -68,7 +68,7 @@ export const EnglishWordMemorizationAnswer: React.FC<
             studyType: _studyType,
             problemId: problemId,
             result: true,
-            memorized: false,
+            memorized: true,
           },
           postSuccessProcess: emptyFunction,
           postFailureProcess: setErrorMessage,
@@ -93,6 +93,7 @@ export const EnglishWordMemorizationAnswer: React.FC<
           <Header component="h2">
             {problem.properties['text']}
             <AudioButton
+              id={problem.properties['audioId']}
               loadAndPlay={loadAndPlay}
               disabled={audioViewLoading}
             />
