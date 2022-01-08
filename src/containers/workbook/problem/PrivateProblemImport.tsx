@@ -12,9 +12,9 @@ import {
 import {
   getWorkbook,
   selectWorkbookGetLoading,
-  selectWorkbookListFailed,
+  selectWorkbookGetFailed,
   selectWorkbook,
-} from 'features/workbook_view';
+} from 'features/workbook_get';
 import {
   importProblem,
   selectProblemImportLoading,
@@ -25,13 +25,14 @@ import 'App.css';
 type ParamTypes = {
   _workbookId: string;
 };
-export function PrivateProblemImport(): React.ReactElement {
+export const PrivateProblemImport = (): React.ReactElement => {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const workbook = useAppSelector(selectWorkbook);
-  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
-  const workbookViewFailed = useAppSelector(selectWorkbookListFailed);
-  const problemImportLoading = useAppSelector(selectProblemImportLoading);
+  const loading =
+    useAppSelector(selectWorkbookGetLoading) ||
+    useAppSelector(selectProblemImportLoading);
+  const workbookGetFailed = useAppSelector(selectWorkbookGetFailed);
   const dispatch = useAppDispatch();
   const [file, setFile] = useState({});
   // const [fileName, setFileName] = useState({});
@@ -75,11 +76,9 @@ export function PrivateProblemImport(): React.ReactElement {
     );
   }, [dispatch, workbookId]);
 
-  if (workbookViewFailed) {
+  if (workbookGetFailed) {
     return <div>failed</div>;
   }
-
-  const loading = workbookGetLoading || problemImportLoading;
 
   return (
     <Container fluid>
@@ -113,4 +112,4 @@ export function PrivateProblemImport(): React.ReactElement {
       <ErrorMessage message={errorMessage} />
     </Container>
   );
-}
+};

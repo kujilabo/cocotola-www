@@ -25,12 +25,11 @@ type WorkbookRemoveResult = {
   param: WorkbookRemoveParameter;
   response: WorkbookRemoveResponse;
 };
-
 export const removeWorkbook = createAsyncThunk<
   WorkbookRemoveResult,
   WorkbookRemoveArg,
   BaseThunkApiConfig
->('private/workbook/update', async (arg: WorkbookRemoveArg, thunkAPI) => {
+>('private/workbook/remove', async (arg: WorkbookRemoveArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.id}?version=${arg.param.version}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI

@@ -6,7 +6,7 @@ import { Form, Input, Select } from 'formik-semantic-ui-react';
 import * as Yup from 'yup';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { addWorkbook, selectWorkbookNewLoading } from 'features/workbook_new';
+import { addWorkbook, selectWorkbookAddLoading } from 'features/workbook_add';
 import { AppDimmer, AppBreadcrumb, ErrorMessage } from 'components';
 import 'App.css';
 
@@ -16,9 +16,63 @@ const problemTypeOptions = [
   { key: 'template', text: 'テンプレート', value: 'template' },
 ];
 
-export function PrivateWorkbookNew() {
+interface OtherProps {
+  loading: boolean;
+}
+interface FormValues {
+  name: string;
+  questionText: string;
+  problemType: string;
+}
+const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
+  const { isSubmitting } = props;
+  return (
+    <Form>
+      <Card className="full-width">
+        <Card.Content>
+          <Header component="h2">New workbook</Header>
+        </Card.Content>
+        <Card.Content>
+          <Input
+            name="name"
+            label="Name"
+            placeholder="Workbook name"
+            className="full-width"
+            errorPrompt
+          />
+          <Input
+            name="questionText"
+            label="Question text"
+            placeholder=""
+            className="full-width"
+            errorPrompt
+          />
+          <Select
+            name="problemType"
+            options={problemTypeOptions}
+            label="Problem type"
+            // value={values.problemType}
+            errorPrompt
+          />
+        </Card.Content>
+        <Card.Content>
+          {props.loading ? <AppDimmer /> : <div />}
+          <Button
+            type="submit"
+            variant="true"
+            color="teal"
+            disabled={isSubmitting}
+          >
+            Create
+          </Button>
+        </Card.Content>
+      </Card>
+    </Form>
+  );
+};
+export const PrivateWorkbookNew = (): React.ReactElement => {
   const dispatch = useAppDispatch();
-  const workbookNewLoading = useAppSelector(selectWorkbookNewLoading);
+  const workbookAddLoading = useAppSelector(selectWorkbookAddLoading);
   const history = useHistory();
   const [values, setValues] = React.useState({
     name: '',
@@ -27,76 +81,24 @@ export function PrivateWorkbookNew() {
   });
   const [errorMessage, setErrorMessage] = useState('');
 
-  interface OtherProps {
+  interface FormProps {
     loading: boolean;
-  }
-  interface FormValues {
     name: string;
     questionText: string;
     problemType: string;
   }
-  const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
-    const { isSubmitting } = props;
-    return (
-      <Form>
-        <Card className="full-width">
-          <Card.Content>
-            <Header component="h2">New workbook</Header>
-          </Card.Content>
-          <Card.Content>
-            <Input
-              name="name"
-              label="Name"
-              placeholder="Workbook name"
-              className="full-width"
-              errorPrompt
-            />
-            <Input
-              name="questionText"
-              label="Question text"
-              placeholder=""
-              className="full-width"
-              errorPrompt
-            />
-            <Select
-              name="problemType"
-              options={problemTypeOptions}
-              label="Problem type"
-              // value={values.problemType}
-              errorPrompt
-            />
-          </Card.Content>
-          <Card.Content>
-            {props.loading ? <AppDimmer /> : <div />}
-            <Button
-              type="submit"
-              variant="true"
-              color="teal"
-              disabled={isSubmitting}
-            >
-              Create
-            </Button>
-          </Card.Content>
-        </Card>
-      </Form>
-    );
-  };
-
-  interface FormProps {
-    loading: boolean;
-  }
   const InnerFormikForm = withFormik<FormProps, FormValues>({
     mapPropsToValues: (props: FormProps) => ({
-      name: values.name,
-      questionText: values.questionText,
-      problemType: values.problemType,
+      name: props.name,
+      questionText: props.questionText,
+      problemType: props.problemType,
     }),
     validationSchema: Yup.object().shape({
       name: Yup.string().required('Name is required'),
       problemType: Yup.string().required('Problem type is required'),
     }),
     handleSubmit: (
-      values: FormValues,
+      formValues: FormValues,
       formikBag: FormikBag<FormProps, FormValues>
     ) => {
       dispatch(
@@ -107,7 +109,7 @@ export function PrivateWorkbookNew() {
           postFailureProcess: setErrorMessage,
         })
       );
-      setValues(values);
+      setValues(formValues);
     },
   })(InnerForm);
 
@@ -118,8 +120,13 @@ export function PrivateWorkbookNew() {
         text={'New workbook'}
       />
       <Divider hidden />
-      <InnerFormikForm loading={workbookNewLoading} />
+      <InnerFormikForm
+        loading={workbookAddLoading}
+        name={values.name}
+        questionText={values.questionText}
+        problemType={values.problemType}
+      />
       <ErrorMessage message={errorMessage} />
     </Container>
   );
-}
+};

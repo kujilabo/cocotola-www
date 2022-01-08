@@ -1,9 +1,9 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { getWorkbook, selectWorkbook } from 'features/workbook_view';
+import { getWorkbook, selectWorkbook } from 'features/workbook_get';
 import { emptyFunction } from 'utils/util';
 
 import 'App.css';
@@ -11,7 +11,7 @@ import 'App.css';
 type ParamTypes = {
   _workbookId: string;
 };
-export function PrivateProblemNew(): JSX.Element {
+export const PrivateProblemNew = (): React.ReactElement => {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const dispatch = useAppDispatch();
@@ -32,4 +32,4 @@ export function PrivateProblemNew(): JSX.Element {
     return <div>{errorMessage}</div>;
   }
   return problemFactory.createProblemNew(workbook.problemType, workbook);
-}
+};

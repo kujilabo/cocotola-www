@@ -7,15 +7,15 @@ import {
   getWorkbook,
   selectWorkbook,
   selectWorkbookGetLoading,
-} from 'features/workbook_view';
+} from 'features/workbook_get';
 import {
   findAllProblems,
-  selectProblemListLoading,
-} from 'features/problem_list';
+  selectProblemFindLoading,
+} from 'features/problem_find';
 import {
-  findRecordbook,
-  selectRecordbookViewLoading,
-} from 'features/recordbook';
+  getRecordbook,
+  selectRecordbookGetLoading,
+} from 'features/recordbook_get';
 import { emptyFunction } from 'utils/util';
 import 'App.css';
 import { AppDimmer } from 'components';
@@ -24,13 +24,14 @@ type ParamTypes = {
   _workbookId: string;
   _studyType: string;
 };
-export function WorkbookStudy() {
+export const WorkbookStudy = () => {
   const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
-  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
-  const problemListLoading = useAppSelector(selectProblemListLoading);
-  const recordbookViewLoading = useAppSelector(selectRecordbookViewLoading);
+  const loading =
+    useAppSelector(selectWorkbookGetLoading) ||
+    useAppSelector(selectProblemFindLoading) ||
+    useAppSelector(selectRecordbookGetLoading);
   const [errorMessage, setErrorMessage] = useState('');
 
   // find workbook and all problems
@@ -56,7 +57,7 @@ export function WorkbookStudy() {
   // find recordbook
   useEffect(() => {
     dispatch(
-      findRecordbook({
+      getRecordbook({
         param: {
           workbookId: +_workbookId,
           studyType: _studyType,
@@ -71,11 +72,11 @@ export function WorkbookStudy() {
     );
   }, [dispatch, _workbookId, workbook.problemType]);
 
-  if (workbookGetLoading || problemListLoading || recordbookViewLoading) {
+  if (loading) {
     return <AppDimmer />;
   } else if (errorMessage !== '') {
     return <div>{errorMessage}</div>;
   }
 
   return problemFactory.createProblemStudy(workbook.problemType, _studyType);
-}
+};

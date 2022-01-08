@@ -4,8 +4,8 @@ import { useParams } from 'react-router-dom';
 import { AppDimmer } from 'components';
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { getWorkbook, selectWorkbook } from 'features/workbook_view';
-import { getProblem, selectProblem } from 'features/problem_view';
+import { getWorkbook, selectWorkbook } from 'features/workbook_get';
+import { getProblem, selectProblem } from 'features/problem_get';
 import { emptyFunction } from 'utils/util';
 import 'App.css';
 
@@ -13,7 +13,7 @@ type ParamTypes = {
   _workbookId: string;
   _problemId: string;
 };
-export function PrivateProblemEdit(): React.ReactElement {
+export const PrivateProblemEdit = (): React.ReactElement => {
   const { _workbookId, _problemId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const problemId = +_problemId;
@@ -57,4 +57,4 @@ export function PrivateProblemEdit(): React.ReactElement {
     workbook,
     problem
   );
-}
+};

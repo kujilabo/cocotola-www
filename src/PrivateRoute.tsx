@@ -12,7 +12,7 @@ import {
   refreshAccessToken,
 } from 'features/auth';
 
-export function PrivateRoute(props: RouteProps): JSX.Element {
+export const PrivateRoute = (props: RouteProps): JSX.Element => {
   const dispatch = useAppDispatch();
   const loading = useAppSelector(selectAuthLoading);
   const failed = useAppSelector(selectAuthFailed);
@@ -73,4 +73,4 @@ export function PrivateRoute(props: RouteProps): JSX.Element {
   } else {
     return <Route render={() => props.children} />;
   }
-}
+};

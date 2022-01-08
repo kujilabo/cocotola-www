@@ -5,6 +5,7 @@ import { RootState, BaseThunkApiConfig } from 'app/store';
 import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
 import { WorkbookModel } from 'models/workbook';
+import { jsonHeaders } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/private/workbook';
 
@@ -17,12 +18,10 @@ export type WorkbookGetArg = {
   postSuccessProcess: (workbook: WorkbookModel) => void;
   postFailureProcess: (error: string) => void;
 };
-
 type WorkbookGetResult = {
   param: WorkbookGetParameter;
   response: WorkbookModel;
 };
-
 export const getWorkbook = createAsyncThunk<
   WorkbookGetResult,
   WorkbookGetArg,
@@ -35,13 +34,7 @@ export const getWorkbook = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .get(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          data: {},
-        })
+        .get(url, { headers: jsonHeaders(accessToken), data: {} })
         .then((resp) => {
           const response = resp.data as WorkbookModel;
           arg.postSuccessProcess(response);
@@ -55,8 +48,7 @@ export const getWorkbook = createAsyncThunk<
     });
 });
 
-export interface WorkbookViewState {
-  value: number;
+export interface WorkbookGetState {
   loading: boolean;
   failed: boolean;
   workbook: WorkbookModel;
@@ -70,15 +62,14 @@ const defaultWorkbook = {
   questionText: '',
   subscribed: false,
 };
-const initialState: WorkbookViewState = {
-  value: 0,
+const initialState: WorkbookGetState = {
   loading: false,
   failed: false,
   workbook: defaultWorkbook,
 };
 
-export const workbookViewSlice = createSlice({
-  name: 'workbook_view',
+export const workbookGetSlice = createSlice({
+  name: 'workbook_get',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -101,11 +92,11 @@ export const workbookViewSlice = createSlice({
 });
 
 export const selectWorkbookGetLoading = (state: RootState): boolean =>
-  state.workbookView.loading;
+  state.workbookGet.loading;
 
-export const selectWorkbookListFailed = (state: RootState): boolean =>
-  state.workbookView.failed;
+export const selectWorkbookGetFailed = (state: RootState): boolean =>
+  state.workbookGet.failed;
 
-export const selectWorkbook = (state: RootState) => state.workbookView.workbook;
+export const selectWorkbook = (state: RootState) => state.workbookGet.workbook;
 
-export default workbookViewSlice.reducer;
+export default workbookGetSlice.reducer;

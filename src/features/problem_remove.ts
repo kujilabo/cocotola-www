@@ -4,6 +4,7 @@ import axios from 'axios';
 import { RootState, BaseThunkApiConfig } from 'app/store';
 import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
+import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 
@@ -38,20 +39,14 @@ export const removeProblem = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .delete(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
+        .delete(url, jsonRequestConfig(accessToken))
         .then((resp) => {
           const response = resp.data as ProblemRemoveResponse;
           arg.postSuccessProcess(response.id);
-          const result = {
+          return {
             param: arg.param,
             response: response,
           } as ProblemRemoveResult;
-          return result;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);

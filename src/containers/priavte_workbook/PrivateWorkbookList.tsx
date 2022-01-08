@@ -6,10 +6,10 @@ import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
   findMyWorkbooks,
   selectWorkbooksLoadedMap,
-  selectWorkbookListFailed,
-  selectWorkbookListLoading,
+  selectWorkbookFindFailed,
+  selectWorkbookFindLoading,
   selectWorkbooksMap,
-} from 'features/workbook_list';
+} from 'features/workbook_find';
 import { AppBreadcrumb, AppDimmer, ErrorMessage } from 'components';
 import { WorkbookCard } from 'components/workbook/WorkbookCard';
 import { useDidMount } from 'components/util';
@@ -17,13 +17,13 @@ import { WorkbookModel } from 'models/workbook';
 import { emptyFunction } from 'utils/util';
 import 'App.css';
 
-export function PrivateWorkbookList(): React.ReactElement {
+export const PrivateWorkbookList = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const spaceKey = 'personal';
   const basePath = '/app/private/workbook/';
   const history = useHistory();
-  const workbookListLoading = useAppSelector(selectWorkbookListLoading);
-  const workbookListFailed = useAppSelector(selectWorkbookListFailed);
+  const workbookFindLoading = useAppSelector(selectWorkbookFindLoading);
+  const workbookFindFailed = useAppSelector(selectWorkbookFindFailed);
   const workbooksLoadedMap = useAppSelector(selectWorkbooksLoadedMap);
   const workbooksMap = useAppSelector(selectWorkbooksMap);
   const [errorMessage, setErrorMessage] = useState('');
@@ -45,7 +45,7 @@ export function PrivateWorkbookList(): React.ReactElement {
     );
   });
 
-  if (!workbookListFailed && !workbookListLoading && !workbooksLoaded) {
+  if (!workbookFindFailed && !workbookFindLoading && !workbooksLoaded) {
     return <AppDimmer />;
   }
 
@@ -56,7 +56,7 @@ export function PrivateWorkbookList(): React.ReactElement {
       <Divider hidden />
       <Grid>
         <Grid.Row>
-          {workbookListLoading ? <AppDimmer /> : <div />}
+          {workbookFindLoading ? <AppDimmer /> : <div />}
           <Grid.Column mobile={16} tablet={16} computer={3}>
             <Menu vertical fluid>
               <Menu.Item>
@@ -85,4 +85,4 @@ export function PrivateWorkbookList(): React.ReactElement {
       </Grid>
     </Container>
   );
-}
+};

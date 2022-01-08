@@ -4,9 +4,9 @@ import { Container } from 'semantic-ui-react';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { AppBreadcrumbLink } from 'components';
-import { selectWorkbook } from 'features/workbook_view';
-import { selectRecordbook } from 'features/recordbook';
-import { selectProblemMap } from 'features/problem_list';
+import { selectWorkbook } from 'features/workbook_get';
+import { selectRecordbook } from 'features/recordbook_get';
+import { selectProblemMap } from 'features/problem_find';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
 import {
   setEnglishWordRecordbook,

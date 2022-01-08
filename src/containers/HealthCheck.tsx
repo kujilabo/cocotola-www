@@ -1,5 +1,5 @@
 import React from 'react';
 
-export function HealthCheck(): JSX.Element {
+export const HealthCheck = (): React.ReactElement => {
   return <div>OK</div>;
-}
+};

@@ -23,7 +23,7 @@ export interface AppJwtPayload extends JwtPayload {
   username: string;
 }
 
-export function App(): React.ReactElement {
+export const App = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const history = useHistory();
   const accessToken = useAppSelector(selectAccessToken);
@@ -47,7 +47,7 @@ export function App(): React.ReactElement {
 
   const decoded = jwt_decode<AppJwtPayload>(accessToken) || null;
   const username = decoded.username;
-  console.log('decoded', decoded);
+  // onsole.log('decoded', decoded);
   return (
     <div>
       <Menu inverted>
@@ -104,4 +104,4 @@ export function App(): React.ReactElement {
       </Switch>
     </div>
   );
-}
+};

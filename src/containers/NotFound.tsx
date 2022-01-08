@@ -1,12 +1,5 @@
 import React from 'react';
 
-export function NotFound(): React.ReactElement {
-    return (
-        <div>
-            NotFound
-        </div>
-    );
-}
-
-
-
+export const NotFound = (): React.ReactElement => {
+  return <div>NotFound</div>;
+};

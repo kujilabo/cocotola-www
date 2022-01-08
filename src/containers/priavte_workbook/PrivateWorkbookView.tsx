@@ -13,16 +13,16 @@ import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
   getWorkbook,
   selectWorkbookGetLoading,
-  selectWorkbookListFailed,
+  selectWorkbookGetFailed,
   selectWorkbook,
-} from 'features/workbook_view';
+} from 'features/workbook_get';
 import {
   findProblems,
-  selectProblemListLoading,
-  selectProblemListFailed,
+  selectProblemFindLoading,
+  selectProblemFindFailed,
   selectProblemsTotalCount,
   selectProblems,
-} from 'features/problem_list';
+} from 'features/problem_find';
 import { AppBreadcrumb, AppDimmer, ErrorMessage } from 'components';
 import { WorkbookModel } from 'models/workbook';
 import { ProblemModel } from 'models/problem';
@@ -76,14 +76,16 @@ type ParamTypes = {
   _workbookId: string;
 };
 
-export function PrivateWorkbookView(): React.ReactElement {
+export const PrivateWorkbookView = (): React.ReactElement => {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const dispatch = useAppDispatch();
-  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
-  const workbookViewFailed = useAppSelector(selectWorkbookListFailed);
-  const problemListLoading = useAppSelector(selectProblemListLoading);
-  const problemListFailed = useAppSelector(selectProblemListFailed);
+  const loading =
+    useAppSelector(selectWorkbookGetLoading) ||
+    useAppSelector(selectProblemFindLoading);
+  const failed =
+    useAppSelector(selectWorkbookGetFailed) ||
+    useAppSelector(selectProblemFindFailed);
   const problems = useAppSelector(selectProblems);
   const problemsTotalCount = useAppSelector(selectProblemsTotalCount);
   const workbook = useAppSelector(selectWorkbook);
@@ -129,11 +131,9 @@ export function PrivateWorkbookView(): React.ReactElement {
     );
   }, [dispatch, workbookId, pageNo]);
 
-  if (workbookViewFailed || problemListFailed) {
-    return <div></div>;
+  if (failed) {
+    return <div>Error</div>;
   }
-
-  const loading = workbookGetLoading || problemListLoading;
 
   let totalPages = Math.floor(problemsTotalCount / 10);
   const mod = problemsTotalCount % 10;
@@ -207,4 +207,4 @@ export function PrivateWorkbookView(): React.ReactElement {
       </Grid>
     </Container>
   );
-}
+};
