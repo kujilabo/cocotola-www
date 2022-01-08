@@ -12,9 +12,9 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { AppBreadcrumbLink, AudioButton, ErrorMessage } from 'components';
-import { selectWorkbook } from 'features/workbook_view';
-import { addRecord } from 'features/recordbook';
-import { selectProblemMap } from 'features/problem_list';
+import { selectWorkbook } from 'features/workbook_get';
+import { addRecord } from 'features/record_add';
+import { selectProblemMap } from 'features/problem_find';
 import { getAudio, selectAudioViewLoading } from 'features/audio';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
 import { emptyFunction } from 'utils/util';
@@ -47,10 +47,10 @@ export const EnglishWordMemorizationQuestion: React.FC<
   }
   const problemId = englishWordRecordbook.records[0].problemId;
   const problem = problemMap[problemId];
-  // console.log('englishWordRecordbook.records', englishWordRecordbook.records);
-  // console.log('problemMap', problemMap);
-  // console.log('problemId', problemId);
-  // console.log('problem', problem);
+  // onsole.log('englishWordRecordbook.records', englishWordRecordbook.records);
+  // onsole.log('problemMap', problemMap);
+  // onsole.log('problemId', problemId);
+  // onsole.log('problem', problem);
 
   const loadAndPlay = (postFunc: (value: string) => void) => {
     dispatch(
@@ -87,11 +87,10 @@ export const EnglishWordMemorizationQuestion: React.FC<
   const onYesButtonClick = () => setRecord(true);
   const onNoButtonClick = () => setRecord(false);
   // const onMemorizeButtonClick = () => setMemorized(!memorized);
-
-  // console.log('englishWordRecordbook', englishWordRecordbook);
-  // console.log('problemId', problemId);
-  // console.log('problem', problem);
-  // console.log('problemMap', problemMap);
+  // onsole.log('englishWordRecordbook', englishWordRecordbook);
+  // onsole.log('problemId', problemId);
+  // onsole.log('problem', problem);
+  // onsole.log('problemMap', problemMap);
   if (!problem) {
     return <div>undefined</div>;
   }

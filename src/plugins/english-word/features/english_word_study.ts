@@ -15,7 +15,7 @@ const removeProblemFromRecordbook = (
     id: recordbook.id,
     records: [],
   };
-  console.log('newRecordbook', newRecordbook);
+  // onsole.log('newRecordbook', newRecordbook);
   for (const result of recordbook.records) {
     if (result.problemId === problemId) {
       continue;
@@ -53,7 +53,7 @@ export const englishWordSlice = createSlice({
   initialState: initialState,
   reducers: {
     initEnglishWordStatus: (state, action: PayloadAction<string>) => {
-      console.log('initEnglishWordStatus', action.payload);
+      // onsole.log('initEnglishWordStatus', action.payload);
       state.status = ENGLISH_WORD_STATUS_INIT;
       state.ts = action.payload;
     },
@@ -61,7 +61,7 @@ export const englishWordSlice = createSlice({
       state,
       action: PayloadAction<RecordbookModel>
     ) => {
-      console.log('setEnglishWordRecordbook', action.payload);
+      // onsole.log('setEnglishWordRecordbook', action.payload);
       const recordbook = action.payload;
       const records = [];
       for (const record of recordbook.records) {
@@ -79,10 +79,10 @@ export const englishWordSlice = createSlice({
       }
       state.recordbook.records = records;
       state.status = ENGLISH_WORD_STATUS_QUESTION;
-      console.log('setEnglishWordRecordbook', state.recordbook);
+      // onsole.log('setEnglishWordRecordbook', state.recordbook);
     },
     setEnglishWordStatus: (state, action: PayloadAction<number>) => {
-      console.log('setEnglishWordStatus', state.status);
+      // onsole.log('setEnglishWordStatus', state.status);
       state.status = action.payload;
     },
     nextEnglishWordProblem: (state) => {

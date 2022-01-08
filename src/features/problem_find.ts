@@ -35,7 +35,7 @@ export const findProblems = createAsyncThunk<
   ProblemFindResult,
   ProblemFindArg,
   BaseThunkApiConfig
->('problem/list', async (arg: ProblemFindArg, thunkAPI) => {
+>('problem/find', async (arg: ProblemFindArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/problem/find`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -103,7 +103,7 @@ export const findAllProblems = createAsyncThunk<
     });
 });
 
-export interface problemListState {
+export interface problemFindState {
   value: number;
   loading: boolean;
   failed: boolean;
@@ -112,7 +112,7 @@ export interface problemListState {
   problemsTotalCount: number;
 }
 
-const initialState: problemListState = {
+const initialState: problemFindState = {
   value: 0,
   loading: false,
   failed: false,
@@ -121,8 +121,8 @@ const initialState: problemListState = {
   problemsTotalCount: 0,
 };
 
-export const problemListSlice = createSlice({
-  name: 'problem_list',
+export const problemFindSlice = createSlice({
+  name: 'problem_find',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -177,20 +177,20 @@ export const problemListSlice = createSlice({
   },
 });
 
-export const selectProblemListLoading = (state: RootState): boolean =>
-  state.problemList.loading;
+export const selectProblemFindLoading = (state: RootState): boolean =>
+  state.problemFind.loading;
 
-export const selectProblemListFailed = (state: RootState): boolean =>
-  state.problemList.failed;
+export const selectProblemFindFailed = (state: RootState): boolean =>
+  state.problemFind.failed;
 
 export const selectProblems = (state: RootState): ProblemModel[] =>
-  state.problemList.problems;
+  state.problemFind.problems;
 
 export const selectProblemMap = (
   state: RootState
-): { [key: number]: ProblemModel } => state.problemList.problemMap;
+): { [key: number]: ProblemModel } => state.problemFind.problemMap;
 
 export const selectProblemsTotalCount = (state: RootState): number =>
-  state.problemList.problemsTotalCount;
+  state.problemFind.problemsTotalCount;
 
-export default problemListSlice.reducer;
+export default problemFindSlice.reducer;

@@ -1,23 +1,14 @@
 import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Button, Card, Container, Divider, Header } from 'semantic-ui-react';
-import {
-  withFormik,
-  // Form as FormikForm,
-  // Field as FormikField,
-  FormikBag,
-  FormikProps,
-} from 'formik';
+import { withFormik, FormikBag, FormikProps } from 'formik';
 import { Form, Input, Select } from 'formik-semantic-ui-react';
 import * as Yup from 'yup';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { selectWorkbook } from 'features/workbook_view';
-import { addProblem, selectProblemNewLoading } from 'features/problem_new';
-
-import { AppDimmer, ErrorMessage } from 'components';
-import { useDidMount } from 'components/util';
-import { PrivateProblemBreadcrumb } from 'components/PrivateProblemBreadcrumb';
+import { AppDimmer, ErrorMessage, PrivateProblemBreadcrumb } from 'components';
+import { selectWorkbook } from 'features/workbook_get';
+import { addProblem, selectProblemAddLoading } from 'features/problem_add';
 import { EnglishWordProblemTypeId } from 'models/problem';
 import { WorkbookModel } from 'models/workbook';
 
@@ -47,7 +38,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
   const dispatch = useAppDispatch();
   const history = useHistory();
   const workbook = useAppSelector(selectWorkbook);
-  const problemAddLoading = useAppSelector(selectProblemNewLoading);
+  const problemAddLoading = useAppSelector(selectProblemAddLoading);
   const [values, setValues] = useState({
     text: 'pen',
     pos: '99',
@@ -55,7 +46,6 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
     // continue: false,
   });
   const [errorMessage, setErrorMessage] = useState('');
-  useDidMount(() => console.log('usedidmount'));
 
   interface OtherProps {
     loading: boolean;
@@ -130,7 +120,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
       values: FormValues,
       formikBag: FormikBag<FormProps, FormValues>
     ) => {
-      console.log('handleSubmit');
+      // onsole.log('handleSubmit');
       dispatch(
         addProblem({
           workbookId: workbookId,

@@ -14,18 +14,19 @@ import { createLogger } from 'redux-logger';
 
 import authReducer from 'features/auth';
 import routerReducer from 'features/router';
-import workbookNewReducer from 'features/workbook_new';
-import workbookListReducer from 'features/workbook_list';
-import workbookViewReducer from 'features/workbook_view';
+import workbookAddReducer from 'features/workbook_add';
+import workbookFindReducer from 'features/workbook_find';
+import workbookGetReducer from 'features/workbook_get';
 import workbookUpdateReducer from 'features/workbook_update';
 import workbookRemoveReducer from 'features/workbook_remove';
-import problemListReducer from 'features/problem_list';
-import problemNewReducer from 'features/problem_new';
-import problemUpdateReducer from 'features/problem_edit';
-import problemViewReducer from 'features/problem_view';
+import problemFindReducer from 'features/problem_find';
+import problemAddReducer from 'features/problem_add';
+import problemUpdateReducer from 'features/problem_update';
+import problemGetReducer from 'features/problem_get';
 import problemRemoveReducer from 'features/problem_remove';
 import problemImportReducer from 'features/problem_import';
-import recordbookReducer from 'features/recordbook';
+import recordbookGetReducer from 'features/recordbook_get';
+import recordAddReducer from 'features/record_add';
 import audioReducer from 'features/audio';
 import { ProblemFactory } from 'containers/workbook/problem/ProblemFactory';
 import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/problem/EnglishWordProblem';
@@ -43,18 +44,19 @@ export const rootReducer = combineReducers({
   auth: authReducer,
   router: routerReducer,
 
-  workbookList: workbookListReducer,
-  workbookNew: workbookNewReducer,
+  workbookFind: workbookFindReducer,
+  workbookAdd: workbookAddReducer,
   workbookUpdate: workbookUpdateReducer,
-  workbookView: workbookViewReducer,
+  workbookGet: workbookGetReducer,
   workbookRemove: workbookRemoveReducer,
-  problemList: problemListReducer,
-  problemNew: problemNewReducer,
+  problemFind: problemFindReducer,
+  problemAdd: problemAddReducer,
   problemUpdate: problemUpdateReducer,
-  problemView: problemViewReducer,
+  problemGet: problemGetReducer,
   problemRemove: problemRemoveReducer,
   problemImport: problemImportReducer,
-  recordbook: recordbookReducer,
+  recordbookGet: recordbookGetReducer,
+  recordAdd: recordAddReducer,
   audio: audioReducer,
 });
 

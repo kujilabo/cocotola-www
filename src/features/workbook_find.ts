@@ -10,30 +10,30 @@ import { jsonRequestConfig } from 'utils/util';
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/private/workbook';
 
 // Find my workbooks
-export type MyWorkbookSearchParameter = {
+export type MyWorkbookFindParameter = {
   pageNo: number;
   pageSize: number;
   spaceKey: string;
 };
-export type MyWorkbookSearchArg = {
-  param: MyWorkbookSearchParameter;
+export type MyWorkbookFindArg = {
+  param: MyWorkbookFindParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
-type MyWorkbookSearchResponse = {
+type MyWorkbookFindResponse = {
   results: WorkbookModel[];
   totalCount: number;
 };
-type MyWorkbookSearchResult = {
-  param: MyWorkbookSearchParameter;
-  response: MyWorkbookSearchResponse;
+type MyWorkbookFindResult = {
+  param: MyWorkbookFindParameter;
+  response: MyWorkbookFindResponse;
 };
 
 export const findMyWorkbooks = createAsyncThunk<
-  MyWorkbookSearchResult,
-  MyWorkbookSearchArg,
+  MyWorkbookFindResult,
+  MyWorkbookFindArg,
   BaseThunkApiConfig
->('private/workbook/list', async (arg: MyWorkbookSearchArg, thunkAPI) => {
+>('private/workbook/find', async (arg: MyWorkbookFindArg, thunkAPI) => {
   const url = `${baseUrl}/search`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -46,13 +46,13 @@ export const findMyWorkbooks = createAsyncThunk<
         .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           // onsole.log('the1', resp);
-          const response = resp.data as MyWorkbookSearchResponse;
+          const response = resp.data as MyWorkbookFindResponse;
           // onsole.log('the2', response);
           arg.postSuccessProcess();
           return {
             param: arg.param,
             response: response,
-          } as MyWorkbookSearchResult;
+          } as MyWorkbookFindResult;
         })
         .catch((err: Error) => {
           // console.log('catch', err);
@@ -63,7 +63,7 @@ export const findMyWorkbooks = createAsyncThunk<
     });
 });
 
-export interface WorkbookListState {
+export interface WorkbookFindState {
   value: number;
   loading: boolean;
   failed: boolean;
@@ -73,7 +73,7 @@ export interface WorkbookListState {
   workbooksTotalCount: number;
 }
 
-const initialState: WorkbookListState = {
+const initialState: WorkbookFindState = {
   value: 0,
   loading: false,
   failed: false,
@@ -83,8 +83,8 @@ const initialState: WorkbookListState = {
   workbooksTotalCount: 0,
 };
 
-export const workbookListSlice = createSlice({
-  name: 'workbook_list',
+export const workbookFindSlice = createSlice({
+  name: 'workbook_find',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -115,18 +115,18 @@ export const workbookListSlice = createSlice({
   },
 });
 
-export const selectWorkbookListLoading = (state: RootState): boolean =>
-  state.workbookList.loading;
+export const selectWorkbookFindLoading = (state: RootState): boolean =>
+  state.workbookFind.loading;
 
-export const selectWorkbookListFailed = (state: RootState): boolean =>
-  state.workbookList.failed;
+export const selectWorkbookFindFailed = (state: RootState): boolean =>
+  state.workbookFind.failed;
 
 export const selectWorkbooksLoadedMap = (
   state: RootState
-): { [key: string]: boolean } => state.workbookList.workbooksLoadedMap;
+): { [key: string]: boolean } => state.workbookFind.workbooksLoadedMap;
 
 export const selectWorkbooksMap = (
   state: RootState
-): { [key: string]: WorkbookModel[] } => state.workbookList.workbooksMap;
+): { [key: string]: WorkbookModel[] } => state.workbookFind.workbooksMap;
 
-export default workbookListSlice.reducer;
+export default workbookFindSlice.reducer;

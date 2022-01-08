@@ -11,9 +11,9 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { AppBreadcrumbLink, AudioButton, ErrorMessage } from 'components';
-import { selectWorkbook } from 'features/workbook_view';
-import { selectProblemMap } from 'features/problem_list';
-import { addRecord } from 'features/recordbook';
+import { selectWorkbook } from 'features/workbook_get';
+import { selectProblemMap } from 'features/problem_find';
+import { addRecord } from 'features/record_add';
 import { getAudio, selectAudioViewLoading } from 'features/audio';
 import { emptyFunction } from 'utils/util';
 import {

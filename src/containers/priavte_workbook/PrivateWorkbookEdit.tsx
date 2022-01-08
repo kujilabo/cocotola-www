@@ -16,7 +16,7 @@ import {
   getWorkbook,
   selectWorkbook,
   selectWorkbookGetLoading,
-} from 'features/workbook_view';
+} from 'features/workbook_get';
 import {
   updateWorkbook,
   selectWorkbookUpdateLoading,

@@ -8,8 +8,8 @@ import * as Yup from 'yup';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { ErrorMessage, PrivateProblemBreadcrumb } from 'components';
 
-import { updateProblem } from 'features/problem_edit';
-import { selectProblem } from 'features/problem_view';
+import { updateProblem } from 'features/problem_update';
+import { selectProblem } from 'features/problem_get';
 
 import { WorkbookModel } from 'models/workbook';
 import { ProblemModel, EnglishWordProblemTypeId } from 'models/problem';
@@ -129,7 +129,7 @@ export const EnglishWordProblemEdit: React.FC<EnglishWordProblemEditProps> = (
       values: FormValues,
       formikBag: FormikBag<FormProps, FormValues>
     ) => {
-      console.log('handleSubmit');
+      // onsole.log('handleSubmit');
       dispatch(
         updateProblem({
           param: {

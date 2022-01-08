@@ -46,7 +46,7 @@ export class ProblemFactory {
   ): React.ReactElement {
     const problemCreator = this.problemMap[problemType];
     if (!problemCreator) {
-      console.log('problemCreator not found', problemType, this.problemMap);
+      // onsole.log('problemCreator not found', problemType, this.problemMap);
       return <div>problemCreator not found</div>;
     }
     return problemCreator.createMenu(init, workbook);
@@ -119,7 +119,7 @@ export class ProblemFactory {
     problemType: string,
     studyType: string
   ): React.ReactElement {
-    console.log('createProblemStudy 1');
+    // onsole.log('createProblemStudy 1');
     const problemCreator = this.problemMap[problemType];
     if (!problemCreator) {
       console.log('problemCreator not found', problemType, this.problemMap);
@@ -131,14 +131,14 @@ export class ProblemFactory {
   initProblemStudy(
     problemType: string
   ): ActionCreatorWithPayload<string, string> {
-    console.log('initProblemStudy 1');
+    // onsole.log('initProblemStudy 1');
 
     const problemCreator = this.problemMap[problemType];
     if (!problemCreator) {
       console.log('problemCreator not found', problemType, this.problemMap);
       return emptySlice.actions.stringPayload;
     }
-    console.log('initProblemStudy 2');
+    // onsole.log('initProblemStudy 2');
     return problemCreator.initProblemStudy();
   }
 }

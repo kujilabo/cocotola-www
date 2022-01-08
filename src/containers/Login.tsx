@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button, Container, Menu } from 'semantic-ui-react';
 
-export function Login(): React.ReactElement {
+export const Login = (): React.ReactElement => {
   const googleAuth = () => {
     let url = 'https://accounts.google.com/o/oauth2/auth';
     url += '?client_id=';
@@ -31,4 +31,4 @@ export function Login(): React.ReactElement {
       </Container>
     </div>
   );
-}
+};

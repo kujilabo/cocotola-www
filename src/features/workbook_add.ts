@@ -6,34 +6,33 @@ import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
 import { jsonRequestConfig } from 'utils/util';
 
-const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
+const baseUrl = process.env.REACT_APP_BACKEND + '/v1/private/workbook';
 
-// Add problem
-export type ProblemAddParameter = {
-  number: number;
-  problemType: string;
-  properties: { [key: string]: string };
+// Add workbook
+export type WorkbookAddParameter = {
+  name: string;
+  questionText: string;
+  spaceKey: string;
 };
-export type ProblemAddArg = {
-  workbookId: number;
-  param: ProblemAddParameter;
+export type WorkbookAddArg = {
+  param: WorkbookAddParameter;
   postSuccessProcess: (id: number) => void;
   postFailureProcess: (error: string) => void;
 };
-type ProblemAddResponse = {
+type WorkbookAddResponse = {
   id: number;
 };
-type ProblemAddResult = {
-  param: ProblemAddParameter;
-  response: ProblemAddResponse;
+type WorkbookAddResult = {
+  param: WorkbookAddParameter;
+  response: WorkbookAddResponse;
 };
 
-export const addProblem = createAsyncThunk<
-  ProblemAddResult,
-  ProblemAddArg,
+export const addWorkbook = createAsyncThunk<
+  WorkbookAddResult,
+  WorkbookAddArg,
   BaseThunkApiConfig
->('problem/new', async (arg: ProblemAddArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.workbookId}/problem`;
+>('private/workbook/new', async (arg: WorkbookAddArg, thunkAPI) => {
+  const url = baseUrl;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -42,9 +41,9 @@ export const addProblem = createAsyncThunk<
       return axios
         .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
-          const response = resp.data as ProblemAddResponse;
+          const response = resp.data as WorkbookAddResponse;
           arg.postSuccessProcess(response.id);
-          return { param: arg.param, response: response } as ProblemAddResult;
+          return { param: arg.param, response: response } as WorkbookAddResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -54,35 +53,35 @@ export const addProblem = createAsyncThunk<
     });
 });
 
-export interface ProblemNewState {
+export interface WorkbookNewState {
   value: number;
   loading: boolean;
 }
 
-const initialState: ProblemNewState = {
+const initialState: WorkbookNewState = {
   value: 0,
   loading: false,
 };
 
-export const problemNewSlice = createSlice({
-  name: 'problem_new',
+export const workbookNewSlice = createSlice({
+  name: 'workbook_new',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(addProblem.pending, (state) => {
+      .addCase(addWorkbook.pending, (state) => {
         state.loading = true;
       })
-      .addCase(addProblem.fulfilled, (state, action) => {
+      .addCase(addWorkbook.fulfilled, (state, action) => {
         state.loading = false;
       })
-      .addCase(addProblem.rejected, (state, action) => {
+      .addCase(addWorkbook.rejected, (state, action) => {
         state.loading = false;
       });
   },
 });
 
-export const selectProblemNewLoading = (state: RootState) =>
-  state.problemNew.loading;
+export const selectWorkbookAddLoading = (state: RootState): boolean =>
+  state.workbookAdd.loading;
 
-export default problemNewSlice.reducer;
+export default workbookNewSlice.reducer;

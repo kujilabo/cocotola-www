@@ -75,7 +75,7 @@ export class EnglishWordProblem extends CustomProblem {
 
   createProblemStudy(studyType: string): React.ReactElement {
     if (studyType === 'memorization') {
-      console.log('createProblemStudy.memorization');
+      // onsole.log('createProblemStudy.memorization');
       return (
         <EnglishWordMemorization
           breadcrumbLinks={[
@@ -99,7 +99,7 @@ export class EnglishWordProblem extends CustomProblem {
   // }
 
   initProblemStudy(): ActionCreatorWithPayload<string> {
-    console.log('eng initProblemStudy');
+    // onsole.log('eng initProblemStudy');
     return initEnglishWordStatus;
   }
 }

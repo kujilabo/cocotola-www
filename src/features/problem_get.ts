@@ -5,30 +5,31 @@ import { RootState, BaseThunkApiConfig } from 'app/store';
 import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
 import { ProblemModel } from 'models/problem';
+import { jsonHeaders } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/v1/workbook';
 
-// Find problem
-export type ProblemViewParameter = {
+// Get problem
+export type ProblemGetParameter = {
   workbookId: number;
   problemId: number;
 };
-export type ProblemViewArg = {
-  param: ProblemViewParameter;
-  postSuccessProcess: () => void;
+export type ProblemGetArg = {
+  param: ProblemGetParameter;
+  postSuccessProcess: (problem: ProblemModel) => void;
   postFailureProcess: (error: string) => void;
 };
 
-type ProblemViewReult = {
-  param: ProblemViewParameter;
+type ProblemGetReult = {
+  param: ProblemGetParameter;
   response: ProblemModel;
 };
 
 export const getProblem = createAsyncThunk<
-  ProblemViewReult,
-  ProblemViewArg,
+  ProblemGetReult,
+  ProblemGetArg,
   BaseThunkApiConfig
->('problem/view', async (arg: ProblemViewArg, thunkAPI) => {
+>('problem/get', async (arg: ProblemGetArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -36,17 +37,11 @@ export const getProblem = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .get(url, {
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
-          data: {},
-        })
+        .get(url, { headers: jsonHeaders(accessToken), data: {} })
         .then((resp) => {
           const response = resp.data as ProblemModel;
-          arg.postSuccessProcess();
-          return { param: arg.param, response: response } as ProblemViewReult;
+          arg.postSuccessProcess(response);
+          return { param: arg.param, response: response } as ProblemGetReult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -56,7 +51,7 @@ export const getProblem = createAsyncThunk<
     });
 });
 
-export interface ProblemViewState {
+export interface ProblemGetState {
   value: number;
   loading: boolean;
   failed: boolean;
@@ -71,15 +66,15 @@ const defaultProblem = {
   problemType: '',
   properties: {},
 };
-const initialState: ProblemViewState = {
+const initialState: ProblemGetState = {
   value: 0,
   loading: false,
   failed: false,
   problem: defaultProblem,
 };
 
-export const problemViewSlice = createSlice({
-  name: 'problem_view',
+export const problemGetSlice = createSlice({
+  name: 'problem_get',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -88,22 +83,22 @@ export const problemViewSlice = createSlice({
         state.loading = true;
       })
       .addCase(getProblem.fulfilled, (state, action) => {
-        console.log('problem', action.payload.response);
+        // onsole.log('problem', action.payload.response);
         state.loading = false;
         state.failed = false;
         state.problem = action.payload.response;
       })
       .addCase(getProblem.rejected, (state, action) => {
-        console.log('rejected', action);
+        // onsole.log('rejected', action);
         state.loading = false;
         state.failed = true;
       });
   },
 });
 
-export const selectProblemViewLoading = (state: RootState) =>
-  state.problemView.loading;
+export const selectProblemGetLoading = (state: RootState) =>
+  state.problemGet.loading;
 
-export const selectProblem = (state: RootState) => state.problemView.problem;
+export const selectProblem = (state: RootState) => state.problemGet.problem;
 
-export default problemViewSlice.reducer;
+export default problemGetSlice.reducer;
