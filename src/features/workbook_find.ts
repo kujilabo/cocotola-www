@@ -55,7 +55,6 @@ export const findMyWorkbooks = createAsyncThunk<
           } as MyWorkbookFindResult;
         })
         .catch((err: Error) => {
-          // console.log('catch', err);
           const errorMessage = extractErrorMessage(err);
           arg.postFailureProcess(errorMessage);
           return thunkAPI.rejectWithValue(errorMessage);

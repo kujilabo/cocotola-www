@@ -31,6 +31,10 @@ import audioReducer from 'features/audio';
 import { ProblemFactory } from 'containers/workbook/problem/ProblemFactory';
 import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/problem/EnglishWordProblem';
 
+// plugin
+import translationFindReducer from 'plugins/translation/features/translation_find';
+import translationGetReducer from 'plugins/translation/features/translation_get';
+
 const englishWordProblem = new EnglishWordProblem();
 export const problemFactory = new ProblemFactory({
   english_word: englishWordProblem,
@@ -58,6 +62,9 @@ export const rootReducer = combineReducers({
   recordbookGet: recordbookGetReducer,
   recordAdd: recordAddReducer,
   audio: audioReducer,
+  // plugin
+  translationFind: translationFindReducer,
+  translationGet: translationGetReducer,
 });
 
 const persistConfig = {

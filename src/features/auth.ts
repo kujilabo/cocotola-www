@@ -26,7 +26,7 @@ export const refreshAccessToken = createAsyncThunk<
   RefreshTokenParameter,
   BaseThunkApiConfig
 >('auth/refresh_token', async (arg: RefreshTokenParameter, thunkAPI) => {
-  // console.log('refreshAccessToken1 aaa');
+  // onsole.log('refreshAccessToken1 aaa');
   const { accessToken } = thunkAPI.getState().auth;
   const accessTokenExpired = tokenExpired(accessToken);
   // onsole.log('refreshAccessToken1 bbb');

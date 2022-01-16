@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
-import { Menu } from 'semantic-ui-react';
+import { Menu, Dropdown } from 'semantic-ui-react';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
@@ -17,6 +17,11 @@ import { PrivateProblemImport } from 'containers/workbook/problem/PrivateProblem
 import { WorkbookStudy } from 'containers/workbook/study/WorkbookStudy';
 import { Home } from 'containers/Home';
 import { NotFound } from 'containers/NotFound';
+
+// plugin
+import { TranslationList } from 'plugins/translation/containers/TranslationList';
+import { TranslationEdit } from 'plugins/translation/containers/TranslationEdit';
+
 import 'App.css';
 
 export interface AppJwtPayload extends JwtPayload {
@@ -59,6 +64,16 @@ export const App = (): React.ReactElement => {
           name="Public space"
           onClick={redirectToDefaultSpace}
         ></Menu.Item>
+        <Dropdown item text="Language">
+          <Dropdown.Menu>
+            <Dropdown.Item
+              onClick={() => history.push('/plugin/translation/list')}
+            >
+              Translation
+            </Dropdown.Item>
+          </Dropdown.Menu>
+        </Dropdown>
+
         <Menu.Item
           name={username + ' Logout'}
           position="right"
@@ -95,6 +110,18 @@ export const App = (): React.ReactElement => {
         <Route exact path="/app/workbook/:_workbookId/study/:_studyType">
           <WorkbookStudy />
         </Route>
+
+        {/* plugin */}
+        <Route exact path="/plugin/translation/list">
+          <TranslationList />
+        </Route>
+        <Route exact path="/plugin/translation/list/:_letter">
+          <TranslationList />
+        </Route>
+        <Route exact path="/plugin/translation/:_text/:_pos/edit">
+          <TranslationEdit />
+        </Route>
+
         <Route exact path="">
           <Home />
         </Route>
