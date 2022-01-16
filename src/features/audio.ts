@@ -30,7 +30,7 @@ export const getAudio = createAsyncThunk<
   AudioViewResult,
   AudioViewArg,
   BaseThunkApiConfig
->('audio/view', async (arg: AudioViewArg, thunkAPI) => {
+>('audio/get', async (arg: AudioViewArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.id}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -54,27 +54,24 @@ export const getAudio = createAsyncThunk<
 });
 
 export interface AudioViewState {
-  value: number;
   loading: boolean;
   failed: boolean;
   audio: AudioModel;
 }
-
-const defaultAudio = {
+const defaultAudio: AudioModel = {
   id: 0,
   lang: '',
   text: '',
   audioContent: '',
 };
 const initialState: AudioViewState = {
-  value: 0,
   loading: false,
   failed: false,
   audio: defaultAudio,
 };
 
 export const audioSlice = createSlice({
-  name: 'audio_view',
+  name: 'audio_get',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -88,7 +85,7 @@ export const audioSlice = createSlice({
         state.audio = action.payload.response;
       })
       .addCase(getAudio.rejected, (state, action) => {
-        console.log('rejected', action);
+        // onsole.log('rejected', action);
         state.loading = false;
         state.failed = true;
       });

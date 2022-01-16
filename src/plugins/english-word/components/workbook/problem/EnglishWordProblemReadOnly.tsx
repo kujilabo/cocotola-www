@@ -17,7 +17,7 @@ export const EnglishWordProblemReadOnly: React.FC<
   // };
 
   return (
-    <Card className="full-width">
+    <Card>
       <Card.Content>
         <Card.Header>{props.problem.properties['text']}</Card.Header>
       </Card.Content>
