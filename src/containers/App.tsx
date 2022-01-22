@@ -115,9 +115,9 @@ export const App = (): React.ReactElement => {
         <Route exact path="/plugin/translation/list">
           <TranslationList />
         </Route>
-        <Route exact path="/plugin/translation/list/:_letter">
+        {/* <Route exact path="/plugin/translation/list/:_letter">
           <TranslationList />
-        </Route>
+        </Route> */}
         <Route exact path="/plugin/translation/:_text/:_pos/edit">
           <TranslationEdit />
         </Route>

@@ -34,6 +34,7 @@ import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/pro
 // plugin
 import translationFindReducer from 'plugins/translation/features/translation_find';
 import translationGetReducer from 'plugins/translation/features/translation_get';
+import translationUpdateReducer from 'plugins/translation/features/translation_update';
 
 const englishWordProblem = new EnglishWordProblem();
 export const problemFactory = new ProblemFactory({
@@ -65,6 +66,7 @@ export const rootReducer = combineReducers({
   // plugin
   translationFind: translationFindReducer,
   translationGet: translationGetReducer,
+  translationUpdate: translationUpdateReducer,
 });
 
 const persistConfig = {

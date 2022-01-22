@@ -102,6 +102,6 @@ export const selectTranslationGetFailed = (state: RootState): boolean =>
   state.translationGet.failed;
 
 export const selectTranslation = (state: RootState) =>
-  state.workbookGet.workbook;
+  state.translationGet.translation;
 
 export default translationGetSlice.reducer;
