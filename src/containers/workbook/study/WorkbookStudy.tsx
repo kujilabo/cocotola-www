@@ -28,10 +28,9 @@ export const WorkbookStudy = () => {
   const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
-  const loading =
-    useAppSelector(selectWorkbookGetLoading) ||
-    useAppSelector(selectProblemFindLoading) ||
-    useAppSelector(selectRecordbookGetLoading);
+  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
+  const problemListLoading = useAppSelector(selectProblemFindLoading);
+  const recordbookViewLoading = useAppSelector(selectRecordbookGetLoading);
   const [errorMessage, setErrorMessage] = useState('');
 
   // find workbook and all problems
@@ -72,7 +71,7 @@ export const WorkbookStudy = () => {
     );
   }, [dispatch, _workbookId, workbook.problemType]);
 
-  if (loading) {
+  if (workbookGetLoading || problemListLoading || recordbookViewLoading) {
     return <AppDimmer />;
   } else if (errorMessage !== '') {
     return <div>{errorMessage}</div>;

@@ -16,7 +16,7 @@ export type TranslationGetParameter = {
 };
 export type TranslationGetArg = {
   param: TranslationGetParameter;
-  postSuccessProcess: (translation: TranslationModel) => void;
+  postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
 type TranslationGetResult = {
@@ -38,7 +38,7 @@ export const getTranslation = createAsyncThunk<
         .get(url, { headers: jsonHeaders(accessToken), data: {} })
         .then((resp) => {
           const response = resp.data as TranslationModel;
-          arg.postSuccessProcess(response);
+          arg.postSuccessProcess();
           return {
             param: arg.param,
             response: response,

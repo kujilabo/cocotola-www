@@ -74,16 +74,13 @@ type ParamTypes = {
 
 export const TranslationEdit = (): React.ReactElement => {
   const { _text, _pos } = useParams<ParamTypes>();
-  const text = _text;
-  const pos = _pos;
-  console.log(text);
-  console.log(pos);
-
   const dispatch = useAppDispatch();
   const history = useHistory();
-  const loading =
-    useAppSelector(selectTranslationGetLoading) ||
-    useAppSelector(selectTranslationUpdateLoading);
+  const translationGetLoading = useAppSelector(selectTranslationGetLoading);
+  const translationUpdateLoading = useAppSelector(
+    selectTranslationUpdateLoading
+  );
+  const loading = translationGetLoading || translationUpdateLoading;
   const translation = useAppSelector(selectTranslation);
   // const [values, setValues] = useState({
   //   text: '' + translation.text,
@@ -94,14 +91,14 @@ export const TranslationEdit = (): React.ReactElement => {
     dispatch(
       getTranslation({
         param: {
-          text: 'again',
-          pos: 2,
+          text: _text,
+          pos: +_pos,
         },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
       })
     );
-  }, [dispatch]);
+  }, [dispatch, _text, _pos]);
 
   if (loading) {
     return <AppDimmer />;

@@ -29,10 +29,9 @@ export const PrivateProblemImport = (): React.ReactElement => {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const workbook = useAppSelector(selectWorkbook);
-  const loading =
-    useAppSelector(selectWorkbookGetLoading) ||
-    useAppSelector(selectProblemImportLoading);
+  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
   const workbookGetFailed = useAppSelector(selectWorkbookGetFailed);
+  const problemImportLoading = useAppSelector(selectProblemImportLoading);
   const dispatch = useAppDispatch();
   const [file, setFile] = useState({});
   // const [fileName, setFileName] = useState({});
@@ -79,6 +78,8 @@ export const PrivateProblemImport = (): React.ReactElement => {
   if (workbookGetFailed) {
     return <div>failed</div>;
   }
+
+  const loading = workbookGetLoading || problemImportLoading;
 
   return (
     <Container fluid>
