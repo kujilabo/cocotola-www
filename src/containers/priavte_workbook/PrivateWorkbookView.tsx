@@ -76,16 +76,14 @@ type ParamTypes = {
   _workbookId: string;
 };
 
-export const PrivateWorkbookView = (): React.ReactElement => {
+export function PrivateWorkbookView(): React.ReactElement {
   const { _workbookId } = useParams<ParamTypes>();
   const workbookId = +_workbookId;
   const dispatch = useAppDispatch();
-  const loading =
-    useAppSelector(selectWorkbookGetLoading) ||
-    useAppSelector(selectProblemFindLoading);
-  const failed =
-    useAppSelector(selectWorkbookGetFailed) ||
-    useAppSelector(selectProblemFindFailed);
+  const workbookGetLoading = useAppSelector(selectWorkbookGetLoading);
+  const workbookGetFailed = useAppSelector(selectWorkbookGetFailed);
+  const problemFindLoading = useAppSelector(selectProblemFindLoading);
+  const problemFindFailed = useAppSelector(selectProblemFindFailed);
   const problems = useAppSelector(selectProblems);
   const problemsTotalCount = useAppSelector(selectProblemsTotalCount);
   const workbook = useAppSelector(selectWorkbook);
@@ -131,9 +129,11 @@ export const PrivateWorkbookView = (): React.ReactElement => {
     );
   }, [dispatch, workbookId, pageNo]);
 
-  if (failed) {
-    return <div>Error</div>;
+  if (workbookGetFailed || problemFindFailed) {
+    return <div></div>;
   }
+
+  const loading = workbookGetLoading || problemFindLoading;
 
   let totalPages = Math.floor(problemsTotalCount / 10);
   const mod = problemsTotalCount % 10;
@@ -207,4 +207,4 @@ export const PrivateWorkbookView = (): React.ReactElement => {
       </Grid>
     </Container>
   );
-};
+}

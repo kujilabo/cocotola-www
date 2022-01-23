@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
 import { Button, Card, Container, Divider, Header } from 'semantic-ui-react';
-import { withFormik, FormikBag, FormikProps } from 'formik';
+import {
+  withFormik,
+  // Form as FormikForm,
+  // Field as FormikField,
+  FormikBag,
+  FormikProps,
+} from 'formik';
 import { Form, Input, Select } from 'formik-semantic-ui-react';
 import * as Yup from 'yup';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
-import { AppDimmer, ErrorMessage, PrivateProblemBreadcrumb } from 'components';
 import { selectWorkbook } from 'features/workbook_get';
 import { addProblem, selectProblemAddLoading } from 'features/problem_add';
+
+import { AppDimmer, ErrorMessage } from 'components';
+import { useDidMount } from 'components/util';
+import { PrivateProblemBreadcrumb } from 'components/PrivateProblemBreadcrumb';
 import { EnglishWordProblemTypeId } from 'models/problem';
 import { WorkbookModel } from 'models/workbook';
 
@@ -46,6 +55,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
     // continue: false,
   });
   const [errorMessage, setErrorMessage] = useState('');
+  useDidMount(() => console.log('usedidmount'));
 
   interface OtherProps {
     loading: boolean;
@@ -120,7 +130,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
       values: FormValues,
       formikBag: FormikBag<FormProps, FormValues>
     ) => {
-      // onsole.log('handleSubmit');
+      console.log('handleSubmit');
       dispatch(
         addProblem({
           workbookId: workbookId,

@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import {
+  useHistory,
+  //  useParams
+} from 'react-router-dom';
 import {
   Button,
   Container,
@@ -16,31 +19,32 @@ import {
   selectTranslations,
 } from '../features/translation_find';
 import { AppBreadcrumb, AppDimmer, ErrorMessage } from 'components';
-import { TranslationModel } from '../models/translation';
 import { emptyFunction } from 'utils/util';
+import { AlphabetLinks } from '../components/AlphabetLinks';
+import { TranslationModel } from '../models/translation';
 import { toDsiplayText } from '../../english-word/utils/util';
 import 'App.css';
 
-type ParamTypes = {
-  _letter: string;
-};
+// type ParamTypes = {
+//   _letter: string;
+// };
 
 export const TranslationList = (): React.ReactElement => {
-  const { _letter } = useParams<ParamTypes>();
+  console.log('DRAW TranslationList');
+  // const { _letter } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const history = useHistory();
   const loading = useAppSelector(selectTranslationFindLoading);
   const translations = useAppSelector(selectTranslations);
   const [errorMessage, setErrorMessage] = useState('');
-  const letter = _letter == '' ? 'a' : _letter;
+  const [letter, setLetter] = useState('a');
   const baseUrl = `/plugin/translation`;
+  const onAlphabetClick = (letter: string) => setLetter(letter);
 
   useEffect(() => {
     dispatch(
       findTranslations({
-        param: {
-          letter: 'a',
-        },
+        param: { letter: letter },
         postSuccessProcess: emptyFunction,
         postFailureProcess: setErrorMessage,
       })
@@ -60,6 +64,11 @@ export const TranslationList = (): React.ReactElement => {
           {loading ? <AppDimmer /> : <div />}
           <Grid.Column mobile={16} tablet={16} computer={3}></Grid.Column>
           <Grid.Column mobile={16} tablet={16} computer={13}>
+            <Grid doubling columns={1}>
+              <Grid.Column>
+                <AlphabetLinks onClick={onAlphabetClick} />
+              </Grid.Column>
+            </Grid>
             <Grid doubling columns={3}>
               {translations.map((m: TranslationModel, i: number) => {
                 return (

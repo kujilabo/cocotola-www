@@ -4,30 +4,32 @@ import axios from 'axios';
 import { RootState, BaseThunkApiConfig } from 'app/store';
 import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
-import { TranslationModel } from '../models/translation';
+// import { TranslationModel } from '../models/translation';
 import { jsonHeaders } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/plugin/translation';
 
-// Get translation
-export type TranslationGetParameter = {
+// Update translation
+export type TranslationUpdateParameter = {
+  version: number;
   text: string;
   pos: number;
+  translated: string;
+  lang: string;
 };
-export type TranslationGetArg = {
-  param: TranslationGetParameter;
+export type TranslationUpdateArg = {
+  param: TranslationUpdateParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
-type TranslationGetResult = {
-  param: TranslationGetParameter;
-  response: TranslationModel;
+type TranslationUpdateResult = {
+  param: TranslationUpdateParameter;
 };
-export const getTranslation = createAsyncThunk<
-  TranslationGetResult,
-  TranslationGetArg,
+export const updateTranslation = createAsyncThunk<
+  TranslationUpdateResult,
+  TranslationUpdateArg,
   BaseThunkApiConfig
->('translation/get', async (arg: TranslationGetArg, thunkAPI) => {
+>('translation/update', async (arg: TranslationUpdateArg, thunkAPI) => {
   const url = `${baseUrl}/${arg.param.text}/${arg.param.pos}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -35,14 +37,12 @@ export const getTranslation = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .get(url, { headers: jsonHeaders(accessToken), data: {} })
+        .put(url, { headers: jsonHeaders(accessToken), data: {} })
         .then((resp) => {
-          const response = resp.data as TranslationModel;
           arg.postSuccessProcess();
           return {
             param: arg.param,
-            response: response,
-          } as TranslationGetResult;
+          } as TranslationUpdateResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -52,42 +52,30 @@ export const getTranslation = createAsyncThunk<
     });
 });
 
-export interface TranslationGetState {
+export interface TranslationUpdateState {
   loading: boolean;
   failed: boolean;
-  translation: TranslationModel;
 }
-const defaultTranslation = {
-  id: 0,
-  version: 0,
-  updatedAt: '',
-  text: '',
-  pos: 0,
-  translated: '',
-  lang: '',
-};
-const initialState: TranslationGetState = {
+const initialState: TranslationUpdateState = {
   loading: false,
   failed: false,
-  translation: defaultTranslation,
 };
 
-export const translationGetSlice = createSlice({
-  name: 'translation_get',
+export const translationUpdateSlice = createSlice({
+  name: 'translation_update',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getTranslation.pending, (state) => {
+      .addCase(updateTranslation.pending, (state) => {
         state.loading = true;
       })
-      .addCase(getTranslation.fulfilled, (state, action) => {
+      .addCase(updateTranslation.fulfilled, (state, action) => {
         // onsole.log('workbook', action.payload.response);
         state.loading = false;
         state.failed = false;
-        state.translation = action.payload.response;
       })
-      .addCase(getTranslation.rejected, (state, action) => {
+      .addCase(updateTranslation.rejected, (state, action) => {
         // onsole.log('rejected', action);
         state.loading = false;
         state.failed = true;
@@ -95,13 +83,10 @@ export const translationGetSlice = createSlice({
   },
 });
 
-export const selectTranslationGetLoading = (state: RootState): boolean =>
-  state.translationGet.loading;
+export const selectTranslationUpdateLoading = (state: RootState): boolean =>
+  state.translationUpdate.loading;
 
-export const selectTranslationGetFailed = (state: RootState): boolean =>
-  state.translationGet.failed;
+export const selectTranslationUpdateFailed = (state: RootState): boolean =>
+  state.translationUpdate.failed;
 
-export const selectTranslation = (state: RootState) =>
-  state.translationGet.translation;
-
-export default translationGetSlice.reducer;
+export default translationUpdateSlice.reducer;

@@ -29,6 +29,58 @@ const posOptions1 = [
 ];
 const langOptions = [{ key: 'ja', text: 'ja', value: 'ja' }];
 
+interface FormValues {
+  number: number;
+  text: string;
+  pos: string;
+  lang: string;
+  translated: string;
+}
+const InnerForm = (props: FormikProps<FormValues>) => {
+  const { values, isSubmitting } = props;
+  return (
+    <Form>
+      <Card>
+        <Card.Content>
+          <Header component="h2">Edit problem</Header>
+        </Card.Content>
+        <Card.Content>
+          <Input
+            name="text"
+            label="Word"
+            placeholder="english word"
+            errorPrompt
+          />
+          <Select
+            name="pos"
+            label="Pos"
+            options={posOptions1}
+            value={values.pos}
+            errorPrompt
+          />
+          <Select
+            name="lang"
+            label="Lang"
+            options={langOptions}
+            value={values.lang}
+            errorPrompt
+          />
+        </Card.Content>
+        <Card.Content>
+          <Button
+            type="submit"
+            variant="true"
+            color="teal"
+            disabled={isSubmitting}
+          >
+            Update
+          </Button>
+        </Card.Content>
+      </Card>
+    </Form>
+  );
+};
+
 type ParamTypes = {
   _workbookId: string;
   _problemId: string;
@@ -52,57 +104,6 @@ export const EnglishWordProblemEdit: React.FC<EnglishWordProblemEditProps> = (
   });
   const [errorMessage, setErrorMessage] = useState('');
 
-  interface FormValues {
-    number: number;
-    text: string;
-    pos: string;
-    lang: string;
-    translated: string;
-  }
-  const InnerForm = (props: FormikProps<FormValues>) => {
-    const { values, isSubmitting } = props;
-    return (
-      <Form>
-        <Card>
-          <Card.Content>
-            <Header component="h2">Edit problem</Header>
-          </Card.Content>
-          <Card.Content>
-            <Input
-              name="text"
-              label="Word"
-              placeholder="english word"
-              errorPrompt
-            />
-            <Select
-              name="pos"
-              label="Pos"
-              options={posOptions1}
-              value={values.pos}
-              errorPrompt
-            />
-            <Select
-              name="lang"
-              label="Lang"
-              options={langOptions}
-              value={values.lang}
-              errorPrompt
-            />
-          </Card.Content>
-          <Card.Content>
-            <Button
-              type="submit"
-              variant="true"
-              color="teal"
-              disabled={isSubmitting}
-            >
-              Update
-            </Button>
-          </Card.Content>
-        </Card>
-      </Form>
-    );
-  };
   interface FormProps {
     number: number;
     text: string;
@@ -111,20 +112,16 @@ export const EnglishWordProblemEdit: React.FC<EnglishWordProblemEditProps> = (
     translated: string;
   }
   const InnerFormikForm = withFormik<FormProps, FormValues>({
-    mapPropsToValues: (props: FormProps) => {
-      return {
-        number: props.number,
-        text: props.text,
-        pos: props.pos,
-        lang: props.lang,
-        translated: props.translated,
-      };
-    },
-
+    mapPropsToValues: (props: FormProps) => ({
+      number: props.number,
+      text: props.text,
+      pos: props.pos,
+      lang: props.lang,
+      translated: props.translated,
+    }),
     validationSchema: Yup.object().shape({
       text: Yup.string().required('Word is required'),
     }),
-
     handleSubmit: (
       values: FormValues,
       formikBag: FormikBag<FormProps, FormValues>
