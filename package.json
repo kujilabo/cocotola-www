@@ -17,12 +17,15 @@
     "@types/react-router-dom": "^5.1.8",
     "@types/redux-logger": "^3.0.9",
     "axios": "^0.21.1",
+    "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "formik-semantic-ui-react": "^2.0.0",
+    "i18next": "^21.6.7",
     "jwt-decode": "^3.1.2",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "react-i18next": "^11.15.3",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",
     "redux": "^4.1.0",
@@ -59,7 +62,7 @@
     ]
   },
   "devDependencies": {
-    "react-scripts": "^4.0.3",
+    "@types/file-saver": "^2.0.5",
     "@types/jest": "26.0.24",
     "@typescript-eslint/eslint-plugin": "^4.28.4",
     "@typescript-eslint/parser": "^4.28.4",
@@ -69,6 +72,7 @@
     "jest": "26.6.0",
     "jest-environment-jsdom": "^27.0.6",
     "prettier": "^2.3.2",
+    "react-scripts": "^4.0.3",
     "ts-jest": "26.5.6",
     "typescript": "^4.3.5"
   }

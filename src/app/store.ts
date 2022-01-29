@@ -34,7 +34,12 @@ import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/pro
 // plugin
 import translationFindReducer from 'plugins/translation/features/translation_find';
 import translationGetReducer from 'plugins/translation/features/translation_get';
+import translationGetListReducer from 'plugins/translation/features/translation_get_list';
+import translationAddReducer from 'plugins/translation/features/translation_add';
 import translationUpdateReducer from 'plugins/translation/features/translation_update';
+import translationRemoveReducer from 'plugins/translation/features/translation_remove';
+import translationImportReducer from 'plugins/translation/features/translation_import';
+import translationExportReducer from 'plugins/translation/features/translation_export';
 
 const englishWordProblem = new EnglishWordProblem();
 export const problemFactory = new ProblemFactory({
@@ -66,7 +71,12 @@ export const rootReducer = combineReducers({
   // plugin
   translationFind: translationFindReducer,
   translationGet: translationGetReducer,
+  translationGetList: translationGetListReducer,
+  translationAdd: translationAddReducer,
   translationUpdate: translationUpdateReducer,
+  translationRemove: translationRemoveReducer,
+  translationImport: translationImportReducer,
+  translationExport: translationExportReducer,
 });
 
 const persistConfig = {

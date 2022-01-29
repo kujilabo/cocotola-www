@@ -1,4 +1,6 @@
 import React from 'react';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { Menu, Dropdown } from 'semantic-ui-react';
@@ -21,12 +23,34 @@ import { NotFound } from 'containers/NotFound';
 // plugin
 import { TranslationList } from 'plugins/translation/containers/TranslationList';
 import { TranslationEdit } from 'plugins/translation/containers/TranslationEdit';
+import { TranslationImport } from 'plugins/translation/containers/TranslationImport';
 
 import 'App.css';
 
 export interface AppJwtPayload extends JwtPayload {
   username: string;
 }
+i18n.use(initReactI18next).init({
+  resources: {
+    en: {
+      translation: {
+        Word: 'Word',
+        Pos: 'Pos',
+        Translated: 'Translated',
+      },
+    },
+    ja: {
+      translation: {
+        Word: '英単語',
+        Pos: '品詞',
+        Translated: '翻訳',
+      },
+    },
+  },
+  lng: 'ja',
+  fallbackLng: 'ja',
+  interpolation: { escapeValue: false },
+});
 
 export const App = (): React.ReactElement => {
   const dispatch = useAppDispatch();
@@ -64,7 +88,7 @@ export const App = (): React.ReactElement => {
           name="Public space"
           onClick={redirectToDefaultSpace}
         ></Menu.Item>
-        <Dropdown item text="Language">
+        <Dropdown item text="Plugin">
           <Dropdown.Menu>
             <Dropdown.Item
               onClick={() => history.push('/plugin/translation/list')}
@@ -77,9 +101,7 @@ export const App = (): React.ReactElement => {
         <Menu.Item
           name={username + ' Logout'}
           position="right"
-          onClick={() => {
-            dispatch(logout());
-          }}
+          onClick={() => dispatch(logout())}
         ></Menu.Item>
       </Menu>
       <Switch>
@@ -121,8 +143,11 @@ export const App = (): React.ReactElement => {
         <Route exact path="/plugin/translation/:_text/:_pos/edit">
           <TranslationEdit />
         </Route>
+        <Route exact path="/plugin/translation/import">
+          <TranslationImport />
+        </Route>
 
-        <Route exact path="">
+        <Route exact path="/">
           <Home />
         </Route>
         <Route>

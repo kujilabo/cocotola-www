@@ -42,7 +42,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
   const { isSubmitting, loading, onRemoveButtonClick } = props;
   return (
     <Form>
-      <Card className="full-width">
+      <Card>
         <Card.Content>
           <Header component="h2">Edit workbook</Header>
         </Card.Content>
@@ -177,8 +177,11 @@ export const PrivateWorkbookEdit = (): React.ReactElement => {
   return (
     <Container fluid>
       <AppBreadcrumb
-        links={[{ text: 'workbook', url: '/app/private/workbook' }]}
-        text={workbookId.toString()}
+        links={[
+          { text: 'My Workbooks', url: '/app/private/workbook' },
+          { text: workbook.name, url: `/app/private/workbook/${workbookId}` },
+        ]}
+        text={'Edit'}
       />
       <Divider hidden />
       <InnerFormikForm

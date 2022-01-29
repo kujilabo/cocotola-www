@@ -16,3 +16,10 @@ export const jsonRequestConfig = (accessToken: string): AxiosRequestConfig => {
     headers: jsonHeaders(accessToken),
   };
 };
+
+export const blobRequestConfig = (accessToken: string): AxiosRequestConfig => {
+  return {
+    responseType: 'blob',
+    headers: { Authorization: `Bearer ${accessToken}` },
+  };
+};

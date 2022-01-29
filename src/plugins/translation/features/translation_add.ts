@@ -9,39 +9,39 @@ import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/plugin/translation';
 
-// Update translation
-export type TranslationUpdateParameter = {
+// Add translation
+export type TranslationAddParameter = {
   text: string;
   pos: number;
   translated: string;
   lang: string;
 };
-export type TranslationUpdateArg = {
-  param: TranslationUpdateParameter;
+export type TranslationAddArg = {
+  param: TranslationAddParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
-type TranslationUpdateResult = {
-  param: TranslationUpdateParameter;
+type TranslationAddResult = {
+  param: TranslationAddParameter;
 };
-export const updateTranslation = createAsyncThunk<
-  TranslationUpdateResult,
-  TranslationUpdateArg,
+export const addTranslation = createAsyncThunk<
+  TranslationAddResult,
+  TranslationAddArg,
   BaseThunkApiConfig
->('translation/update', async (arg: TranslationUpdateArg, thunkAPI) => {
-  const url = `${baseUrl}/text/${arg.param.text}/pos/${arg.param.pos}`;
+>('translation/add', async (arg: TranslationAddArg, thunkAPI) => {
+  const url = `${baseUrl}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .put(url, arg.param, jsonRequestConfig(accessToken))
+        .post(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           arg.postSuccessProcess();
           return {
             param: arg.param,
-          } as TranslationUpdateResult;
+          } as TranslationAddResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -51,30 +51,30 @@ export const updateTranslation = createAsyncThunk<
     });
 });
 
-export interface TranslationUpdateState {
+export interface TranslationAddState {
   loading: boolean;
   failed: boolean;
 }
-const initialState: TranslationUpdateState = {
+const initialState: TranslationAddState = {
   loading: false,
   failed: false,
 };
 
-export const translationUpdateSlice = createSlice({
-  name: 'translation_update',
+export const translationAddSlice = createSlice({
+  name: 'translation_add',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(updateTranslation.pending, (state) => {
+      .addCase(addTranslation.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateTranslation.fulfilled, (state, action) => {
+      .addCase(addTranslation.fulfilled, (state, action) => {
         // onsole.log('workbook', action.payload.response);
         state.loading = false;
         state.failed = false;
       })
-      .addCase(updateTranslation.rejected, (state, action) => {
+      .addCase(addTranslation.rejected, (state, action) => {
         // onsole.log('rejected', action);
         state.loading = false;
         state.failed = true;
@@ -82,10 +82,10 @@ export const translationUpdateSlice = createSlice({
   },
 });
 
-export const selectTranslationUpdateLoading = (state: RootState): boolean =>
-  state.translationUpdate.loading;
+export const selectTranslationAddLoading = (state: RootState): boolean =>
+  state.translationAdd.loading;
 
-export const selectTranslationUpdateFailed = (state: RootState): boolean =>
-  state.translationUpdate.failed;
+export const selectTranslationAddFailed = (state: RootState): boolean =>
+  state.translationAdd.failed;
 
-export default translationUpdateSlice.reducer;
+export default translationAddSlice.reducer;

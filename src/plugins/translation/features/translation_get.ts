@@ -28,7 +28,7 @@ export const getTranslation = createAsyncThunk<
   TranslationGetArg,
   BaseThunkApiConfig
 >('translation/get', async (arg: TranslationGetArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.param.text}/${arg.param.pos}`;
+  const url = `${baseUrl}/text/${arg.param.text}/pos/${arg.param.pos}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -65,6 +65,7 @@ const defaultTranslation = {
   pos: 0,
   translated: '',
   lang: '',
+  provider: '',
 };
 const initialState: TranslationGetState = {
   loading: false,

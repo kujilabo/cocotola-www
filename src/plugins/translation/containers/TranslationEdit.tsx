@@ -1,156 +1,179 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
-import {
-  Button,
-  Card,
-  Container,
-  Divider,
-  Grid,
-  Header,
-} from 'semantic-ui-react';
-import { withFormik, FormikBag, FormikProps } from 'formik';
-import { Form, Input } from 'formik-semantic-ui-react';
-import * as Yup from 'yup';
+import { useParams } from 'react-router-dom';
+import { Container, Divider, Grid } from 'semantic-ui-react';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import {
-  selectTranslationUpdateLoading,
-  updateTranslation,
-} from '../features/translation_update';
+  AppBreadcrumb,
+  AppDimmer,
+  ErrorMessage,
+  SuccessMessage,
+} from 'components';
+
+import { translationNewFormikForm } from '../components/TranslationNewFormikForm';
+import { translationEditFormikForm } from '../components/TranslationEditFormikForm';
+import { selectTranslationAddLoading } from '../features/translation_add';
+import { selectTranslationUpdateLoading } from '../features/translation_update';
 import {
-  selectTranslationGetLoading,
-  selectTranslation,
-  getTranslation,
-} from '../features/translation_get';
-import { AppBreadcrumb, AppDimmer, ErrorMessage } from 'components';
-import { emptyFunction } from 'utils/util';
+  getTranslations,
+  selectTranslationGetListLoading,
+  selectTranslations,
+} from '../features/translation_get_list';
+import { TranslationModel } from '../models/translation';
 import 'App.css';
 
-interface FormValues {
-  text: string;
-  translated: string;
-}
-const InnerForm = (props: FormikProps<FormValues>) => {
-  const { isSubmitting } = props;
-  return (
-    <Form>
-      <Card>
-        <Card.Content>
-          <Header component="h2">Edit problem</Header>
-        </Card.Content>
-        <Card.Content>
-          <Input
-            name="text"
-            label="Word"
-            placeholder="english word"
-            errorPrompt
-          />
-          <Input
-            name="translated"
-            label="Word"
-            placeholder="translated"
-            errorPrompt
-          />
-        </Card.Content>
-        <Card.Content>
-          <Button
-            type="submit"
-            variant="true"
-            color="teal"
-            disabled={isSubmitting}
-          >
-            Update
-          </Button>
-        </Card.Content>
-      </Card>
-    </Form>
-  );
+const findTranslationByPos = (
+  translations: TranslationModel[],
+  pos: number
+): TranslationModel => {
+  for (let i = 0; i < translations.length; i++) {
+    if (translations[i].pos == pos) {
+      return translations[i];
+    }
+  }
+  throw 'not found';
 };
 
+const removeTranslationByPos = (
+  translations: TranslationModel[],
+  pos: number
+): TranslationModel[] => {
+  let index = 0;
+  for (let i = 0; i < translations.length; i++) {
+    if (translations[i].pos == pos) {
+      index = i;
+      break;
+    }
+  }
+  translations.splice(index, 1);
+
+  return translations;
+};
 type ParamTypes = {
   _text: string;
   _pos: string;
 };
-
 export const TranslationEdit = (): React.ReactElement => {
   const { _text, _pos } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
-  const history = useHistory();
-  const translationGetLoading = useAppSelector(selectTranslationGetLoading);
+  const translationGetListLoading = useAppSelector(
+    selectTranslationGetListLoading
+  );
+  const translationAddLoading = useAppSelector(selectTranslationAddLoading);
   const translationUpdateLoading = useAppSelector(
     selectTranslationUpdateLoading
   );
-  const loading = translationGetLoading || translationUpdateLoading;
-  const translation = useAppSelector(selectTranslation);
-  // const [values, setValues] = useState({
-  //   text: '' + translation.text,
-  //   translated: '' + translation.translated,
-  // });
+  const loading =
+    translationGetListLoading ||
+    translationAddLoading ||
+    translationUpdateLoading;
+  const orgTranslations = useAppSelector(selectTranslations);
+  const [translations, setTranslations] = useState(orgTranslations);
   const [errorMessage, setErrorMessage] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  const [newValues, setNewValues] = useState({
+    text: _text,
+    pos: '',
+    translated: '',
+  });
+  const [editValues, setEditValues] = useState({
+    lang: '',
+    text: '',
+    pos: '',
+    translated: '',
+    provider: '',
+  });
+  const localGetTranslations = () => {
+    return getTranslations({
+      param: {
+        text: _text,
+      },
+      postSuccessProcess: (translations: TranslationModel[]) => {
+        const t = findTranslationByPos(translations, +_pos);
+        setEditValues({
+          lang: 'ja',
+          text: t.text,
+          pos: t.pos.toString(),
+          translated: t.translated,
+          provider: t.provider,
+        });
+        setTranslations(removeTranslationByPos(translations, +_pos));
+      },
+      postFailureProcess: setErrorMessage,
+    });
+  };
+
   useEffect(() => {
-    dispatch(
-      getTranslation({
-        param: {
-          text: _text,
-          pos: +_pos,
-        },
-        postSuccessProcess: emptyFunction,
-        postFailureProcess: setErrorMessage,
-      })
-    );
+    dispatch(localGetTranslations());
   }, [dispatch, _text, _pos]);
 
-  if (loading) {
-    return <AppDimmer />;
-  }
+  const TranslationEditFormikForm = translationEditFormikForm(
+    setSuccessMessage,
+    setErrorMessage,
+    setEditValues
+  );
+  const TranslationNewFormikForm = translationNewFormikForm(
+    setSuccessMessage,
+    setErrorMessage,
+    setNewValues
+  );
 
-  interface FormProps {
-    text: string;
-    translated: string;
-  }
-  const InnerFormikForm = withFormik<FormProps, FormValues>({
-    mapPropsToValues: (props: FormProps) => ({
-      text: props.text,
-      translated: props.translated,
-    }),
-    validationSchema: Yup.object().shape({
-      text: Yup.string().required('Word is required'),
-    }),
-    handleSubmit: (
-      formValues: FormValues,
-      formikBag: FormikBag<FormProps, FormValues>
-    ) => {
-      // onsole.log('handleSubmit');
-      dispatch(
-        updateTranslation({
-          param: {
-            version: translation.version,
-            text: formValues.text,
-            pos: translation.pos,
-            translated: formValues.translated,
-            lang: translation.lang,
-          },
-          postSuccessProcess: () => history.push(`'/plugin/translation/list`),
-          postFailureProcess: (error: string) => setErrorMessage(error),
-        })
-      );
-    },
-  })(InnerForm);
   return (
     <Container fluid>
-      <AppBreadcrumb links={[]} text={'Translations'} />
+      <AppBreadcrumb
+        links={[{ text: 'Translations', url: '/plugin/translation/list' }]}
+        text={_text}
+      />
       <Divider hidden />
-      <Grid>
+      {loading ? <AppDimmer /> : <div />}
+      <Grid padded>
         <Grid.Row>
-          {loading ? <AppDimmer /> : <div />}
-          <Grid.Column mobile={16} tablet={16} computer={3}></Grid.Column>
-          <Grid.Column mobile={16} tablet={16} computer={13}>
-            <Grid doubling columns={3}>
-              <InnerFormikForm
-                text={translation.text}
-                translated={translation.translated}
+          <Grid doubling columns={3}>
+            <Grid.Column>
+              <TranslationEditFormikForm
+                index={0}
+                slectedLang={'ja'}
+                lang={editValues.lang}
+                text={editValues.text}
+                pos={editValues.pos}
+                translated={editValues.translated}
+                provider={editValues.provider}
+                refreshTranslations={() => dispatch(localGetTranslations())}
               />
-            </Grid>
+            </Grid.Column>
+            <Grid.Column>
+              <TranslationNewFormikForm
+                text={newValues.text}
+                pos={newValues.pos}
+                translated={newValues.translated}
+                refreshTranslations={() => dispatch(localGetTranslations())}
+              />
+            </Grid.Column>
+          </Grid>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid doubling columns={3}>
+            {translations.map((t: TranslationModel, i: number) => {
+              return (
+                <Grid.Column key={t.pos}>
+                  <TranslationEditFormikForm
+                    index={i}
+                    slectedLang={'ja'}
+                    text={t.text}
+                    pos={t.pos.toString()}
+                    translated={t.translated}
+                    lang={t.lang}
+                    provider={t.provider}
+                    refreshTranslations={() => dispatch(localGetTranslations())}
+                  />
+                </Grid.Column>
+              );
+            })}
+          </Grid>
+        </Grid.Row>
+        <Grid.Row>
+          <Grid.Column>
+            <SuccessMessage message={successMessage} />
             <ErrorMessage message={errorMessage} />
           </Grid.Column>
         </Grid.Row>
