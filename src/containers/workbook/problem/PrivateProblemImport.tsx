@@ -107,7 +107,11 @@ export const PrivateProblemImport = (): React.ReactElement => {
         </Card.Content>
         <Card.Content extra>
           {loading ? <AppDimmer /> : <div />}
-          <StandardButton onClick={uploadButtonClicked} value="Upload" />
+          <StandardButton
+            type="button"
+            onClick={uploadButtonClicked}
+            value="Upload"
+          />
         </Card.Content>
       </Card>
       <ErrorMessage message={errorMessage} />

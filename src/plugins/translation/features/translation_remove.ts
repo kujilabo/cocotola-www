@@ -9,26 +9,24 @@ import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = process.env.REACT_APP_BACKEND + '/plugin/translation';
 
-// Update translation
-export type TranslationUpdateParameter = {
+// Remove translation
+export type TranslationRemoveParameter = {
   text: string;
   pos: number;
-  translated: string;
-  lang: string;
 };
-export type TranslationUpdateArg = {
-  param: TranslationUpdateParameter;
+export type TranslationRemoveArg = {
+  param: TranslationRemoveParameter;
   postSuccessProcess: () => void;
   postFailureProcess: (error: string) => void;
 };
-type TranslationUpdateResult = {
-  param: TranslationUpdateParameter;
+type TranslationRemoveResult = {
+  param: TranslationRemoveParameter;
 };
-export const updateTranslation = createAsyncThunk<
-  TranslationUpdateResult,
-  TranslationUpdateArg,
+export const removeTranslation = createAsyncThunk<
+  TranslationRemoveResult,
+  TranslationRemoveArg,
   BaseThunkApiConfig
->('translation/update', async (arg: TranslationUpdateArg, thunkAPI) => {
+>('translation/remove', async (arg: TranslationRemoveArg, thunkAPI) => {
   const url = `${baseUrl}/text/${arg.param.text}/pos/${arg.param.pos}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
@@ -36,12 +34,12 @@ export const updateTranslation = createAsyncThunk<
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
       return axios
-        .put(url, arg.param, jsonRequestConfig(accessToken))
+        .delete(url, jsonRequestConfig(accessToken))
         .then((resp) => {
           arg.postSuccessProcess();
           return {
             param: arg.param,
-          } as TranslationUpdateResult;
+          } as TranslationRemoveResult;
         })
         .catch((err: Error) => {
           const errorMessage = extractErrorMessage(err);
@@ -60,21 +58,21 @@ const initialState: TranslationUpdateState = {
   failed: false,
 };
 
-export const translationUpdateSlice = createSlice({
-  name: 'translation_update',
+export const translationRemoveSlice = createSlice({
+  name: 'translation_remove',
   initialState: initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(updateTranslation.pending, (state) => {
+      .addCase(removeTranslation.pending, (state) => {
         state.loading = true;
       })
-      .addCase(updateTranslation.fulfilled, (state, action) => {
+      .addCase(removeTranslation.fulfilled, (state, action) => {
         // onsole.log('workbook', action.payload.response);
         state.loading = false;
         state.failed = false;
       })
-      .addCase(updateTranslation.rejected, (state, action) => {
+      .addCase(removeTranslation.rejected, (state, action) => {
         // onsole.log('rejected', action);
         state.loading = false;
         state.failed = true;
@@ -82,10 +80,10 @@ export const translationUpdateSlice = createSlice({
   },
 });
 
-export const selectTranslationUpdateLoading = (state: RootState): boolean =>
-  state.translationUpdate.loading;
+export const selectTranslationRemoveLoading = (state: RootState): boolean =>
+  state.translationRemove.loading;
 
-export const selectTranslationUpdateFailed = (state: RootState): boolean =>
-  state.translationUpdate.failed;
+export const selectTranslationRemoveFailed = (state: RootState): boolean =>
+  state.translationRemove.failed;
 
-export default translationUpdateSlice.reducer;
+export default translationRemoveSlice.reducer;

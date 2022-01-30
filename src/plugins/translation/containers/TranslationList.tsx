@@ -9,6 +9,7 @@ import {
   Card,
   Divider,
   Grid,
+  Label,
   Header,
 } from 'semantic-ui-react';
 
@@ -23,6 +24,7 @@ import { emptyFunction } from 'utils/util';
 import { AlphabetLinks } from '../components/AlphabetLinks';
 import { TranslationModel } from '../models/translation';
 import { toDsiplayText } from '../../english-word/utils/util';
+import { TranslationListMenu } from '../components/TranslationListMenu';
 import 'App.css';
 
 // type ParamTypes = {
@@ -62,7 +64,9 @@ export const TranslationList = (): React.ReactElement => {
       <Grid>
         <Grid.Row>
           {loading ? <AppDimmer /> : <div />}
-          <Grid.Column mobile={16} tablet={16} computer={3}></Grid.Column>
+          <Grid.Column mobile={16} tablet={16} computer={3}>
+            <TranslationListMenu />
+          </Grid.Column>
           <Grid.Column mobile={16} tablet={16} computer={13}>
             <Grid doubling columns={1}>
               <Grid.Column>
@@ -80,7 +84,7 @@ export const TranslationList = (): React.ReactElement => {
                       <Card.Content>{toDsiplayText(m.pos)}</Card.Content>
                       <Card.Content>{m.translated}</Card.Content>
                       <Card.Content>
-                        <Button.Group fluid>
+                        <Button.Group>
                           <Button
                             color="teal"
                             onClick={() =>
@@ -89,6 +93,15 @@ export const TranslationList = (): React.ReactElement => {
                           >
                             Edit
                           </Button>
+                        </Button.Group>
+                        <Button.Group floated="right">
+                          {m.provider === 'azure' ? (
+                            <Label as="a" color="orange" size="tiny" tag>
+                              Azure
+                            </Label>
+                          ) : (
+                            <div />
+                          )}
                         </Button.Group>
                       </Card.Content>
                     </Card>
