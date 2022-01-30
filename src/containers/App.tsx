@@ -1,12 +1,11 @@
 import React from 'react';
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import { Route, Switch } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { Menu, Dropdown } from 'semantic-ui-react';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
+import { initI18n } from 'app/i18n';
 import { logout, selectAccessToken } from 'features/auth';
 import { selectRedirectPath } from 'features/router';
 import { PrivateWorkbookList } from 'containers/priavte_workbook/PrivateWorkbookList';
@@ -24,33 +23,16 @@ import { NotFound } from 'containers/NotFound';
 import { TranslationList } from 'plugins/translation/containers/TranslationList';
 import { TranslationEdit } from 'plugins/translation/containers/TranslationEdit';
 import { TranslationImport } from 'plugins/translation/containers/TranslationImport';
+import { TatoebaImport } from 'plugins/tatoeba/containers/TatoebaImport';
 
 import 'App.css';
 
 export interface AppJwtPayload extends JwtPayload {
   username: string;
+  role: string;
 }
-i18n.use(initReactI18next).init({
-  resources: {
-    en: {
-      translation: {
-        Word: 'Word',
-        Pos: 'Pos',
-        Translated: 'Translated',
-      },
-    },
-    ja: {
-      translation: {
-        Word: '英単語',
-        Pos: '品詞',
-        Translated: '翻訳',
-      },
-    },
-  },
-  lng: 'ja',
-  fallbackLng: 'ja',
-  interpolation: { escapeValue: false },
-});
+
+initI18n();
 
 export const App = (): React.ReactElement => {
   const dispatch = useAppDispatch();
@@ -76,7 +58,9 @@ export const App = (): React.ReactElement => {
 
   const decoded = jwt_decode<AppJwtPayload>(accessToken) || null;
   const username = decoded.username;
+  const role = decoded.role;
   // onsole.log('decoded', decoded);
+  console.log('role', role);
   return (
     <div>
       <Menu inverted>
@@ -88,15 +72,24 @@ export const App = (): React.ReactElement => {
           name="Public space"
           onClick={redirectToDefaultSpace}
         ></Menu.Item>
-        <Dropdown item text="Plugin">
-          <Dropdown.Menu>
-            <Dropdown.Item
-              onClick={() => history.push('/plugin/translation/list')}
-            >
-              Translation
-            </Dropdown.Item>
-          </Dropdown.Menu>
-        </Dropdown>
+        {role == 'Owner' ? (
+          <Dropdown item text="Plugin">
+            <Dropdown.Menu>
+              <Dropdown.Item
+                onClick={() => history.push('/plugin/translation/list')}
+              >
+                Translation
+              </Dropdown.Item>
+              <Dropdown.Item
+                onClick={() => history.push('/plugin/tatoeba/import')}
+              >
+                Tatoeba
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        ) : (
+          <div />
+        )}
 
         <Menu.Item
           name={username + ' Logout'}
@@ -145,6 +138,9 @@ export const App = (): React.ReactElement => {
         </Route>
         <Route exact path="/plugin/translation/import">
           <TranslationImport />
+        </Route>
+        <Route exact path="/plugin/tatoeba/import">
+          <TatoebaImport />
         </Route>
 
         <Route exact path="/">

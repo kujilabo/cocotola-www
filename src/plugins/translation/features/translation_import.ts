@@ -6,7 +6,7 @@ import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
 import { jsonRequestConfig } from 'utils/util';
 
-const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
+const baseUrl = `${process.env.REACT_APP_BACKEND}`;
 
 // Import translation
 export type TranslationImportArg = {
