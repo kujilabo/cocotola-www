@@ -54,7 +54,7 @@ export const PrivateRoute = (props: RouteProps): JSX.Element => {
   ]);
 
   if (failed) {
-    return <div>failed</div>;
+    return <div>Authentication Failure</div>;
   } else if (!loading && isAccessTokenExpired && !isRefreshTokenExpired) {
     return <div>Refreshing...</div>;
   } else if (isRefreshTokenExpired) {

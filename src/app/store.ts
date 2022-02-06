@@ -41,6 +41,7 @@ import translationRemoveReducer from 'plugins/translation/features/translation_r
 import translationImportReducer from 'plugins/translation/features/translation_import';
 import translationExportReducer from 'plugins/translation/features/translation_export';
 import tatoebaImportReducer from 'plugins/tatoeba/features/tatoeba_import';
+import tatoebaSentenceFindReducer from 'plugins/tatoeba/features/tatoeba_find';
 
 const englishWordProblem = new EnglishWordProblem();
 export const problemFactory = new ProblemFactory({
@@ -79,6 +80,7 @@ export const rootReducer = combineReducers({
   translationImport: translationImportReducer,
   translationExport: translationExportReducer,
   tatoebaImport: tatoebaImportReducer,
+  tatoebaSentenceFindSlice: tatoebaSentenceFindReducer,
 });
 
 const persistConfig = {

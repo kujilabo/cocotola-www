@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Button, Menu, Input } from 'semantic-ui-react';
+import { Menu, Input } from 'semantic-ui-react';
 import { saveAs } from 'file-saver';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
@@ -22,9 +22,7 @@ export const TranslationListMenu: React.FC = () => {
   const onImportButtonClick = () => {
     history.push(`/plugin/translation/import`);
   };
-  if (translationExportLoading) {
-    return <AppDimmer />;
-  }
+
   const onExportButtonClick = () => {
     dispatch(
       exportTranslation({
@@ -38,16 +36,15 @@ export const TranslationListMenu: React.FC = () => {
       <Menu.Item>
         Translations
         <Menu.Menu>
+          {translationExportLoading ? <AppDimmer /> : <div />}
           <Menu.Item>
             <Input placeholder="Search..." />
           </Menu.Item>
           <Menu.Item onClick={onImportButtonClick}>
             Import Translations
           </Menu.Item>
-          <Menu.Item>
-            <Button size="mini" color="teal" onClick={onExportButtonClick}>
-              Export translations
-            </Button>
+          <Menu.Item onClick={onExportButtonClick}>
+            Export translations
             {errorMessage}
           </Menu.Item>
         </Menu.Menu>
