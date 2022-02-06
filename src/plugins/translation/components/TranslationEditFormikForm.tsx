@@ -28,6 +28,7 @@ export const translationEditFormikForm = (
   setTranslation: (t: TranslationEditFormValues) => void
 ): React.ComponentType<TranslationEditFormikFormProps> => {
   const dispatch = useAppDispatch();
+
   return withFormik<TranslationEditFormikFormProps, TranslationEditFormValues>({
     mapPropsToValues: (props: TranslationEditFormikFormProps) => ({
       // ...props,

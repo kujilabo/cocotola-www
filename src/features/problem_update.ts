@@ -12,6 +12,7 @@ const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
 export type ProblemUpdateParameter = {
   workbookId: number;
   problemId: number;
+  version: number;
   number: number;
   problemType: string;
   properties: { [key: string]: string };
@@ -34,7 +35,7 @@ export const updateProblem = createAsyncThunk<
   ProblemUpdateArg,
   BaseThunkApiConfig
 >('problem/update', async (arg: ProblemUpdateArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}`;
+  const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}?version=${arg.param.version}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))

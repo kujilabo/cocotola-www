@@ -23,6 +23,7 @@ import { NotFound } from 'containers/NotFound';
 import { TranslationList } from 'plugins/translation/containers/TranslationList';
 import { TranslationEdit } from 'plugins/translation/containers/TranslationEdit';
 import { TranslationImport } from 'plugins/translation/containers/TranslationImport';
+import { TatoebaList } from 'plugins/tatoeba/containers/TatoebaList';
 import { TatoebaImport } from 'plugins/tatoeba/containers/TatoebaImport';
 
 import 'App.css';
@@ -56,9 +57,12 @@ export const App = (): React.ReactElement => {
     return <div></div>;
   }
 
-  const decoded = jwt_decode<AppJwtPayload>(accessToken) || null;
-  const username = decoded.username;
-  const role = decoded.role;
+  const decoded =
+    accessToken && accessToken != null && accessToken !== ''
+      ? jwt_decode<AppJwtPayload>(accessToken) || null
+      : null;
+  const username = decoded ? decoded.username : '';
+  const role = decoded ? decoded.role : '';
   // onsole.log('decoded', decoded);
   console.log('role', role);
   return (
@@ -81,7 +85,7 @@ export const App = (): React.ReactElement => {
                 Translation
               </Dropdown.Item>
               <Dropdown.Item
-                onClick={() => history.push('/plugin/tatoeba/import')}
+                onClick={() => history.push('/plugin/tatoeba/list')}
               >
                 Tatoeba
               </Dropdown.Item>
@@ -138,6 +142,9 @@ export const App = (): React.ReactElement => {
         </Route>
         <Route exact path="/plugin/translation/import">
           <TranslationImport />
+        </Route>
+        <Route exact path="/plugin/tatoeba/list">
+          <TatoebaList />
         </Route>
         <Route exact path="/plugin/tatoeba/import">
           <TatoebaImport />
