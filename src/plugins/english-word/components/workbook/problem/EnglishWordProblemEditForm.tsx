@@ -75,7 +75,7 @@ export const EnglishWordProblemEditForm = (
                 <Table.HeaderCell>Tatoeba2</Table.HeaderCell>
                 <Table.HeaderCell>Author1</Table.HeaderCell>
                 <Table.HeaderCell>Author2</Table.HeaderCell>
-                <Table.HeaderCell>Licence</Table.HeaderCell>
+                <Table.HeaderCell>License</Table.HeaderCell>
               </Table.Row>
             </Table.Header>
 
