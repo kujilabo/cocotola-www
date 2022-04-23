@@ -13,7 +13,7 @@ export const StandardButton: React.FC<StandardButtonProps> = (
 ) => {
   return (
     <Button
-      variant="true"
+      // variant="true"
       color="teal"
       type={props.type}
       disabled={props.disabled}

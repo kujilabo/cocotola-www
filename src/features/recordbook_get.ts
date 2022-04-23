@@ -49,10 +49,53 @@ export const getRecordbook = createAsyncThunk<
     });
 });
 
+// Get completion rate
+export type CompletionRateGetParameter = {
+  workbookId: number;
+};
+export type CompletionRateGetArg = {
+  param: CompletionRateGetParameter;
+  postSuccessProcess: () => void;
+  postFailureProcess: (error: string) => void;
+};
+type CompletionRateGetResult = {
+  param: CompletionRateGetParameter;
+  response: { [key: string]: number };
+};
+export const getCompletionRate = createAsyncThunk<
+  CompletionRateGetResult,
+  CompletionRateGetArg,
+  BaseThunkApiConfig
+>(
+  'recordbook/complietion_rate_get',
+  async (arg: CompletionRateGetArg, thunkAPI) => {
+    const url = `${baseUrl}/${arg.param.workbookId}/completion_rate`;
+    const { refreshToken } = thunkAPI.getState().auth;
+    return await thunkAPI
+      .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
+      .then((resp) => {
+        const { accessToken } = thunkAPI.getState().auth;
+        return axios
+          .get(url, { headers: jsonHeaders(accessToken), data: {} })
+          .then((resp) => {
+            const response = resp.data as { [key: string]: number };
+            arg.postSuccessProcess();
+            return { response: response } as CompletionRateGetResult;
+          })
+          .catch((err: Error) => {
+            const errorMessage = extractErrorMessage(err);
+            arg.postFailureProcess(errorMessage);
+            return thunkAPI.rejectWithValue(errorMessage);
+          });
+      });
+  }
+);
+
 export interface recordbookGetState {
   loading: boolean;
   failed: boolean;
   recordbook: RecordbookModel;
+  completionRateMap: { [key: string]: number };
 }
 
 const defaultRecordbook: RecordbookModel = {
@@ -64,6 +107,7 @@ const initialState: recordbookGetState = {
   failed: false,
   // recordbook: [new RecordbookModel(0, [])],
   recordbook: defaultRecordbook,
+  completionRateMap: {},
 };
 
 export const recordbookGetSlice = createSlice({
@@ -72,6 +116,7 @@ export const recordbookGetSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
+      // get recordbook
       .addCase(getRecordbook.pending, (state) => {
         state.loading = true;
       })
@@ -81,6 +126,19 @@ export const recordbookGetSlice = createSlice({
         state.recordbook = action.payload.response;
       })
       .addCase(getRecordbook.rejected, (state, action) => {
+        state.loading = false;
+        state.failed = true;
+      })
+      // get completion rate
+      .addCase(getCompletionRate.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getCompletionRate.fulfilled, (state, action) => {
+        state.loading = false;
+        state.failed = false;
+        state.completionRateMap = action.payload.response;
+      })
+      .addCase(getCompletionRate.rejected, (state, action) => {
         state.loading = false;
         state.failed = true;
       });
@@ -95,5 +153,8 @@ export const selectRecordbookGetFailed = (state: RootState) =>
 
 export const selectRecordbook = (state: RootState) =>
   state.recordbookGet.recordbook;
+
+export const selectRecordbookCompletionRateMap = (state: RootState) =>
+  state.recordbookGet.completionRateMap;
 
 export default recordbookGetSlice.reducer;

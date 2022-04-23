@@ -104,7 +104,6 @@ export const findAllProblems = createAsyncThunk<
 });
 
 export interface problemFindState {
-  value: number;
   loading: boolean;
   failed: boolean;
   problems: ProblemModel[];
@@ -113,7 +112,6 @@ export interface problemFindState {
 }
 
 const initialState: problemFindState = {
-  value: 0,
   loading: false,
   failed: false,
   problems: [],
@@ -165,14 +163,18 @@ export const problemFindSlice = createSlice({
         state.loading = false;
         state.failed = true;
       })
+      // removeProblem
       .addCase(removeProblem.fulfilled, (state, action) => {
         const removedProblemId = action.payload.param.problemId;
-        state.problems = state.problems.filter((n) => n.id == removedProblemId);
+        state.problems = state.problems.filter(
+          (n) => n.id !== removedProblemId
+        );
         state.problemMap = {};
         for (let i = 0; i < state.problems.length; i++) {
           const problem = state.problems[i];
           state.problemMap[problem.id] = problem;
         }
+        state.problemsTotalCount--;
       });
   },
 });

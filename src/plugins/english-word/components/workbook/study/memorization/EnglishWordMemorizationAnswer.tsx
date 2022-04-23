@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Button,
@@ -11,20 +11,31 @@ import {
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { AppBreadcrumbLink, AudioButton, ErrorMessage } from 'components';
+import { LinkButton } from 'components/buttons';
 import { selectWorkbook } from 'features/workbook_get';
 import { selectProblemMap } from 'features/problem_find';
 import { addRecord } from 'features/record_add';
 import { getAudio, selectAudioViewLoading } from 'features/audio';
+import { getProblem } from 'features/problem_get';
+import { ProblemModel } from 'models/problem';
 import { emptyFunction } from 'utils/util';
 import {
   selectEnglishWordRecordbook,
   nextEnglishWordProblem,
 } from '../../../../features/english_word_study';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
+import { EnglishWordProblemModel } from '../../../../models/english-word-problem';
+// import { TatoebaSentenceModel } from 'plugins/tatoeba/models/tatoeba';
 import { toDsiplayText } from '../../../../utils/util';
 
 import 'App.css';
 
+// const emptyTatoebaSentence: TatoebaSentenceModel = {
+//   text: '',
+//   author: '',
+//   sentenceNumber: 0,
+//   lang: '',
+// };
 type ParamTypes = {
   _workbookId: string;
   _studyType: string;
@@ -44,13 +55,49 @@ export const EnglishWordMemorizationAnswer: React.FC<
     return <div></div>;
   }
   const problemId = englishWordRecordbook.records[0].problemId;
-  const problem = problemMap[problemId];
+  const problem = EnglishWordProblemModel.of(problemMap[problemId]);
+  const baseUrl = `/app/private/workbook/${_workbookId}/problem/${problemId}`;
+  console.log('problem', problem);
+  // let sentence1 = emptyTatoebaSentence;
+  // let sentence2 = emptyTatoebaSentence;
+  // if (problem.senexampleSentenceNote && values.exampleSentenceNote !== '') {
+  //   try {
+  //     const noteObj = JSON.parse(values.exampleSentenceNote);
+  //     console.log('noteObj', noteObj);
+  //     sentence1 = {
+  //       text: values.exampleSentenceText,
+  //       author: noteObj['tatoebaAuthor1'],
+  //       sentenceNumber: +noteObj['tatoebaSentenceNumber1'],
+  //       lang: 'en',
+  //     };
+  //     sentence2 = {
+  //       text: values.exampleSentenceTranslated,
+  //       author: noteObj['tatoebaAuthor2'],
+  //       sentenceNumber: +noteObj['tatoebaSentenceNumber2'],
+  //       lang: 'ja',
+  //     };
+  //   } catch (e) {
+  //     console.log(e);
+  //   }
+  // }
+  useEffect(() => {
+    dispatch(
+      getProblem({
+        param: { workbookId: +_workbookId, problemId: problemId },
+        postSuccessProcess: (p: ProblemModel) => {
+          const e = EnglishWordProblemModel.of(p);
+          console.log(e);
+        },
+        postFailureProcess: setErrorMessage,
+      })
+    );
+  }, [dispatch, _workbookId, problemId, problem.version]);
 
   const loadAndPlay = (postFunc: (value: string) => void) => {
     dispatch(
       getAudio({
         param: {
-          id: problem.properties['audioId'],
+          id: +problem.audioId,
           updatedAt: problem.updatedAt,
         },
         postFunc: postFunc,
@@ -91,19 +138,24 @@ export const EnglishWordMemorizationAnswer: React.FC<
       <Card>
         <Card.Content>
           <Header component="h2">
-            {problem.properties['text']}
+            {problem.text}
             <AudioButton
-              id={problem.properties['audioId']}
+              id={+problem.audioId}
               loadAndPlay={loadAndPlay}
               disabled={audioViewLoading}
             />
           </Header>
         </Card.Content>
         <Card.Content>
-          <p>{toDsiplayText(problem.properties['pos'])}</p>
+          <p>{toDsiplayText(+problem.pos)}</p>
         </Card.Content>
         <Card.Content>
-          <p>{problem.properties['translated']}</p>
+          <p>{problem.translated}</p>
+        </Card.Content>
+        <Card.Content>
+          <Button.Group fluid>
+            <LinkButton to={`${baseUrl}/edit`} value={'Edit'} />
+          </Button.Group>
         </Card.Content>
         <Card.Content>
           <Form.Checkbox

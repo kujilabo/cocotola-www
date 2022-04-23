@@ -4,6 +4,7 @@ import axios from 'axios';
 import { RootState, BaseThunkApiConfig } from 'app/store';
 import { refreshAccessToken } from 'features/auth';
 import { extractErrorMessage } from 'features/base';
+import { resetLoadedProblemId } from 'features/problem_get';
 import { jsonRequestConfig } from 'utils/util';
 
 const baseUrl = `${process.env.REACT_APP_BACKEND}/v1/workbook`;
@@ -41,11 +42,15 @@ export const updateProblem = createAsyncThunk<
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
     .then((resp) => {
       const { accessToken } = thunkAPI.getState().auth;
+
       return axios
         .put(url, arg.param, jsonRequestConfig(accessToken))
         .then((resp) => {
           const response = resp.data as ProblemUpdateResponse;
           arg.postSuccessProcess(response.id);
+          thunkAPI.dispatch(
+            resetLoadedProblemId(`${arg.param.problemId}:${arg.param.version}`)
+          );
           return {
             param: arg.param,
             response: response,

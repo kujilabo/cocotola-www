@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Input, Container, Divider, Grid, Menu } from 'semantic-ui-react';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
@@ -21,7 +21,6 @@ export const PrivateWorkbookList = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const spaceKey = 'personal';
   const basePath = '/app/private/workbook/';
-  const history = useHistory();
   const workbookFindLoading = useAppSelector(selectWorkbookFindLoading);
   const workbookFindFailed = useAppSelector(selectWorkbookFindFailed);
   const workbooksLoadedMap = useAppSelector(selectWorkbooksLoadedMap);
@@ -63,8 +62,8 @@ export const PrivateWorkbookList = (): React.ReactElement => {
                 <Input placeholder="Search..." />
               </Menu.Item>
 
-              <Menu.Item onClick={() => history.push(`${basePath}new`)}>
-                New workbook
+              <Menu.Item>
+                <Link to={`${basePath}new`}> New workbook</Link>
               </Menu.Item>
             </Menu>
             <Divider hidden />

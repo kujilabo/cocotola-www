@@ -5,6 +5,7 @@ import { Button, Card, Grid, Header } from 'semantic-ui-react';
 import { useAppDispatch } from 'app/hooks';
 import { removeProblem } from 'features/problem_remove';
 import { ProblemModel } from 'models/problem';
+import { LinkButton } from 'components/buttons';
 import { DangerModal } from 'components';
 import { toDsiplayText } from '../../../utils/util';
 import 'App.css';
@@ -28,7 +29,7 @@ export const EnglishWordProblemReadWrite: React.FC<
           version: problemVersion,
         },
         postSuccessProcess: () => history.push(props.baseWorkbookPath),
-        postFailureProcess: (error: string) => setErrorMessage(error),
+        postFailureProcess: setErrorMessage,
       })
     );
   };
@@ -87,14 +88,10 @@ export const EnglishWordProblemReadWrite: React.FC<
         ) : (
           <div />
         )}
+        <Button.Group floated="left">
+          <LinkButton to={`${baseUrl}/edit`} value={'Edit'} />
+        </Button.Group>
         <Button.Group floated="right">
-          <Button
-            basic
-            color="teal"
-            onClick={() => history.push(baseUrl + '/edit')}
-          >
-            Edit
-          </Button>
           <DangerModal
             triggerValue="Delete"
             content="Are you sure you want to delete this problem?"

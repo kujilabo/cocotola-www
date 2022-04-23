@@ -13,7 +13,7 @@ export const DangerButton: React.FC<DangerButtonProps> = (
 ) => {
   return (
     <Button
-      variant="true"
+      // variant="true"
       color="red"
       type={props.type}
       disabled={props.disabled}

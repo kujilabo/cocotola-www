@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Switch } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useHistory } from 'react-router-dom';
 import { Menu, Dropdown } from 'semantic-ui-react';
 import jwt_decode, { JwtPayload } from 'jwt-decode';
@@ -40,12 +41,6 @@ export const App = (): React.ReactElement => {
   const history = useHistory();
   const accessToken = useAppSelector(selectAccessToken);
   const redirectPath = useAppSelector(selectRedirectPath);
-  const redirectToWorkbook = () => {
-    history.push('/app/private/workbook');
-  };
-  const redirectToDefaultSpace = () => {
-    history.push('/app/space/1/workbook');
-  };
 
   if (redirectPath === '/app/login') {
     // onsole.log('aaa');
@@ -67,27 +62,21 @@ export const App = (): React.ReactElement => {
   console.log('role', role);
   return (
     <div>
-      <Menu inverted>
-        <Menu.Item
-          name="Private space"
-          onClick={redirectToWorkbook}
-        ></Menu.Item>
-        <Menu.Item
-          name="Public space"
-          onClick={redirectToDefaultSpace}
-        ></Menu.Item>
+      <Menu>
+        <Menu.Item>
+          <Link to={'/app/private/workbook'}>Private space</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to={'/app/space/1/workbook'}>Public space</Link>
+        </Menu.Item>
         {role == 'Owner' ? (
           <Dropdown item text="Plugin">
             <Dropdown.Menu>
-              <Dropdown.Item
-                onClick={() => history.push('/plugin/translation/list')}
-              >
-                Translation
+              <Dropdown.Item>
+                <Link to={'/plugin/translation/list'}>Translation</Link>
               </Dropdown.Item>
-              <Dropdown.Item
-                onClick={() => history.push('/plugin/tatoeba/list')}
-              >
-                Tatoeba
+              <Dropdown.Item>
+                <Link to={'/plugin/tatoeba/list'}>Tatoeba</Link>
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

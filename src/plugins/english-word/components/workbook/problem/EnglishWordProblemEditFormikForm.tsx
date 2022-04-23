@@ -5,12 +5,13 @@ import * as Yup from 'yup';
 
 import { useAppDispatch } from 'app/hooks';
 import { updateProblem } from 'features/problem_update';
-import { ProblemModel, EnglishWordProblemTypeId } from 'models/problem';
+import { EnglishWordProblemTypeId } from 'models/problem';
 import {
   EnglishWordProblemEditForm,
   EnglishWordProblemEditFormValues,
 } from './EnglishWordProblemEditForm';
 import { TatoebaSentencePairModel } from 'plugins/tatoeba/models/tatoeba';
+import { EnglishWordProblemModel } from '../../../models/english-word-problem';
 import 'App.css';
 
 export interface EnglishWordProblemEditFormikFormProps {
@@ -19,13 +20,19 @@ export interface EnglishWordProblemEditFormikFormProps {
   pos: string;
   lang: string;
   translated: string;
+  exampleSentenceText: string;
+  exampleSentenceTranslated: string;
+  exampleSentenceNote: string;
+  tatoebaSentenceNumber1: string;
+  tatoebaSentenceNumber2: string;
   tatoebaSentences: TatoebaSentencePairModel[];
 }
 export const englishWordProblemEditFormikForm = (
   workbookId: number,
-  problem: ProblemModel,
+  problem: EnglishWordProblemModel,
   setErrorMessage: React.Dispatch<React.SetStateAction<string>>,
-  setProblem: (t: EnglishWordProblemEditFormValues) => void
+  setProblem: (t: EnglishWordProblemEditFormValues) => void,
+  selectSentence: (index: number, checked: boolean) => void
 ): React.ComponentType<EnglishWordProblemEditFormikFormProps> => {
   const history = useHistory();
   const dispatch = useAppDispatch();
@@ -40,7 +47,13 @@ export const englishWordProblemEditFormikForm = (
       pos: props.pos,
       lang: props.lang,
       translated: props.translated,
+      exampleSentenceText: props.exampleSentenceText,
+      exampleSentenceTranslated: props.exampleSentenceTranslated,
+      exampleSentenceNote: props.exampleSentenceNote,
+      tatoebaSentenceNumber1: props.tatoebaSentenceNumber1,
+      tatoebaSentenceNumber2: props.tatoebaSentenceNumber2,
       tatoebaSentences: props.tatoebaSentences,
+      selectSentence: selectSentence,
     }),
     validationSchema: Yup.object().shape({
       text: Yup.string().required('Word is required'),
@@ -65,6 +78,9 @@ export const englishWordProblemEditFormikForm = (
               text: values.text,
               pos: values.pos,
               lang: values.lang,
+              sentenceProvider: 'tatoeba',
+              tatoebaSentenceNumber1: values.tatoebaSentenceNumber1,
+              tatoebaSentenceNumber2: values.tatoebaSentenceNumber2,
             },
           },
           postSuccessProcess: () =>

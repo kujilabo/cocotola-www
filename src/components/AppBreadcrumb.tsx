@@ -1,5 +1,5 @@
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { Breadcrumb, Segment } from 'semantic-ui-react';
 import { createMedia } from '@artsy/fresnel';
@@ -30,24 +30,18 @@ export const AppBreadcrumb = (props: {
   links: AppBreadcrumbLink[];
   text: string;
 }): React.ReactElement => {
-  const history = useHistory();
-
   // onsole.log('links', props.links);
 
   const breadcrumb = (
     <Breadcrumb size="large">
-      <Breadcrumb.Section link onClick={() => history.push('/')}>
-        Home
+      <Breadcrumb.Section>
+        <Link to={'/'}>Home</Link>
       </Breadcrumb.Section>
       <Breadcrumb.Divider />
       {props.links.map((link: AppBreadcrumbLink) => {
         return (
-          <Breadcrumb.Section
-            key={link.url}
-            link
-            onClick={() => history.push(link.url)}
-          >
-            {link.text}
+          <Breadcrumb.Section key={link.url}>
+            <Link to={link.url}>{link.text}</Link>
             <Breadcrumb.Divider />
           </Breadcrumb.Section>
         );

@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  useHistory,
-  //  useParams
-} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
   Button,
   Container,
@@ -35,7 +32,6 @@ export const TranslationList = (): React.ReactElement => {
   console.log('DRAW TranslationList');
   // const { _letter } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
-  const history = useHistory();
   const loading = useAppSelector(selectTranslationFindLoading);
   const translations = useAppSelector(selectTranslations);
   const [errorMessage, setErrorMessage] = useState('');
@@ -85,13 +81,13 @@ export const TranslationList = (): React.ReactElement => {
                       <Card.Content>{m.translated}</Card.Content>
                       <Card.Content>
                         <Button.Group>
-                          <Button
-                            color="teal"
-                            onClick={() =>
-                              history.push(`${baseUrl}/${m.text}/${m.pos}/edit`)
-                            }
-                          >
-                            Edit
+                          <Button color="teal">
+                            <Link
+                              style={{ textDecoration: 'none', color: 'white' }}
+                              to={`${baseUrl}/${m.text}/${m.pos}/edit`}
+                            >
+                              Translation
+                            </Link>
                           </Button>
                         </Button.Group>
                         <Button.Group floated="right">
