@@ -96,6 +96,7 @@ export function PrivateWorkbookView(): React.ReactElement {
     const pageNo = +(data.activePage || 0);
     setPageNo(pageNo);
   };
+  console.log('problem length', problems.length);
 
   // when workbookId is changed
   useEffect(() => {

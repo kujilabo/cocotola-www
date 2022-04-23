@@ -1,13 +1,24 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { Menu, Input } from 'semantic-ui-react';
+import { Label, Menu, Input } from 'semantic-ui-react';
 
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { WorkbookModel } from 'models/workbook';
+import { emptyFunction } from 'utils/util';
+import {
+  getCompletionRate,
+  selectRecordbookCompletionRateMap,
+} from 'features/recordbook_get';
 import 'App.css';
 
 export const EnglishWordProblemMenu: React.FC<EnglishWordProblemMenuProps> = (
   props: EnglishWordProblemMenuProps
 ) => {
+  const dispatch = useAppDispatch();
+  const recordbookCompletionRateMap = useAppSelector(
+    selectRecordbookCompletionRateMap
+  );
+  const [errorMessage, setErrorMessage] = useState('');
   const history = useHistory();
   const studyButtonClicked = (studyType: string) => {
     props.initStudy('');
@@ -16,6 +27,21 @@ export const EnglishWordProblemMenu: React.FC<EnglishWordProblemMenuProps> = (
   const onImportButtonClick = () => {
     history.push(`/app/private/workbook/${props.workbook.id}/import`);
   };
+  // when workbookId is changed
+  useEffect(() => {
+    // get the completion rate of the workbook
+    dispatch(
+      getCompletionRate({
+        param: { workbookId: props.workbook.id },
+        postSuccessProcess: emptyFunction,
+        postFailureProcess: setErrorMessage,
+      })
+    );
+  }, [dispatch, props.workbook.id]);
+
+  console.log('recordbookCompletionRateMap', recordbookCompletionRateMap);
+  const memorizationCompRate = recordbookCompletionRateMap['memorization'] ?? 0;
+  const dictationCompRate = recordbookCompletionRateMap['dictation'] ?? 0;
 
   if (props.workbook.subscribed) {
     return (
@@ -41,9 +67,11 @@ export const EnglishWordProblemMenu: React.FC<EnglishWordProblemMenuProps> = (
           <Menu.Menu>
             <Menu.Item onClick={() => studyButtonClicked('memorization')}>
               Memorization
+              <Label>{memorizationCompRate} %</Label>
             </Menu.Item>
             <Menu.Item onClick={() => studyButtonClicked('dictation')}>
               Dictation
+              <Label>{dictationCompRate} %</Label>
             </Menu.Item>
           </Menu.Menu>
         </Menu.Item>
@@ -55,7 +83,9 @@ export const EnglishWordProblemMenu: React.FC<EnglishWordProblemMenuProps> = (
             </Menu.Item>
             <Menu.Item
               onClick={() => {
-                history.push(`/app/private/workbook/${props.workbook.id}/problem/new`);
+                history.push(
+                  `/app/private/workbook/${props.workbook.id}/problem/new`
+                );
               }}
             >
               New problem
@@ -75,6 +105,7 @@ export const EnglishWordProblemMenu: React.FC<EnglishWordProblemMenuProps> = (
             </Menu.Item>
           </Menu.Menu>
         </Menu.Item>
+        <Menu.Item>{errorMessage}</Menu.Item>
       </Menu>
     );
   }

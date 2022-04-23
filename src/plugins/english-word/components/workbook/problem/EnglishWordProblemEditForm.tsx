@@ -1,30 +1,14 @@
 import React from 'react';
-import { Button, Card, Checkbox, Header, Table } from 'semantic-ui-react';
+import { Button, Card, Header } from 'semantic-ui-react';
 import { FormikProps } from 'formik';
 import { Form, Input, Select } from 'formik-semantic-ui-react';
 import { TatoebaSentencePairModel } from 'plugins/tatoeba/models/tatoeba';
-
+import { ExampleTatoebaSentence } from './ExampleTatoebaSentence';
+import { ExampleTatoebaSentenceList } from './ExampleTatoebaSentenceList';
+import { TatoebaSentenceModel } from 'plugins/tatoeba/models/tatoeba';
+import { posOptions } from 'plugins/translation/components';
+import { langOptions } from 'components';
 import 'App.css';
-const makeAuthorUrl = (author: string): string => {
-  return `https://tatoeba.org/ja/user/profile/${author}`;
-};
-
-const makeStentenceUrl = (sentenceNumber: number): string => {
-  return `https://tatoeba.org/ja/sentences/show/${sentenceNumber}`;
-};
-
-const posOptions1 = [
-  { key: 'ADJ', text: 'ADJ', value: '1' },
-  { key: 'ADV', text: 'ADV', value: '2' },
-  { key: 'CONJ', text: 'CONJ', value: '3' },
-  { key: 'DET', text: 'DET', value: '4' },
-  { key: 'NOUN', text: 'NOUN', value: '6' },
-  { key: 'PREP', text: 'PREP', value: '7' },
-  { key: 'PRON', text: 'PRON', value: '8' },
-  { key: 'VERB', text: 'VERB', value: '9' },
-  { key: '', text: '', value: '99' },
-];
-const langOptions = [{ key: 'ja', text: 'ja', value: 'ja' }];
 
 export interface EnglishWordProblemEditFormValues {
   number: number;
@@ -32,12 +16,61 @@ export interface EnglishWordProblemEditFormValues {
   pos: string;
   lang: string;
   translated: string;
+  exampleSentenceText: string;
+  exampleSentenceTranslated: string;
+  exampleSentenceNote: string;
+  tatoebaSentenceNumber1: string;
+  tatoebaSentenceNumber2: string;
   tatoebaSentences: TatoebaSentencePairModel[];
+  selectSentence: (index: number, checked: boolean) => void;
 }
+const emptyTatoebaSentence: TatoebaSentenceModel = {
+  text: '',
+  author: '',
+  sentenceNumber: 0,
+  lang: '',
+};
 export const EnglishWordProblemEditForm = (
   props: FormikProps<EnglishWordProblemEditFormValues>
-) => {
-  const { values, isSubmitting } = props;
+): React.ReactElement => {
+  const { values, isSubmitting, setFieldValue } = props;
+  const onCheckboxChange = (
+    sentenceNumber1: number,
+    sentenceNumber2: number,
+    checked: boolean
+  ): void => {
+    if (checked) {
+      setFieldValue('tatoebaSentenceNumber1', sentenceNumber1.toString());
+      setFieldValue('tatoebaSentenceNumber2', sentenceNumber2.toString());
+    } else {
+      setFieldValue('tatoebaSentenceNumber1', '');
+      setFieldValue('tatoebaSentenceNumber2', '');
+    }
+  };
+
+  let sentence1 = emptyTatoebaSentence;
+  let sentence2 = emptyTatoebaSentence;
+  if (values.exampleSentenceNote && values.exampleSentenceNote !== '') {
+    try {
+      const noteObj = JSON.parse(values.exampleSentenceNote);
+      console.log('noteObj', noteObj);
+      sentence1 = {
+        text: values.exampleSentenceText,
+        author: noteObj['tatoebaAuthor1'],
+        sentenceNumber: +noteObj['tatoebaSentenceNumber1'],
+        lang: 'en',
+      };
+      sentence2 = {
+        text: values.exampleSentenceTranslated,
+        author: noteObj['tatoebaAuthor2'],
+        sentenceNumber: +noteObj['tatoebaSentenceNumber2'],
+        lang: 'ja',
+      };
+    } catch (e) {
+      console.log(e);
+    }
+  }
+
   return (
     <Form>
       <Card fluid>
@@ -54,7 +87,7 @@ export const EnglishWordProblemEditForm = (
           <Select
             name="pos"
             label="Pos"
-            options={posOptions1}
+            options={posOptions}
             value={values.pos}
             errorPrompt
           />
@@ -65,75 +98,23 @@ export const EnglishWordProblemEditForm = (
             value={values.lang}
             errorPrompt
           />
-          <Table compact celled definition>
-            <Table.Header>
-              <Table.Row>
-                <Table.HeaderCell />
-                <Table.HeaderCell>Sentence1</Table.HeaderCell>
-                <Table.HeaderCell>Sentence2</Table.HeaderCell>
-                <Table.HeaderCell>Tatoeba1</Table.HeaderCell>
-                <Table.HeaderCell>Tatoeba2</Table.HeaderCell>
-                <Table.HeaderCell>Author1</Table.HeaderCell>
-                <Table.HeaderCell>Author2</Table.HeaderCell>
-                <Table.HeaderCell>License</Table.HeaderCell>
-              </Table.Row>
-            </Table.Header>
-
-            <Table.Body>
-              {values.tatoebaSentences.map(
-                (m: TatoebaSentencePairModel, i: number) => {
-                  return (
-                    <Table.Row key={i}>
-                      <Table.Cell collapsing>
-                        <Checkbox slider />
-                      </Table.Cell>
-                      <Table.Cell>{m.src.text}</Table.Cell>
-                      <Table.Cell>{m.dst.text}</Table.Cell>
-                      <Table.Cell>
-                        <a
-                          href={makeStentenceUrl(m.src.sentenceNumber)}
-                          target="_blank"
-                        >
-                          Sentence
-                        </a>
-                      </Table.Cell>
-                      <Table.Cell>
-                        <a
-                          href={makeStentenceUrl(m.dst.sentenceNumber)}
-                          target="_blank"
-                        >
-                          Sentence
-                        </a>
-                      </Table.Cell>
-                      <Table.Cell>
-                        <a href={makeAuthorUrl(m.src.author)} target="_blank">
-                          {m.src.author}
-                        </a>
-                      </Table.Cell>
-                      <Table.Cell>
-                        <a href={makeAuthorUrl(m.src.author)} target="_blank">
-                          {m.dst.author}
-                        </a>
-                      </Table.Cell>
-                      <Table.Cell>
-                        <a
-                          href="https://creativecommons.org/licenses/by/2.0/fr/"
-                          target="_blank"
-                        >
-                          CC BY 2.0 FR
-                        </a>
-                      </Table.Cell>
-                    </Table.Row>
-                  );
-                }
-              )}
-            </Table.Body>
-          </Table>
+          {sentence1.text !== '' ? (
+            <ExampleTatoebaSentence
+              sentence1={sentence1}
+              sentence2={sentence2}
+            />
+          ) : (
+            <div />
+          )}
+          <ExampleTatoebaSentenceList
+            sentences={values.tatoebaSentences}
+            onCheckboxChange={onCheckboxChange}
+          />
         </Card.Content>
         <Card.Content>
           <Button
             type="submit"
-            variant="true"
+            // variant="true"
             color="teal"
             disabled={isSubmitting}
           >

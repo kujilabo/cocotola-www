@@ -64,7 +64,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
           {loading ? <AppDimmer /> : <div />}
           <Button
             type="submit"
-            variant="true"
+            // variant="true"
             color="teal"
             disabled={isSubmitting}
           >

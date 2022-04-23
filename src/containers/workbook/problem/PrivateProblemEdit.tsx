@@ -5,7 +5,11 @@ import { AppDimmer } from 'components';
 import { problemFactory } from 'app/store';
 import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { getWorkbook, selectWorkbook } from 'features/workbook_get';
-import { getProblem, selectProblem } from 'features/problem_get';
+import {
+  getProblem,
+  selectProblem,
+  selectProblemGetLoading,
+} from 'features/problem_get';
 import { emptyFunction } from 'utils/util';
 import 'App.css';
 
@@ -20,8 +24,10 @@ export const PrivateProblemEdit = (): React.ReactElement => {
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
   const problem = useAppSelector(selectProblem);
+  const problemLoading = useAppSelector(selectProblemGetLoading);
   const [errorMessage, setErrorMessage] = useState('');
 
+  console.log('problem.version', problem.version);
   useEffect(() => {
     dispatch(
       getWorkbook({
@@ -33,6 +39,18 @@ export const PrivateProblemEdit = (): React.ReactElement => {
   }, [dispatch, workbookId]);
 
   useEffect(() => {
+    console.log(
+      'getProblem1',
+      workbookId + ',' + problemId + ',' + ',' + problem.version
+    );
+    if (problemLoading) {
+      return;
+    }
+
+    console.log(
+      'getProblem2',
+      workbookId + ',' + problemId + ',' + ',' + problem.version
+    );
     dispatch(
       getProblem({
         param: { workbookId: workbookId, problemId: problemId },
@@ -40,7 +58,8 @@ export const PrivateProblemEdit = (): React.ReactElement => {
         postFailureProcess: setErrorMessage,
       })
     );
-  }, [dispatch, workbookId, problemId]);
+    // }, [dispatch, workbookId, problemId]);
+  }, [dispatch, workbookId, problemId, problem.version]);
 
   if (errorMessage !== '') {
     return <div>{errorMessage}</div>;
@@ -48,7 +67,7 @@ export const PrivateProblemEdit = (): React.ReactElement => {
   if (+_workbookId !== workbook.id) {
     return <AppDimmer />;
   }
-  if (+_problemId !== problem.id) {
+  if (+_problemId !== problem.id || problemLoading) {
     return <AppDimmer />;
   }
 

@@ -7,7 +7,7 @@ type FormLangSelectProps = {
   onChange: (e: ChangeEvent<HTMLSelectElement>, d: any) => any;
 };
 
-const langOptions = [{ key: 'ja', text: 'ja', value: 'ja' }];
+export const langOptions = [{ key: 'ja', text: 'ja', value: 'ja' }];
 
 export const FormLangSelect: React.FC<FormLangSelectProps> = (
   props: FormLangSelectProps

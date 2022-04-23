@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 import { RootState, BaseThunkApiConfig } from 'app/store';
@@ -56,6 +56,7 @@ export interface ProblemGetState {
   loading: boolean;
   failed: boolean;
   problem: ProblemModel;
+  loadedProblemId: string;
 }
 
 const defaultProblem = {
@@ -71,12 +72,18 @@ const initialState: ProblemGetState = {
   loading: false,
   failed: false,
   problem: defaultProblem,
+  loadedProblemId: '',
 };
 
 export const problemGetSlice = createSlice({
   name: 'problem_get',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    resetLoadedProblemId: (state, action: PayloadAction<string>) => {
+      console.log('state.loadedProblemId =', state.loadedProblemId);
+      state.loadedProblemId = action.payload;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getProblem.pending, (state) => {
@@ -96,9 +103,14 @@ export const problemGetSlice = createSlice({
   },
 });
 
+export const { resetLoadedProblemId } = problemGetSlice.actions;
+
 export const selectProblemGetLoading = (state: RootState) =>
   state.problemGet.loading;
 
 export const selectProblem = (state: RootState) => state.problemGet.problem;
+
+export const selectLoadedProblemId = (state: RootState) =>
+  state.problemGet.loadedProblemId;
 
 export default problemGetSlice.reducer;
