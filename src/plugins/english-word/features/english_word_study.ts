@@ -23,9 +23,11 @@ const removeProblemFromRecordbook = (
     newRecordbook.records.push({
       problemId: result.problemId,
       level: result.level,
+      resultPrev1: result.resultPrev1,
+      lastAnsweredAt: result.lastAnsweredAt,
+      memorized: result.memorized,
       isReview: result.isReview,
       reviewLevel: result.reviewLevel,
-      memorized: result.memorized,
     });
   }
   return newRecordbook;
@@ -69,12 +71,27 @@ export const englishWordSlice = createSlice({
           continue;
         }
 
+        if (record.resultPrev1) {
+          const lastAnsweredAt = new Date(record.lastAnsweredAt);
+
+          const daysToAdd = 1;
+          var nextDateToAnwswer = new Date(
+            lastAnsweredAt.getTime() + daysToAdd * 24 * 60 * 60 * 1000
+          );
+          console.log('nextDateToAnwswer', nextDateToAnwswer);
+          if (new Date().getTime() < nextDateToAnwswer.getTime()) {
+            continue;
+          }
+        }
+
         records.push({
           problemId: record.problemId,
           level: record.level,
+          resultPrev1: record.resultPrev1,
+          memorized: false,
+          lastAnsweredAt: record.lastAnsweredAt,
           isReview: false,
           reviewLevel: 0,
-          memorized: false,
         });
       }
       state.recordbook.records = records;
@@ -122,9 +139,11 @@ export const englishWordSlice = createSlice({
           newRecordbook.records.splice(newIndex, 0, {
             problemId,
             level,
+            resultPrev1: state.lastResult,
+            memorized: false,
+            lastAnsweredAt: record.lastAnsweredAt,
             isReview: true,
             reviewLevel: record.reviewLevel,
-            memorized: false,
           });
         }
       } else {
@@ -134,9 +153,11 @@ export const englishWordSlice = createSlice({
           newRecordbook.records.splice(newIndex, 0, {
             problemId,
             level,
+            resultPrev1: false,
+            memorized: false,
+            lastAnsweredAt: record.lastAnsweredAt,
             isReview: true,
             reviewLevel: 0,
-            memorized: false,
           });
         }
       }

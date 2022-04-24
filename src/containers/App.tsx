@@ -84,11 +84,17 @@ export const App = (): React.ReactElement => {
           <div />
         )}
 
-        <Menu.Item
-          name={username + ' Logout'}
-          position="right"
-          onClick={() => dispatch(logout())}
-        ></Menu.Item>
+        <Menu.Menu position="right">
+          <Dropdown item text={username}>
+            <Dropdown.Menu>
+              <Dropdown.Item>English</Dropdown.Item>
+              <Dropdown.Item>Russian</Dropdown.Item>
+              <Dropdown.Item onClick={() => dispatch(logout())}>
+                Spanish
+              </Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+        </Menu.Menu>
       </Menu>
       <Switch>
         <Route exact path="/app/private/workbook">

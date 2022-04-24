@@ -30,12 +30,13 @@ export const EnglishWordMemorizationInit: React.FC<
   const englishWordRecordbook = useAppSelector(selectEnglishWordRecordbook);
   const ts = useAppSelector(selectTs);
 
+  console.log('EnglishWordMemorizationInit');
   useEffect(() => {
     dispatch(setEnglishWordRecordbook(recordbook));
   }, [dispatch, ts, recordbook]);
 
   if (englishWordRecordbook.records.length === 0) {
-    return <div></div>;
+    return <div />;
   }
   const problemId = englishWordRecordbook.records[0].problemId;
   const problem = problemMap[problemId];

@@ -8,6 +8,7 @@ import {
   Divider,
   Header,
   Icon,
+  Message,
 } from 'semantic-ui-react';
 
 import { useAppSelector, useAppDispatch } from 'app/hooks';
@@ -33,6 +34,7 @@ type ParamTypes = {
 export const EnglishWordMemorizationQuestion: React.FC<
   EnglishWordMemorizationQuestionProps
 > = (props: EnglishWordMemorizationQuestionProps) => {
+  //onsole.log('EnglishWordMemorizationQuestion');
   const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
   const workbook = useAppSelector(selectWorkbook);
@@ -41,10 +43,25 @@ export const EnglishWordMemorizationQuestion: React.FC<
   const englishWordRecordbook = useAppSelector(selectEnglishWordRecordbook);
   const [answerOpen, setAnswerOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-
+  const breadcrumb = (
+    <EnglishWordMemorizationBreadcrumb
+      breadcrumbLinks={props.breadcrumbLinks}
+      workbookUrl={props.workbookUrl}
+      name={workbook.name}
+      id={+_workbookId}
+    />
+  );
   if (englishWordRecordbook.records.length === 0) {
-    return <div></div>;
+    return (
+      <Container fluid>
+        {breadcrumb}
+        <Message info>
+          <p>You answered all problems. Please try again in a few days.</p>
+        </Message>
+      </Container>
+    );
   }
+
   const problemId = englishWordRecordbook.records[0].problemId;
   const problem = problemMap[problemId];
   // onsole.log('englishWordRecordbook.records', englishWordRecordbook.records);
@@ -97,12 +114,7 @@ export const EnglishWordMemorizationQuestion: React.FC<
 
   return (
     <Container fluid>
-      <EnglishWordMemorizationBreadcrumb
-        breadcrumbLinks={props.breadcrumbLinks}
-        workbookUrl={props.workbookUrl}
-        name={workbook.name}
-        id={+_workbookId}
-      />
+      {breadcrumb}
       <Divider hidden />
       <Card>
         <Card.Content>
@@ -116,12 +128,12 @@ export const EnglishWordMemorizationQuestion: React.FC<
           </Header>
         </Card.Content>
         {/* <Card.Content>
-          <Form.Checkbox
-            checked={memorized}
-            label="完璧に覚えた"
-            onClick={onMemorizeButtonClick}
-          />
-        </Card.Content> */}
+      <Form.Checkbox
+        checked={memorized}
+        label="完璧に覚えた"
+        onClick={onMemorizeButtonClick}
+      />
+    </Card.Content> */}
         <Card.Content>
           <Button.Group fluid>
             <Button onClick={onNoButtonClick}>わからない</Button>
