@@ -11,11 +11,13 @@ import {
   ENGLISH_WORD_STATUS_ANSWER,
   selectEnglishWordStatus,
 } from 'plugins/english-word/features/english_word_study';
+
 import 'App.css';
 
 export const EnglishWordMemorization: React.FC<EnglishWordMemorizationProps> = (
   props: EnglishWordMemorizationProps
 ) => {
+  console.log('EnglishWordMemorization');
   const status = useAppSelector(selectEnglishWordStatus);
   if (status === ENGLISH_WORD_STATUS_INIT) {
     return (
