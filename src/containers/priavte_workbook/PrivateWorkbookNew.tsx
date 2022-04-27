@@ -21,6 +21,7 @@ interface OtherProps {
 }
 interface FormValues {
   name: string;
+  lang2: string;
   questionText: string;
   problemType: string;
 }
@@ -76,6 +77,7 @@ export const PrivateWorkbookNew = (): React.ReactElement => {
   const history = useHistory();
   const [values, setValues] = React.useState({
     name: '',
+    lang2: 'ja',
     questionText: '',
     problemType: '',
   });
@@ -84,12 +86,14 @@ export const PrivateWorkbookNew = (): React.ReactElement => {
   interface FormProps {
     loading: boolean;
     name: string;
+    lang2: string;
     questionText: string;
     problemType: string;
   }
   const InnerFormikForm = withFormik<FormProps, FormValues>({
     mapPropsToValues: (props: FormProps) => ({
       name: props.name,
+      lang2: props.lang2,
       questionText: props.questionText,
       problemType: props.problemType,
     }),
@@ -123,6 +127,7 @@ export const PrivateWorkbookNew = (): React.ReactElement => {
       <InnerFormikForm
         loading={workbookAddLoading}
         name={values.name}
+        lang2={values.lang2}
         questionText={values.questionText}
         problemType={values.problemType}
       />

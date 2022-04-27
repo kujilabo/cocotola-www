@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useHistory } from 'react-router-dom';
 import { Button, Card, Grid, Header } from 'semantic-ui-react';
 
@@ -17,6 +18,7 @@ export const EnglishWordProblemReadWrite: React.FC<
   const problemId = props.problem.id;
   const problemVersion = props.problem.version;
   const dispatch = useAppDispatch();
+  const [t] = useTranslation();
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState('');
   const baseUrl = `/app/private/workbook/${workbookId}/problem/${problemId}`;
@@ -89,7 +91,7 @@ export const EnglishWordProblemReadWrite: React.FC<
           <div />
         )}
         <Button.Group floated="left">
-          <LinkButton to={`${baseUrl}/edit`} value={'Edit'} />
+          <LinkButton to={`${baseUrl}/edit`} value={t('Edit')} />
         </Button.Group>
         <Button.Group floated="right">
           <DangerModal

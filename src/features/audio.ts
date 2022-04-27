@@ -60,7 +60,7 @@ export interface AudioViewState {
 }
 const defaultAudio: AudioModel = {
   id: 0,
-  lang: '',
+  lang2: '',
   text: '',
   audioContent: '',
 };
