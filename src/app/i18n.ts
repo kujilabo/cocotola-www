@@ -6,16 +6,22 @@ export const initI18n = () => {
     resources: {
       en: {
         translation: {
-          Word: 'Word',
+          Edit: 'Edit',
           Pos: 'Pos',
+          SignOut: 'Sign out',
           Translated: 'Translated',
+          Update: 'Update',
+          Word: 'Word',
         },
       },
       ja: {
         translation: {
-          Word: '英単語',
+          Edit: '編集する',
           Pos: '品詞',
+          SignOut: 'サインアウト',
           Translated: '翻訳',
+          Update: '更新する',
+          Word: '英単語',
         },
       },
     },

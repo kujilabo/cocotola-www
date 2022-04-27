@@ -87,10 +87,8 @@ export const App = (): React.ReactElement => {
         <Menu.Menu position="right">
           <Dropdown item text={username}>
             <Dropdown.Menu>
-              <Dropdown.Item>English</Dropdown.Item>
-              <Dropdown.Item>Russian</Dropdown.Item>
               <Dropdown.Item onClick={() => dispatch(logout())}>
-                Spanish
+                Sign out
               </Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>

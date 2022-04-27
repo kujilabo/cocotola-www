@@ -71,10 +71,10 @@ export class EnglishWordProblemModel {
       sentence1.text = sentence['text'];
       sentence1.translated = sentence['translated'];
       sentence1.note = sentence['note'];
-      console.log(sentences);
-      console.log(sentences[0]['text']);
-      console.log(sentences[0]['translated']);
-      console.log(sentences[0]['note']);
+      // console.log(sentences);
+      // console.log(sentences[0]['text']);
+      // console.log(sentences[0]['translated']);
+      // console.log(sentences[0]['note']);
     }
 
     return {

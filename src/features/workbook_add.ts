@@ -11,6 +11,7 @@ const baseUrl = process.env.REACT_APP_BACKEND + '/v1/private/workbook';
 // Add workbook
 export type WorkbookAddParameter = {
   name: string;
+  lang2: string;
   questionText: string;
   spaceKey: string;
 };
