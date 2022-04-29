@@ -29,7 +29,7 @@ export class EnglishWordProblemModel {
   audioId: string;
   text: string;
   pos: string;
-  lang: string;
+  lang2: string;
   translated: string;
   sentence1: EnglishWordProblemSentenceModel;
   constructor(
@@ -41,7 +41,7 @@ export class EnglishWordProblemModel {
     audioId: string,
     text: string,
     pos: string,
-    lang: string,
+    lang2: string,
     translated: string,
     sentence1: EnglishWordProblemSentenceModel
   ) {
@@ -53,7 +53,7 @@ export class EnglishWordProblemModel {
     this.audioId = audioId;
     this.text = text;
     this.pos = pos;
-    this.lang = lang;
+    this.lang2 = lang2;
     this.translated = translated;
     this.sentence1 = sentence1;
   }
@@ -86,7 +86,7 @@ export class EnglishWordProblemModel {
       audioId: '' + p.properties['audioId'],
       text: '' + p.properties['text'],
       pos: '' + p.properties['pos'],
-      lang: '' + p.properties['lang'],
+      lang2: '' + p.properties['lang2'],
       translated: '' + p.properties['translated'],
       sentence1,
     };

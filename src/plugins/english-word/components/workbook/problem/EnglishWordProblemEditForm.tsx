@@ -14,11 +14,12 @@ export interface EnglishWordProblemEditFormValues {
   number: number;
   text: string;
   pos: string;
-  lang: string;
+  lang2: string;
   translated: string;
   exampleSentenceText: string;
   exampleSentenceTranslated: string;
   exampleSentenceNote: string;
+  sentenceProvider: string;
   tatoebaSentenceNumber1: string;
   tatoebaSentenceNumber2: string;
   tatoebaSentences: TatoebaSentencePairModel[];
@@ -28,7 +29,7 @@ const emptyTatoebaSentence: TatoebaSentenceModel = {
   text: '',
   author: '',
   sentenceNumber: 0,
-  lang: '',
+  lang2: '',
 };
 export const EnglishWordProblemEditForm = (
   props: FormikProps<EnglishWordProblemEditFormValues>
@@ -40,9 +41,11 @@ export const EnglishWordProblemEditForm = (
     checked: boolean
   ): void => {
     if (checked) {
+      setFieldValue('sentenceProvider', 'tatoeba');
       setFieldValue('tatoebaSentenceNumber1', sentenceNumber1.toString());
       setFieldValue('tatoebaSentenceNumber2', sentenceNumber2.toString());
     } else {
+      setFieldValue('sentenceProvider', '');
       setFieldValue('tatoebaSentenceNumber1', '');
       setFieldValue('tatoebaSentenceNumber2', '');
     }
@@ -58,13 +61,13 @@ export const EnglishWordProblemEditForm = (
         text: values.exampleSentenceText,
         author: noteObj['tatoebaAuthor1'],
         sentenceNumber: +noteObj['tatoebaSentenceNumber1'],
-        lang: 'en',
+        lang2: 'en',
       };
       sentence2 = {
         text: values.exampleSentenceTranslated,
         author: noteObj['tatoebaAuthor2'],
         sentenceNumber: +noteObj['tatoebaSentenceNumber2'],
-        lang: 'ja',
+        lang2: 'ja',
       };
     } catch (e) {
       console.log(e);
@@ -92,10 +95,10 @@ export const EnglishWordProblemEditForm = (
             errorPrompt
           />
           <Select
-            name="lang"
+            name="lang2"
             label="Lang"
             options={langOptions}
-            value={values.lang}
+            value={values.lang2}
             errorPrompt
           />
           {sentence1.text !== '' ? (
