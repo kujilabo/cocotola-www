@@ -37,11 +37,12 @@ export const EnglishWordProblemEdit: React.FC<EnglishWordProblemEditProps> = (
     number: problem.number,
     text: problem.text,
     pos: problem.pos,
-    lang: problem.lang,
+    lang2: problem.lang2,
     translated: problem.translated,
     exampleSentenceText: problem.sentence1.text,
     exampleSentenceTranslated: problem.sentence1.translated,
     exampleSentenceNote: problem.sentence1.note,
+    sentenceProvider: '',
     tatoebaSentenceNumber1: '',
     tatoebaSentenceNumber2: '',
   });
@@ -53,7 +54,7 @@ export const EnglishWordProblemEdit: React.FC<EnglishWordProblemEditProps> = (
       number: problem.number,
       text: problem.text,
       pos: problem.pos,
-      lang: problem.lang,
+      lang2: problem.lang2,
       translated: problem.translated,
       exampleSentenceText: problem.sentence1.text,
       exampleSentenceTranslated: problem.sentence1.translated,
@@ -106,11 +107,12 @@ export const EnglishWordProblemEdit: React.FC<EnglishWordProblemEditProps> = (
         number={values.number}
         text={values.text}
         pos={values.pos}
-        lang={values.lang}
+        lang2={values.lang2}
         translated={values.translated}
         exampleSentenceText={values.exampleSentenceText}
         exampleSentenceTranslated={values.exampleSentenceTranslated}
         exampleSentenceNote={values.exampleSentenceNote}
+        sentenceProvider={values.sentenceProvider}
         tatoebaSentenceNumber1={values.tatoebaSentenceNumber1}
         tatoebaSentenceNumber2={values.tatoebaSentenceNumber2}
         tatoebaSentences={tatoebaSentences}

@@ -1,16 +1,16 @@
 export class TatoebaSentenceModel {
   sentenceNumber: number;
-  lang: string;
+  lang2: string;
   text: string;
   author: string;
   constructor(
     sentenceNumber: number,
-    lang: string,
+    lang2: string,
     text: string,
     author: string
   ) {
     this.sentenceNumber = sentenceNumber;
-    this.lang = lang;
+    this.lang2 = lang2;
     this.text = text;
     this.author = author;
   }

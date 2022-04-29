@@ -18,11 +18,12 @@ export interface EnglishWordProblemEditFormikFormProps {
   number: number;
   text: string;
   pos: string;
-  lang: string;
+  lang2: string;
   translated: string;
   exampleSentenceText: string;
   exampleSentenceTranslated: string;
   exampleSentenceNote: string;
+  sentenceProvider: string;
   tatoebaSentenceNumber1: string;
   tatoebaSentenceNumber2: string;
   tatoebaSentences: TatoebaSentencePairModel[];
@@ -45,11 +46,12 @@ export const englishWordProblemEditFormikForm = (
       number: props.number,
       text: props.text,
       pos: props.pos,
-      lang: props.lang,
+      lang2: props.lang2,
       translated: props.translated,
       exampleSentenceText: props.exampleSentenceText,
       exampleSentenceTranslated: props.exampleSentenceTranslated,
       exampleSentenceNote: props.exampleSentenceNote,
+      sentenceProvider: props.sentenceProvider,
       tatoebaSentenceNumber1: props.tatoebaSentenceNumber1,
       tatoebaSentenceNumber2: props.tatoebaSentenceNumber2,
       tatoebaSentences: props.tatoebaSentences,
@@ -77,8 +79,8 @@ export const englishWordProblemEditFormikForm = (
             properties: {
               text: values.text,
               pos: values.pos,
-              lang: values.lang,
-              sentenceProvider: 'tatoeba',
+              lang2: values.lang2,
+              sentenceProvider: values.sentenceProvider,
               tatoebaSentenceNumber1: values.tatoebaSentenceNumber1,
               tatoebaSentenceNumber2: values.tatoebaSentenceNumber2,
             },
