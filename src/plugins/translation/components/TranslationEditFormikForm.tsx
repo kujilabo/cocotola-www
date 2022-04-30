@@ -13,11 +13,11 @@ import 'App.css';
 
 export interface TranslationEditFormikFormProps {
   index: number;
-  slectedLang: string;
+  selectedLang2: string;
   text: string;
   pos: string;
   translated: string;
-  lang: string;
+  lang2: string;
   provider: string;
   //   onRemoveClick: () => void;
   refreshTranslations: () => void;
@@ -33,8 +33,8 @@ export const translationEditFormikForm = (
     mapPropsToValues: (props: TranslationEditFormikFormProps) => ({
       // ...props,
       //   index: props.index,
-      //   selectedLang: props.slectedLang,
-      lang: props.lang,
+      //   selectedLang: props.selectedLang,
+      lang2: props.lang2,
       text: props.text,
       pos: props.pos,
       translated: props.translated,
@@ -71,7 +71,7 @@ export const translationEditFormikForm = (
       dispatch(
         updateTranslation({
           param: {
-            lang: formikBag.props.lang,
+            lang2: formikBag.props.lang2,
             text: formValues.text,
             pos: +formValues.pos,
             translated: formValues.translated,

@@ -1,14 +1,15 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useHistory } from 'react-router-dom';
-import { Button, Card, Grid, Header } from 'semantic-ui-react';
+import { useHistory, Link } from 'react-router-dom';
+import { Button, Card, Label, Grid, Header, Dropdown } from 'semantic-ui-react';
 
-import { useAppDispatch } from 'app/hooks';
+import { useAppSelector, useAppDispatch } from 'app/hooks';
 import { removeProblem } from 'features/problem_remove';
 import { ProblemModel } from 'models/problem';
-import { LinkButton } from 'components/buttons';
-import { DangerModal } from 'components';
+import { AudioButton, DangerModal, ErrorMessage } from 'components';
+import { getAudio, selectAudioViewLoading } from 'features/audio';
 import { toDsiplayText } from '../../../utils/util';
+import { emptyFunction } from 'utils/util';
 import 'App.css';
 
 export const EnglishWordProblemReadWrite: React.FC<
@@ -22,6 +23,26 @@ export const EnglishWordProblemReadWrite: React.FC<
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState('');
   const baseUrl = `/app/private/workbook/${workbookId}/problem/${problemId}`;
+  const audioViewLoading = useAppSelector(selectAudioViewLoading);
+  const loadAndPlay = (
+    auidoId: number,
+    updatedAt: string,
+    postFunc: (value: string) => void
+  ) => {
+    dispatch(
+      getAudio({
+        param: {
+          workbookId: workbookId,
+          problemId: problemId,
+          id: auidoId,
+          updatedAt: updatedAt,
+        },
+        postFunc: postFunc,
+        postSuccessProcess: emptyFunction,
+        postFailureProcess: setErrorMessage,
+      })
+    );
+  };
   const onRemoveButtonClick = () => {
     dispatch(
       removeProblem({
@@ -39,7 +60,34 @@ export const EnglishWordProblemReadWrite: React.FC<
   return (
     <Card>
       <Card.Content>
-        <Card.Header>{props.problem.properties['text']}</Card.Header>
+        <Card.Header>
+          <Header floated="left">{props.problem.properties['text']}</Header>
+          <Header floated="right">
+            <Dropdown item text="" icon="bars">
+              <Dropdown.Menu>
+                <Dropdown.Item>
+                  <Link to={`${baseUrl}/edit`}>{t('Edit')}</Link>
+                </Dropdown.Item>
+                <Dropdown.Item>
+                  <DangerModal
+                    triggerValue="Delete"
+                    content="Are you sure you want to delete this problem?"
+                    standardValue="Cancel"
+                    dangerValue="Delete"
+                    triggerLayout={(children: React.ReactNode) => (
+                      <Label color="red">{children}</Label>
+                    )}
+                    standardFunc={() => {
+                      return;
+                    }}
+                    dangerFunc={onRemoveButtonClick}
+                  />
+                </Dropdown.Item>
+              </Dropdown.Menu>
+            </Dropdown>
+          </Header>
+        </Card.Header>
+        <Card.Header textAlign="right"></Card.Header>
       </Card.Content>
       <Card.Content>
         <Grid columns={2}>
@@ -68,45 +116,25 @@ export const EnglishWordProblemReadWrite: React.FC<
         </Grid>
       </Card.Content>
       <Card.Content extra>
-        {props.problem.properties['audioId'] === '0' ? (
+        {props.problem.properties['audioId'] !== '0' ? (
           <Button.Group floated="left">
-            <Button
-              basic
-              color="teal"
-              onClick={() =>
-                // props.getAudio(
-                //   props.problem.properties['audioId'],
-                //   props.problem.updatedAt,
-                //   playAudio
-                // )
-                {
-                  return;
-                }
+            <AudioButton
+              id={props.problem.properties['audioId']}
+              loadAndPlay={(postFunc: (value: string) => void) =>
+                loadAndPlay(
+                  props.problem.properties['audioId'],
+                  props.problem.updatedAt,
+                  postFunc
+                )
               }
-            >
-              Play
-            </Button>
+              disabled={audioViewLoading}
+            />
           </Button.Group>
         ) : (
           <div />
         )}
-        <Button.Group floated="left">
-          <LinkButton to={`${baseUrl}/edit`} value={t('Edit')} />
-        </Button.Group>
-        <Button.Group floated="right">
-          <DangerModal
-            triggerValue="Delete"
-            content="Are you sure you want to delete this problem?"
-            standardValue="Cancel"
-            dangerValue="Delete"
-            standardFunc={() => {
-              return;
-            }}
-            dangerFunc={onRemoveButtonClick}
-          />
-        </Button.Group>
       </Card.Content>
-      {errorMessage}
+      <ErrorMessage message={errorMessage} />
     </Card>
   );
 };

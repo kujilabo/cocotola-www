@@ -77,7 +77,7 @@ export const TranslationEdit = (): React.ReactElement => {
     translated: '',
   });
   const [editValues, setEditValues] = useState({
-    lang: '',
+    lang2: '',
     text: '',
     pos: '',
     translated: '',
@@ -91,7 +91,7 @@ export const TranslationEdit = (): React.ReactElement => {
       postSuccessProcess: (translations: TranslationModel[]) => {
         const t = findTranslationByPos(translations, +_pos);
         setEditValues({
-          lang: 'ja',
+          lang2: 'ja',
           text: t.text,
           pos: t.pos.toString(),
           translated: t.translated,
@@ -132,8 +132,8 @@ export const TranslationEdit = (): React.ReactElement => {
             <Grid.Column>
               <TranslationEditFormikForm
                 index={0}
-                slectedLang={'ja'}
-                lang={editValues.lang}
+                selectedLang2={'ja'}
+                lang2={editValues.lang2}
                 text={editValues.text}
                 pos={editValues.pos}
                 translated={editValues.translated}
@@ -158,11 +158,11 @@ export const TranslationEdit = (): React.ReactElement => {
                 <Grid.Column key={t.pos}>
                   <TranslationEditFormikForm
                     index={i}
-                    slectedLang={'ja'}
+                    selectedLang2={'ja'}
                     text={t.text}
                     pos={t.pos.toString()}
                     translated={t.translated}
-                    lang={t.lang}
+                    lang2={t.lang2}
                     provider={t.provider}
                     refreshTranslations={() => dispatch(localGetTranslations())}
                   />

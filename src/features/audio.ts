@@ -7,10 +7,12 @@ import { extractErrorMessage } from './base';
 import { AudioModel } from 'models/audio';
 import { jsonHeaders } from 'utils/util';
 
-const baseUrl = process.env.REACT_APP_BACKEND + '/v1/audio';
+const baseUrl = process.env.REACT_APP_BACKEND + '/v1/workbook';
 
 // Find audio
 export type AudioViewParameter = {
+  workbookId: number;
+  problemId: number;
   id: number;
   updatedAt: string;
 };
@@ -31,7 +33,7 @@ export const getAudio = createAsyncThunk<
   AudioViewArg,
   BaseThunkApiConfig
 >('audio/get', async (arg: AudioViewArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.param.id}`;
+  const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}/audio/${arg.param.id}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))

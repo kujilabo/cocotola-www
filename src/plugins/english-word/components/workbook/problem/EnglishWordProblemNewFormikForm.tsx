@@ -15,7 +15,7 @@ import 'App.css';
 export interface EnglishWordProblemNewFormikFormProps {
   text: string;
   pos: string;
-  lang: string;
+  lang2: string;
   loading: boolean;
 }
 export const englishWordProblemNewFormikForm = (
@@ -33,7 +33,7 @@ export const englishWordProblemNewFormikForm = (
     mapPropsToValues: (props: EnglishWordProblemNewFormikFormProps) => ({
       text: props.text,
       pos: props.pos,
-      lang: props.lang,
+      lang2: props.lang2,
       loading: props.loading,
     }),
     validationSchema: Yup.object().shape({
@@ -56,7 +56,7 @@ export const englishWordProblemNewFormikForm = (
             properties: {
               text: values.text,
               pos: values.pos,
-              lang: values.lang,
+              lang2: values.lang2,
             },
           },
           postSuccessProcess: () =>

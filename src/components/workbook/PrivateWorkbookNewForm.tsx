@@ -2,19 +2,25 @@ import React from 'react';
 import { Button, Card, Header } from 'semantic-ui-react';
 import { FormikProps } from 'formik';
 import { Form, Input, Select } from 'formik-semantic-ui-react';
-import { posOptions } from 'plugins/translation/components';
-import { langOptions } from 'components';
+
 import { AppDimmer } from 'components';
 import 'App.css';
 
-export interface EnglishWordProblemNewFormValues {
-  text: string;
-  pos: string;
+const problemTypeOptions = [
+  { key: 'word', text: '単語', value: 'english_word' },
+  { key: 'phrase', text: '文章', value: 'english_phrase' },
+  { key: 'template', text: 'テンプレート', value: 'template' },
+];
+
+export interface PrivateWorkbookNewFormValues {
+  name: string;
   lang2: string;
+  questionText: string;
+  problemType: string;
   loading: boolean;
 }
-export const EnglishWordProblemNewForm = (
-  props: FormikProps<EnglishWordProblemNewFormValues>
+export const PrivateWorkbookNewForm = (
+  props: FormikProps<PrivateWorkbookNewFormValues>
 ): React.ReactElement => {
   const { values, isSubmitting } = props;
 
@@ -26,23 +32,24 @@ export const EnglishWordProblemNewForm = (
         </Card.Content>
         <Card.Content>
           <Input
-            name="text"
-            label="Word"
-            placeholder="english word"
+            name="name"
+            label="Name"
+            placeholder="Workbook name"
+            className="full-width"
+            errorPrompt
+          />
+          <Input
+            name="questionText"
+            label="Question text"
+            placeholder=""
+            className="full-width"
             errorPrompt
           />
           <Select
-            name="pos"
-            label="Pos"
-            options={posOptions}
-            value={values.pos}
-            errorPrompt
-          />
-          <Select
-            name="lang2"
-            label="Lang"
-            options={langOptions}
-            value={values.lang2}
+            name="problemType"
+            label="Problem type"
+            options={problemTypeOptions}
+            value={values.problemType}
             errorPrompt
           />
         </Card.Content>

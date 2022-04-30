@@ -32,7 +32,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
   const [values, setValues] = useState({
     text: 'pen',
     pos: '99',
-    lang: 'ja',
+    lang2: 'ja',
   });
   const [errorMessage, setErrorMessage] = useState('');
   const loading = workbookGetLoading || problemAddLoading;
@@ -54,7 +54,7 @@ export const EnglishWordProblemNew: React.FC<EnglishWordProblemNewProps> = (
       <EnglishWordProblemNewFormikForm
         text={values.text}
         pos={values.pos}
-        lang={values.lang}
+        lang2={values.lang2}
         loading={loading}
       />
       <ErrorMessage message={errorMessage} />

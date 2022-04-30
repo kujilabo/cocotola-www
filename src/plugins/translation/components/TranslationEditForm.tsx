@@ -9,7 +9,7 @@ import 'App.css';
 export interface TranslationEditFormValues {
   // index: number;
   // selectedLang: string;
-  lang: string;
+  lang2: string;
   text: string;
   pos: string;
   translated: string;
