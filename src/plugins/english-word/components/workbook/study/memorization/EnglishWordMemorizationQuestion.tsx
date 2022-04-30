@@ -73,6 +73,8 @@ export const EnglishWordMemorizationQuestion: React.FC<
     dispatch(
       getAudio({
         param: {
+          workbookId: +_workbookId,
+          problemId: problemId,
           id: problem.properties['audioId'],
           updatedAt: problem.updatedAt,
         },

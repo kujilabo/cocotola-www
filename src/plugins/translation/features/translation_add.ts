@@ -14,7 +14,7 @@ export type TranslationAddParameter = {
   text: string;
   pos: number;
   translated: string;
-  lang: string;
+  lang2: string;
 };
 export type TranslationAddArg = {
   param: TranslationAddParameter;

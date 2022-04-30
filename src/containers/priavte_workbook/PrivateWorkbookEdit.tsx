@@ -76,6 +76,7 @@ const InnerForm = (props: OtherProps & FormikProps<FormValues>) => {
             content="Are you sure you want to delete this problem?"
             standardValue="Cancel"
             dangerValue="Delete"
+            triggerLayout={(children: React.ReactNode) => <>{children}</>}
             standardFunc={() => {
               return;
             }}

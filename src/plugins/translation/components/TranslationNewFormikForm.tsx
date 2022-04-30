@@ -49,7 +49,7 @@ export const translationNewFormikForm = (
             text: formValues.text,
             pos: +formValues.pos,
             translated: formValues.translated,
-            lang: 'ja',
+            lang2: 'ja',
           },
           postSuccessProcess: () => {
             formikBag.props.refreshTranslations();

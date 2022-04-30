@@ -4,7 +4,7 @@ export class TranslationModel {
   text: string;
   pos: number;
   translated: string;
-  lang: string;
+  lang2: string;
   provider: string;
   constructor(
     id: number,
@@ -12,7 +12,7 @@ export class TranslationModel {
     text: string,
     pos: number,
     translated: string,
-    lang: string,
+    lang2: string,
     provider: string
   ) {
     this.id = id;
@@ -20,7 +20,7 @@ export class TranslationModel {
     this.text = text;
     this.pos = pos;
     this.translated = translated;
-    this.lang = lang;
+    this.lang2 = lang2;
     this.provider = provider;
   }
 }

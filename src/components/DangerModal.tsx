@@ -6,6 +6,7 @@ type DangerModalProps = {
   content: string;
   standardValue: string;
   dangerValue: string;
+  triggerLayout: (children: React.ReactNode) => React.ReactElement;
   standardFunc: () => any;
   dangerFunc: () => any;
 };
@@ -18,11 +19,8 @@ export const DangerModal: React.FC<DangerModalProps> = (
     <div>
       <Modal
         size="mini"
-        trigger={
-          <Button type="button" negative>
-            {props.triggerValue}
-          </Button>
-        }
+        trigger={props.triggerLayout(<>{props.triggerValue}</>)}
+        // trigger={<div>{props.triggerValue}</div>}
         open={open}
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}

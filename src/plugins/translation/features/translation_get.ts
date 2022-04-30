@@ -64,7 +64,7 @@ const defaultTranslation = {
   text: '',
   pos: 0,
   translated: '',
-  lang: '',
+  lang2: '',
   provider: '',
 };
 const initialState: TranslationGetState = {
