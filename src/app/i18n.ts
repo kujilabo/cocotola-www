@@ -6,6 +6,7 @@ export const initI18n = () => {
     resources: {
       en: {
         translation: {
+          Delete: 'Delete',
           Edit: 'Edit',
           Pos: 'Pos',
           SignOut: 'Sign out',
@@ -16,6 +17,7 @@ export const initI18n = () => {
       },
       ja: {
         translation: {
+          Delete: '削除する',
           Edit: '編集する',
           Pos: '品詞',
           SignOut: 'サインアウト',

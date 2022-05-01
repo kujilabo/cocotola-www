@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router-dom';
 import {
   Button,
@@ -25,17 +26,10 @@ import {
 } from '../../../../features/english_word_study';
 import { EnglishWordMemorizationBreadcrumb } from './EnglishWordMemorizationBreadcrumb';
 import { EnglishWordProblemModel } from '../../../../models/english-word-problem';
-// import { TatoebaSentenceModel } from 'plugins/tatoeba/models/tatoeba';
 import { toDsiplayText } from '../../../../utils/util';
 
 import 'App.css';
 
-// const emptyTatoebaSentence: TatoebaSentenceModel = {
-//   text: '',
-//   author: '',
-//   sentenceNumber: 0,
-//   lang: '',
-// };
 type ParamTypes = {
   _workbookId: string;
   _studyType: string;
@@ -45,6 +39,7 @@ export const EnglishWordMemorizationAnswer: React.FC<
 > = (props: EnglishWordMemorizationAnswerProps) => {
   const { _workbookId, _studyType } = useParams<ParamTypes>();
   const dispatch = useAppDispatch();
+  const [t] = useTranslation();
   const workbook = useAppSelector(selectWorkbook);
   const problemMap = useAppSelector(selectProblemMap);
   const audioViewLoading = useAppSelector(selectAudioViewLoading);
@@ -99,7 +94,7 @@ export const EnglishWordMemorizationAnswer: React.FC<
         param: {
           workbookId: +_workbookId,
           problemId: problemId,
-          id: +problem.audioId,
+          audioId: +problem.audioId,
           updatedAt: problem.updatedAt,
         },
         postFunc: postFunc,
@@ -156,7 +151,7 @@ export const EnglishWordMemorizationAnswer: React.FC<
         </Card.Content>
         <Card.Content>
           <Button.Group fluid>
-            <LinkButton to={`${baseUrl}/edit`} value={'Edit'} />
+            <LinkButton to={`${baseUrl}/edit`} value={t('Edit')} />
           </Button.Group>
         </Card.Content>
         <Card.Content>

@@ -85,8 +85,9 @@ export const App = (): React.ReactElement => {
         )}
 
         <Menu.Menu position="right">
-          <Dropdown item text={username}>
+          <Dropdown item text="" icon="bars">
             <Dropdown.Menu>
+              <Dropdown.Item>{username}</Dropdown.Item>
               <Dropdown.Item onClick={() => dispatch(logout())}>
                 Sign out
               </Dropdown.Item>

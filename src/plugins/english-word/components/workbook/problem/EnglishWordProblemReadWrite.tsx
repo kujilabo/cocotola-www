@@ -24,18 +24,14 @@ export const EnglishWordProblemReadWrite: React.FC<
   const [errorMessage, setErrorMessage] = useState('');
   const baseUrl = `/app/private/workbook/${workbookId}/problem/${problemId}`;
   const audioViewLoading = useAppSelector(selectAudioViewLoading);
-  const loadAndPlay = (
-    auidoId: number,
-    updatedAt: string,
-    postFunc: (value: string) => void
-  ) => {
+  const loadAndPlay = (postFunc: (value: string) => void) => {
     dispatch(
       getAudio({
         param: {
+          updatedAt: props.problem.updatedAt,
           workbookId: workbookId,
           problemId: problemId,
-          id: auidoId,
-          updatedAt: updatedAt,
+          audioId: props.problem.properties['audioId'],
         },
         postFunc: postFunc,
         postSuccessProcess: emptyFunction,
@@ -70,10 +66,10 @@ export const EnglishWordProblemReadWrite: React.FC<
                 </Dropdown.Item>
                 <Dropdown.Item>
                   <DangerModal
-                    triggerValue="Delete"
+                    triggerValue={t('Delete')}
                     content="Are you sure you want to delete this problem?"
                     standardValue="Cancel"
-                    dangerValue="Delete"
+                    dangerValue={t('Delete')}
                     triggerLayout={(children: React.ReactNode) => (
                       <Label color="red">{children}</Label>
                     )}
@@ -121,11 +117,7 @@ export const EnglishWordProblemReadWrite: React.FC<
             <AudioButton
               id={props.problem.properties['audioId']}
               loadAndPlay={(postFunc: (value: string) => void) =>
-                loadAndPlay(
-                  props.problem.properties['audioId'],
-                  props.problem.updatedAt,
-                  postFunc
-                )
+                loadAndPlay(postFunc)
               }
               disabled={audioViewLoading}
             />
@@ -143,10 +135,4 @@ type EnglishWordProblemReadWriteProps = {
   workbookId: number;
   problem: ProblemModel;
   baseWorkbookPath: string;
-  // getAudio: (
-  //   id: number,
-  //   timestamp: string,
-  //   postFunc: (value: string) => void
-  // ) => void;
-  // removeProblem: (path: string, params: RemoveProblemParameter) => void;
 };

@@ -13,7 +13,7 @@ const baseUrl = process.env.REACT_APP_BACKEND + '/v1/workbook';
 export type AudioViewParameter = {
   workbookId: number;
   problemId: number;
-  id: number;
+  audioId: number;
   updatedAt: string;
 };
 export type AudioViewArg = {
@@ -33,7 +33,7 @@ export const getAudio = createAsyncThunk<
   AudioViewArg,
   BaseThunkApiConfig
 >('audio/get', async (arg: AudioViewArg, thunkAPI) => {
-  const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}/audio/${arg.param.id}`;
+  const url = `${baseUrl}/${arg.param.workbookId}/problem/${arg.param.problemId}/audio/${arg.param.audioId}`;
   const { refreshToken } = thunkAPI.getState().auth;
   return await thunkAPI
     .dispatch(refreshAccessToken({ refreshToken: refreshToken }))
@@ -44,7 +44,7 @@ export const getAudio = createAsyncThunk<
         .then((resp) => {
           const response = resp.data as AudioModel;
           arg.postSuccessProcess();
-          arg.postFunc(response.audioContent);
+          arg.postFunc(response.content);
           return { param: arg.param, response: response } as AudioViewResult;
         })
         .catch((err: Error) => {
@@ -64,7 +64,7 @@ const defaultAudio: AudioModel = {
   id: 0,
   lang2: '',
   text: '',
-  audioContent: '',
+  content: '',
 };
 const initialState: AudioViewState = {
   loading: false,

@@ -75,7 +75,7 @@ export const EnglishWordMemorizationQuestion: React.FC<
         param: {
           workbookId: +_workbookId,
           problemId: problemId,
-          id: problem.properties['audioId'],
+          audioId: problem.properties['audioId'],
           updatedAt: problem.updatedAt,
         },
         postFunc: postFunc,
