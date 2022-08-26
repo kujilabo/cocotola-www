@@ -23,6 +23,7 @@ export class ProblemModel {
 }
 
 export const EnglishWordProblemTypeId = 'english_word';
+export const EnglishSentenceProblemTypeId = 'english_sentence';
 export const EnglishPhraseProblemTypeId = 'english_phrase';
 export const TemplateProblemTypeId = 'template';
 
