@@ -30,6 +30,7 @@ import recordAddReducer from 'features/record_add';
 import audioReducer from 'features/audio';
 import { ProblemFactory } from 'containers/workbook/problem/ProblemFactory';
 import { EnglishWordProblem } from 'plugins/english-word/containers/workbook/problem/EnglishWordProblem';
+import { EnglishSentenceProblem } from 'plugins/english-sentence/containers/workbook/problem/EnglishSentenceProblem';
 
 // plugin
 import translationFindReducer from 'plugins/translation/features/translation_find';
@@ -44,11 +45,14 @@ import tatoebaImportReducer from 'plugins/tatoeba/features/tatoeba_import';
 import tatoebaSentenceFindReducer from 'plugins/tatoeba/features/tatoeba_find';
 
 const englishWordProblem = new EnglishWordProblem();
+const englishSentenceProblem = new EnglishSentenceProblem();
 export const problemFactory = new ProblemFactory({
   english_word: englishWordProblem,
+  english_sentence: englishSentenceProblem,
 });
 const reducers = {
   englishWord: englishWordProblem.getReducer(),
+  englishSentence: englishSentenceProblem.getReducer(),
 };
 
 export const rootReducer = combineReducers({

@@ -22,5 +22,9 @@ export class WorkbookModel {
     this.questionText = questionText;
     // this.problems = problems;
     this.subscribed = subscribed;
+    if (problemType == '') {
+      alert('Invaid workbook');
+    }
+    console.log('problemType', problemType);
   }
 }

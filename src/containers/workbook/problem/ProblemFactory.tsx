@@ -44,9 +44,12 @@ export class ProblemFactory {
     init: (s: string) => void,
     workbook: WorkbookModel
   ): React.ReactElement {
+    if (problemType === '') {
+      alert('invaild problemType');
+    }
     const problemCreator = this.problemMap[problemType];
     if (!problemCreator) {
-      // onsole.log('problemCreator not found', problemType, this.problemMap);
+      console.log('problemCreator not found', problemType, this.problemMap);
       return <div>problemCreator not found</div>;
     }
     return problemCreator.createMenu(init, workbook);

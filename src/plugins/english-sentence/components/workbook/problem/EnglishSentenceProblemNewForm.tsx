@@ -3,25 +3,18 @@ import { Button, Card, Header } from 'semantic-ui-react';
 import { FormikProps } from 'formik';
 import { Form, Input, Select } from 'formik-semantic-ui-react';
 
+import { langOptions } from 'components';
 import { AppDimmer } from 'components';
 import 'App.css';
 
-const problemTypeOptions = [
-  { key: 'word', text: '単語', value: 'english_word' },
-  { key: 'phrase', text: '文章', value: 'english_sentence' },
-  { key: 'phrase', text: 'フレーズ', value: 'english_phrase' },
-  { key: 'template', text: 'テンプレート', value: 'template' },
-];
-
-export interface PrivateWorkbookNewFormValues {
-  name: string;
+export interface EnglishSentenceProblemNewFormValues {
+  text: string;
   lang2: string;
-  questionText: string;
-  problemType: string;
+  translated: string;
   loading: boolean;
 }
-export const PrivateWorkbookNewForm = (
-  props: FormikProps<PrivateWorkbookNewFormValues>
+export const EnglishSentenceProblemNewForm = (
+  props: FormikProps<EnglishSentenceProblemNewFormValues>
 ): React.ReactElement => {
   const { values, isSubmitting } = props;
 
@@ -33,24 +26,22 @@ export const PrivateWorkbookNewForm = (
         </Card.Content>
         <Card.Content>
           <Input
-            name="name"
-            label="Name"
-            placeholder="Workbook name"
-            className="full-width"
-            errorPrompt
-          />
-          <Input
-            name="questionText"
-            label="Question text"
-            placeholder=""
-            className="full-width"
+            name="text"
+            label="Sentence"
+            placeholder="english sentence"
             errorPrompt
           />
           <Select
-            name="problemType"
-            label="Problem type"
-            options={problemTypeOptions}
-            value={values.problemType}
+            name="lang2"
+            label="Lang"
+            options={langOptions}
+            value={values.lang2}
+            errorPrompt
+          />
+          <Input
+            name="translated"
+            label="Translated sentence"
+            placeholder="translated sentence"
             errorPrompt
           />
         </Card.Content>

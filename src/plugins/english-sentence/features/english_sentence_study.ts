@@ -3,9 +3,9 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from 'app/store';
 import { RecordbookModel } from 'models/recordbook';
 
-export const ENGLISH_WORD_STATUS_INIT = 1;
-export const ENGLISH_WORD_STATUS_QUESTION = 2;
-export const ENGLISH_WORD_STATUS_ANSWER = 3;
+export const ENGLISH_SENTENCE_STATUS_INIT = 1;
+export const ENGLISH_SENTENCE_STATUS_QUESTION = 2;
+export const ENGLISH_SENTENCE_STATUS_ANSWER = 3;
 
 const removeProblemFromRecordbook = (
   recordbook: RecordbookModel,
@@ -34,7 +34,7 @@ const removeProblemFromRecordbook = (
 };
 
 // Set result
-export interface EnglishWordState {
+export interface EnglishSentenceState {
   status: number;
   ts: string;
   recordbook: RecordbookModel;
@@ -44,26 +44,26 @@ const defaultRecordbook: RecordbookModel = {
   id: 0,
   records: [],
 };
-const initialState: EnglishWordState = {
+const initialState: EnglishSentenceState = {
   status: 0,
   ts: '',
   recordbook: defaultRecordbook,
   lastResult: false,
 };
-export const englishWordSlice = createSlice({
+export const englishSentenceSlice = createSlice({
   name: 'english_word',
   initialState: initialState,
   reducers: {
-    initEnglishWordStatus: (state, action: PayloadAction<string>) => {
-      // onsole.log('initEnglishWordStatus', action.payload);
-      state.status = ENGLISH_WORD_STATUS_INIT;
+    initEnglishSentenceStatus: (state, action: PayloadAction<string>) => {
+      // onsole.log('initEnglishSentenceStatus', action.payload);
+      state.status = ENGLISH_SENTENCE_STATUS_INIT;
       state.ts = action.payload;
     },
-    setEnglishWordRecordbook: (
+    setEnglishSentenceRecordbook: (
       state,
       action: PayloadAction<RecordbookModel>
     ) => {
-      // onsole.log('setEnglishWordRecordbook', action.payload);
+      // onsole.log('setEnglishSentenceRecordbook', action.payload);
       const recordbook = action.payload;
       const records = [];
       for (const record of recordbook.records) {
@@ -95,14 +95,14 @@ export const englishWordSlice = createSlice({
         });
       }
       state.recordbook.records = records;
-      state.status = ENGLISH_WORD_STATUS_QUESTION;
-      // onsole.log('setEnglishWordRecordbook', state.recordbook);
+      state.status = ENGLISH_SENTENCE_STATUS_QUESTION;
+      // onsole.log('setEnglishSentenceRecordbook', state.recordbook);
     },
-    setEnglishWordStatus: (state, action: PayloadAction<number>) => {
-      // onsole.log('setEnglishWordStatus', state.status);
+    setEnglishSentenceStatus: (state, action: PayloadAction<number>) => {
+      // onsole.log('setEnglishSentenceStatus', state.status);
       state.status = action.payload;
     },
-    nextEnglishWordProblem: (state) => {
+    nextEnglishSentenceProblem: (state) => {
       // onsole.log('oldRecordbook', state);
       // onsole.log('oldRecordbook', state.recordbook);
       // onsole.log('state.recordbook.id', state.recordbook.id);
@@ -163,29 +163,29 @@ export const englishWordSlice = createSlice({
       }
 
       state.recordbook = newRecordbook;
-      state.status = ENGLISH_WORD_STATUS_QUESTION;
+      state.status = ENGLISH_SENTENCE_STATUS_QUESTION;
     },
-    setEnglishWordRecord: (state, action: PayloadAction<boolean>) => {
+    setEnglishSentenceRecord: (state, action: PayloadAction<boolean>) => {
       state.lastResult = action.payload;
     },
   },
 });
 
 export const {
-  initEnglishWordStatus,
-  setEnglishWordRecordbook,
-  setEnglishWordStatus,
-  nextEnglishWordProblem,
-  setEnglishWordRecord,
-} = englishWordSlice.actions;
+  initEnglishSentenceStatus,
+  setEnglishSentenceRecordbook,
+  setEnglishSentenceStatus,
+  nextEnglishSentenceProblem,
+  setEnglishSentenceRecord,
+} = englishSentenceSlice.actions;
 
-export const selectEnglishWordStatus = (state: RootState): number =>
-  state.englishWord.status;
+export const selectEnglishSentenceStatus = (state: RootState): number =>
+  state.englishSentence.status;
 
-export const selectEnglishWordRecordbook = (
+export const selectEnglishSentenceRecordbook = (
   state: RootState
-): RecordbookModel => state.englishWord.recordbook;
+): RecordbookModel => state.englishSentence.recordbook;
 
-export const selectTs = (state: RootState): string => state.englishWord.ts;
+export const selectTs = (state: RootState): string => state.englishSentence.ts;
 
-export default englishWordSlice.reducer;
+export default englishSentenceSlice.reducer;
